@@ -1,0 +1,122 @@
+{
+    "name": "haku-form-design",
+    "description": "白箱表单设计器",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build --modern --report",
+        "report": "vue-cli-service build --report",
+        "test:unit": "vue-cli-service test:unit",
+        "test:e2e": "vue-cli-service test:e2e",
+        "lint": "vue-cli-service lint"
+    },
+    "dependencies": {
+        "ant-design-vue": "^1.4.4",
+        "vant": "^2.2.12",
+        "core-js": "^3.3.2",
+        "vue": "^2.6.10",
+        "vue-class-component": "^7.0.2",
+        "vue-property-decorator": "^8.3.0",
+        "vue-router": "^3.1.3",
+        "vuex": "^3.0.1"
+    },
+    "devDependencies": {
+        "@antv/g2": "^3.5.9",
+        "@babel/plugin-proposal-nullish-coalescing-operator": "^7.4.4",
+        "@babel/plugin-proposal-optional-chaining": "^7.6.0",
+        "@fortawesome/fontawesome-pro": "^5.10.2",
+        "@types/chai": "^4.1.0",
+        "@types/mocha": "^5.2.4",
+        "@vue/cli-plugin-babel": "^4.0.0",
+        "@vue/cli-plugin-e2e-nightwatch": "^4.0.0",
+        "@vue/cli-plugin-eslint": "^4.0.0",
+        "@vue/cli-plugin-router": "^4.0.0",
+        "@vue/cli-plugin-typescript": "^4.0.0",
+        "@vue/cli-plugin-unit-mocha": "^4.0.0",
+        "@vue/cli-plugin-vuex": "^4.0.0",
+        "@vue/cli-service": "^4.0.0",
+        "@vue/eslint-config-prettier": "^5.0.0",
+        "@vue/eslint-config-typescript": "^4.0.0",
+        "@vue/test-utils": "1.0.0-beta.29",
+        "axios": "^0.19.0",
+        "chai": "^4.1.2",
+        "chromedriver": "78",
+        "dayjs": "^1.8.16",
+        "eslint": "^5.16.0",
+        "eslint-plugin-prettier": "^3.1.1",
+        "eslint-plugin-vue": "^5.0.0",
+        "geckodriver": "^1.19.0",
+        "less": "^3.10.3",
+        "less-loader": "^5.0.0",
+        "monaco-editor": "^0.18.1",
+        "monaco-editor-webpack-plugin": "^1.7.0",
+        "prettier": "^1.18.2",
+        "sass": "^1.19.0",
+        "sass-loader": "^8.0.0",
+        "typescript": "^3.7.2",
+        "vue-i18n": "^8.15.0",
+        "vue-template-compiler": "^2.6.10"
+    },
+    "eslintConfig": {
+        "root": true,
+        "env": {
+            "node": true
+        },
+        "rules": {
+            "no-multi-spaces": 0,
+            "object-shorthand": 0,
+            "no-console": 0,
+            "no-debugger": 0,
+            "quotes": 0,
+            "quote-props": 0,
+            "vue/script-indent": 0,
+            "no-script-url": 1,
+            "no-var": 1,
+            "new-cap": 0,
+            "no-magic-numbers": 0,
+            "space-before-blocks": [0, "always"],
+            "space-before-function-paren": [0, "always"],
+            "no-param-reassign": 2,
+            "newline-per-chained-call": 0,
+            "vue/html-quotes": 1,
+            "vue/no-multi-spaces": 0,
+            "vue/no-confusing-v-for-v-if": 1,
+            "vue/no-v-html": 1,
+            "vue/no-unused-vars": 0,
+            "no-unused-vars": 0
+        },
+        "parserOptions": {
+            "parser": "@typescript-eslint/parser",
+            "ecmaFeatures": {
+                "legacyDecorators": true
+            }
+        },
+        "extends": [
+            "plugin:vue/essential",
+            "@vue/typescript"
+        ],
+        "globals": {
+            "_": true
+        },
+        "overrides": [
+            {
+                "files": [
+                    "**/__tests__/*.{j,t}s?(x)"
+                ],
+                "env": {
+                    "mocha": true
+                }
+            }
+        ]
+    },
+    "postcss": {
+        "plugins": {
+            "autoprefixer": {}
+        }
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions"
+    ]
+}

@@ -1,0 +1,342 @@
+
+// 图标选择器
+.icon-editor-select {
+    // width: 300px !important;
+    // height: 300px;
+
+    > .ant-select-dropdown-content {
+
+        > .ant-select-dropdown-menu {
+            display: flex;
+            flex-wrap: wrap;
+
+            > .ant-select-dropdown-menu-item {
+                font: normal normal normal 14px/1 "vant-icon";
+                text-align: center;
+                line-height: 46px;
+                width: 45px;
+                height: 45px;
+                padding: 0px;
+                border: 1px solid #F8F8F8;
+                font-size: 24px;
+                color: #AAA;
+                transition: 0.2s;
+                overflow: hidden;
+        
+                &:hover {
+                    background-color: rgba(137, 217, 255, 0.2);
+                    border: 1px solid #EEE;
+                    color: #333;
+                }
+
+                &.ant-select-dropdown-menu-item-selected {
+                    color: #333;
+                    background-color: #EEE;
+                }
+            }
+        }
+
+        
+    }
+
+    
+
+    // .ant-select-dropdown-menu-item-group-list {
+    //     display: flex;
+    //     flex-wrap: wrap;
+
+        
+    // }
+}
+
+.form-control-tools {
+    user-select: none;
+    position: absolute;
+    display: inline-block;
+    cursor: default;
+    visibility: visible;
+    top: 90px;
+    right: -52px;
+    opacity: 1.0;
+    transition: 0.2s;
+
+    &.form-control-tools-hidden {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    > .form-control-tools-split-item {
+        display: block;
+        color: #888;
+        font-weight: normal;
+        background-color: #FFFFFF;
+        line-height: 46px;
+        border-radius: 20px;
+        width: 40px;
+        font-size: 18px;
+        margin-left: 10px;
+        margin-bottom: 10px;
+        transition: 0.2s;
+        box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
+
+        > .form-control-tools-line {
+            left: 8px;
+            height: 1px;
+            width: calc(100% - 16px);
+            border-top: 1px solid #EEE;
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+
+        > .form-control-tools-item {
+            cursor: pointer;
+            display: block;
+            height: 40px;
+            width: 40px;
+            line-height: 46px;
+            border-radius: 50%;
+
+            &:first-child {
+                border-bottom-left-radius: 0px;
+                border-bottom-right-radius: 0px;
+            }
+
+            &:last-child {
+                border-top-left-radius: 0px;
+                border-top-right-radius: 0px;
+            }
+            
+            &:hover {
+                color: #1D87EA;
+                background-color: rgba(137, 217, 255, 0.2);
+            }
+        }
+    }
+
+    > .form-control-tools-item {
+        cursor: pointer;
+        display: block;
+        color: #888;
+        font-weight: normal;
+        background-color: #FFFFFF;
+        line-height: 46px;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        font-size: 18px;
+        margin-left: 10px;
+        margin-bottom: 10px;
+        transition: 0.2s;
+        box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
+        // border: 2px solid rgba(48, 166, 121, 1);
+
+        &:hover {
+            color: #1D87EA;
+            background-color: rgba(137, 217, 255, 0.2);
+        }
+
+        &.form-control-tools-item-danger {
+            color: #f5222d;
+            // background-color: rgba(252, 193, 196, 0.8);
+            // border: 2px solid #f5222d;
+
+            &:hover {
+                color: white;
+                background-color: #f5222d;
+            }
+        }
+
+        &.form-control-tools-item-warning {
+            color: #FAAD14;
+            // background-color: rgba(255, 229, 179, 0.8);
+            // border: 2px solid #f5222d;
+
+            &:hover {
+                color: white;
+                background-color: #FAAD14;
+            }
+        }
+    }
+}
+
+// 拖拽出来的控件
+.form-design-drag-control {
+    user-select: none;
+    cursor: grabbing;
+    position: fixed;
+    display: inline-block;
+    box-sizing: border-box;
+    background-color: $-primary-color;
+    color: white;
+    padding-left: 10px;
+    border-radius: 4px;
+    line-height: 30px;
+    width: 130px;
+    z-index: 100;
+    border: 1px solid #CCC;
+    box-shadow: 0 2px 2px 0 rgba(40, 120, 255, 0.1), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+    opacity: 0.7;
+
+    > i {
+        margin-right: 5px;
+    }
+}
+
+// 预览模式
+.preview-modal {
+
+    .ant-modal-header {
+        display: none;
+    }
+
+    .ant-modal-close {
+        display: none;
+    }
+
+    .ant-modal-content {
+        background-color: transparent;
+        border-radius: 0px;
+        background-image: url(/img/devices/iphonex.png);
+        background-size: 100% 100%;
+        padding-top: 24px;
+        box-shadow: none;
+
+        > .ant-modal-body {
+            padding-bottom: 22px;
+        }
+
+        .form-design-canvas {
+            margin: auto;
+            border-radius: 36px;
+            border: none;
+
+            .form-control {
+                user-select: text;
+
+                &:after {
+                    display: none;
+                }
+            }
+        }
+    }
+}
+
+// 代码编辑器样式
+.CodeMirror {
+
+    span {
+        font-family: 'Operator Mono', 'Source Code Pro', Menlo, Monaco, Courier New, Consolas, monospace;
+    }
+
+    &.cm-s-panda-syntax {
+
+        .CodeMirror-activeline-background {
+            background: rgba(88, 120, 163, 0.2);
+        }
+
+        .CodeMirror-selected {
+            background-color: rgba(137, 217, 255, 0.2);
+        }
+    }
+
+    .CodeMirror-placeholder {
+        color: #999;
+    }
+}
+
+// 代码编辑器校验出错
+.CodeMirror-lint-tooltip {
+    z-index: 10000 !important;
+}
+
+// 页面底部按钮组
+.fixed-bottom {
+    position: relative;
+    display: block;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    overflow: hidden;
+
+    &:before {
+        content: '';
+        display: block;
+        width: 100%;
+        height: 48px;
+    }
+
+    > .fixed-bottom-content {
+        position: absolute;
+        display: flex;
+        top: calc(100% - 50px);
+        width: 100%;
+        height: 50px;
+
+        > button {
+            border-radius: 0px;
+        }
+    }
+}
+
+// label菜单
+.ant-menu {
+
+    .label-menu-item {
+        height: auto;
+        line-height: 40px;
+        padding: 0px 0px;
+
+        > label {
+            display: block;
+            height: 40px;
+            line-height: 40px;
+            padding: 0px 16px;
+        }
+    }
+}
+
+// 去掉折叠面板动画
+.ant-collapse {
+
+    > .ant-collapse-item {
+
+        > .ant-collapse-content {
+            // transition: none !important;
+
+        }
+
+        > .ant-collapse-header {
+            user-select: none;
+
+            .ant-collapse-arrow {
+                
+                svg {
+                    // transition: none !important;
+                }
+            }
+        }
+    }
+}
+
+// Tab页标题禁止选择
+.ant-menu-item,
+.ant-menu-submenu-title,
+.ant-tabs-tab {
+    user-select: none;
+}
+
+// 属性栏显示颜色选择器
+.ant-collapse-content {
+    overflow: visible;
+}
+
+
+.van-cell {
+
+    > .van-cell__value {
+
+        > .van-rate {
+            vertical-align: middle;
+
+        }
+    }
+}

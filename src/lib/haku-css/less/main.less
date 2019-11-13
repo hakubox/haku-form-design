@@ -1,0 +1,27 @@
+// autoprefixer: > 5%; last 10 Chrome versions; not ie 6-8, out: ../css/main.css, relativeUrls: true, sourceMap: true, relativeUrls: true
+
+//1、全局变量/系统样式
+@import "system";
+//2、基础框架
+@import "basic";
+//3、页面/表单控件
+// @import "control";
+//5、页面模块
+// @import "module";
+
+//5、[风格/主题]
+//科技蓝主题（测试）
+// @import "theme_blue";
+//测试主题（测试）
+// @import "theme_x";
+
+@themeName: "";
+
+.themeInit("") {}
+
+body {
+    .themeInit(@themeName);
+
+}
+
+//.buildThemes(@themeName);

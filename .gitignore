@@ -1,0 +1,30 @@
+.DS_Store
+node_modules
+temp
+todolist.todo
+/dist
+
+/tests/e2e/reports/
+selenium-debug.log
+
+cli/appsettings.json
+
+public/assembly
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

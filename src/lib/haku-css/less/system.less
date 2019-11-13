@@ -1,0 +1,221 @@
+// autoprefixer: > 5%; last 10 Chrome versions; not ie 6-8, main: main.less
+
+//页面宽度
+@page-width: 1180px;
+
+//普通圆角
+@border-radius: 5px;
+
+//系统色变量
+
+//图片相对路径
+@imgurl: "/img";
+//标准字体
+@font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+'Segoe UI Emoji', 'Segoe UI Symbol';
+//代码字体
+@font-family-code: Consolas, 'Courier New', 'Microsoft YaHei';
+//图标字体
+@font-family-icon: 'Font Awesome 5 Pro';
+
+//bg
+@page-bg: linear-gradient(to top, #accbee 0%, #e7f0fd 100%);
+
+//主色调：文字、块标准色
+@primary-color: #B01D2D;
+//主色调：背景、失效
+@primary-color-bg: color(~`colorPalette('@{primary-color}', 1) `);
+
+//成功色：标准
+@success-color: #1D87EA;
+//成功色：浅色、边线
+@success-color-bg: color(~`colorPalette('@{success-color}', 1) `);
+
+//警告色：标准
+@warning-color: #FFA726;
+//警告色：浅色、边线
+@warning-color-bg: color(~`colorPalette('@{warning-color}', 1) `);
+
+//错误色：标准
+@error-color: #F4511E;
+//错误色：浅色、边线
+@error-color-bg: color(~`colorPalette('@{error-color}', 1) `);
+
+//灰度：遮罩（白色文字）
+@color-gray-shade: #000000;
+//灰度：正文（白色文字）
+@color-gray-text: #333333;
+//灰度：辅助文字、悬浮状态边线（白色文字）
+@color-gray-assist-text: #999999;
+//灰度：失效文字（白色文字）
+@color-gray-disabled-text: #CCCCCC;
+//灰度：线框（标准色文字）
+@color-gray-border: #DDDDDD;
+//灰度：失效背景、表头背景（标准色文字）
+@color-gray-disabled-bg: #EEEEEE;
+//灰度：大背景（标准色文字）
+@color-gray-bg: #F6F6F6;
+//灰度：表格隔行显示背景（标准色文字）
+@color-gray-bg-even: #FAFAFA;
+
+//链接色：标准（反白文字/链接色文字）
+@color-link: #3498DB;
+//反白色（标准色文字）
+@white: #FFF;
+
+//微小尺寸：按钮（行内）
+@size-xs: 24px;
+//标准尺寸：按钮（行内）
+@size-sm: 30px;
+//中尺寸：按钮（行内）
+@size-md: 40px;
+//大尺寸：按钮（行内）
+@size-lg: 50px;
+
+//基础字号
+@font-size-base: 14px;
+//小号字体
+@font-size-sm: @font-size-base - 2px;
+//大号字体
+@font-size-lg: @font-size-base + 2px;
+
+//圆角：中
+@border-radius-sm : 2px;
+//圆角：大
+@border-radius-base : 4px;
+
+.border-top-radius(@radius) {
+    border-top-right-radius: @radius;
+    border-top-left-radius: @radius;
+}
+.border-right-radius(@radius) {
+    border-bottom-right-radius: @radius;
+    border-top-right-radius: @radius;
+}
+.border-bottom-radius(@radius) {
+    border-bottom-right-radius: @radius;
+    border-bottom-left-radius: @radius;
+}
+.border-left-radius(@radius) {
+    border-bottom-left-radius: @radius;
+    border-top-left-radius: @radius;
+}
+
+.fl { float: left !important; }
+.fr { float: right !important; }
+.fi { float: inherit !important; }
+
+.clear() {
+    &:before,
+    &:after {
+      content: " ";
+      display: table;
+      visibility: hidden;
+    }
+    &:after {
+      clear: both;
+    }
+}
+
+.clear {
+    .clear();
+}
+
+.block {
+    display: block !important;
+}
+.inline-block {
+    display: inline-block !important;
+}
+
+.tal { text-align: left !important; }
+.tar { text-align: right !important; }
+.tac { text-align: center !important; }
+.tai { text-align: inherit !important; }
+
+.vat { vertical-align: top !important; }
+.vatt { vertical-align: text-top !important; }
+.vam { vertical-align: middle !important; }
+.vatb { vertical-align: text-bottom !important; }
+.vab { vertical-align: bottom !important; }
+.vai { vertical-align: inherit !important; }
+.vainit { vertical-align: initial !important; }
+
+.loop( @count )when( @count > 0 ){
+    .pt@{count} { padding-top: ( 1px * @count) !important; }
+    .pb@{count} { padding-bottom: ( 1px * @count) !important; }
+    .pl@{count} { padding-left: ( 1px * @count) !important; }
+    .pr@{count} { padding-right: ( 1px * @count) !important; }
+    .p@{count} { padding: ( 1px * @count) !important; }
+
+    .mt@{count} { margin-top: ( 1px * @count) !important; }
+    .mb@{count} { margin-bottom: ( 1px * @count) !important; }
+    .ml@{count} { margin-left: ( 1px * @count) !important; }
+    .mr@{count} { margin-right: ( 1px * @count) !important; }
+    .m@{count} { margin: ( 1px * @count) !important; }
+
+    .lh@{count} { line-height: ( 1px * @count) !important; min-height: ( 1px * @count); }
+
+    .loop((@count - 5));
+}
+
+.loop(100);
+
+.wauto { width: auto !important; }
+.hauto { height: auto !important; }
+.wfull { width: 100% !important; }
+.hfull { height: 100% !important; }
+.whalf { width: 50% !important; }
+.hhalf { height: 50% !important; }
+
+// .loop2( @count )when( @count > 0 ){
+//     .h@{count} { height: ( 1px * @count) !important; }
+//     .minh@{count} { min-height: ( 1px * @count) !important; }
+//     .maxh@{count} { max-height: ( 1px * @count) !important; }
+//     .w@{count} { width: ( 1px * @count) !important; }
+//     .minw@{count} { min-width: ( 1px * @count) !important; }
+//     .maxw@{count} { max-width: ( 1px * @count) !important; }
+
+//     .loop2((@count - 10));
+// }
+
+// .loop2(500);
+
+//块元素水平居中
+.center-block() {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+//设置元素大小
+.size(@width; @height) {
+    width: @width;
+    height: @height;
+}
+//设置正方形大小
+.square(@size) {
+    .size(@size; @size);
+}
+
+//设置行内控件大小
+.size-xs() {
+    min-height: @size-xs;
+    font-size: @font-size-sm;
+}
+
+.size-sm() {
+    min-height: @size-sm;
+    font-size: @font-size-base;
+}
+
+.size-md() {
+    min-height: @size-md;
+    font-size: @font-size-lg;
+}
+
+//光标：链接
+.pointer {
+    cursor: pointer !important;
+}
