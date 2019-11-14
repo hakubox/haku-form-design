@@ -1,5 +1,5 @@
 import { FormDesign } from '@/@types/form-design';
-import { Enum } from '../../config/enum';
+import { Enum } from '@/config/enum';
 
 
 let formControls: Array<FormDesign.FormControl> = [
@@ -10,7 +10,7 @@ let formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'gj-form-design-control-row',
+            control: 'form-design-control-row',
             attrs: {},
             slot: {},
             defaultAttrs: {}
@@ -55,47 +55,15 @@ let formControls: Array<FormDesign.FormControl> = [
                     { span: 12, offset: 0 },
                     { span: 12, offset: 0 },
                 ],
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json,
+                layout: Enum.PropertyLayout.block,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
+                attrs: { columns: [
+                    { name: 'span', title: '栅格大小', editor: Enum.FormControlPropertyEditor.int, attrs: { max: 24, min: 0 } },
+                    { name: 'offset', title: '位移', editor: Enum.FormControlPropertyEditor.int, attrs: { max: 24, min: 0 } },
+                ], onRemove(value, index, control) { return control.children[index].length == 0; } }
             }
         ]
     }, 
-
-    /**
-     * 宫格子项
-     */
-    // {
-    //     id: '',
-    //     control: {
-    //         control: 'van-grid-item',
-    //         attrs: {},
-    //         slot: {},
-    //         defaultAttrs: {}
-    //     },
-    //     name: 'grid-item',
-    //     title: '宫格子项',
-    //     type: Enum.FormControlType.layout,
-    //     propertys: [
-    //         {
-    //             name: 'text', title: '文字', 
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine 
-    //         }, {
-    //             name: 'icon', title: '图标', 
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.icon 
-    //         }, {
-    //             name: 'dot', title: '小红点', default: false,
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean 
-    //         }, {
-    //             name: 'info', title: '徽标内容', 
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine 
-    //         }, {
-    //             name: 'url', title: '跳转链接', 
-    //             group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.singerLine 
-    //         }, {
-    //             name: 'replace', title: '跳转替换历史', 
-    //             group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean 
-    //         }
-    //     ]
-    // }, 
 
     /**
      * 标签页
@@ -103,7 +71,7 @@ let formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'gj-form-design-control-tabs',
+            control: 'form-design-control-tabs',
             attrs: {},
             slot: {},
             defaultAttrs: {}
@@ -143,9 +111,6 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'animated', title: '开启转场动画', default: false,
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'border', title: '显示标签栏外框', default: true,
-                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean
-            }, {
                 name: 'ellipsis', title: '省略过长标签文字', default: true,
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean
             }, {
@@ -169,44 +134,15 @@ let formControls: Array<FormDesign.FormControl> = [
                     { title: '标签2', icon: '' },
                     { title: '标签3', icon: '' },
                 ],
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json,
+                layout: Enum.PropertyLayout.block,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
+                attrs: { rowKey: 'title', columns: [
+                    { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
+                    { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                ], onRemove(value, index, control) { return control.children[index].length == 0; } }
             }
         ]
     }, 
-
-    /**
-     * 标签页-子页
-     */
-    // {
-    //     id: '',
-    //     control: {
-    //         control: 'van-tab',
-    //         attrs: {},
-    //         slot: {},
-    //         defaultAttrs: {}
-    //     },
-    //     name: 'tab-item',
-    //     title: '标签页子项',
-    //     type: Enum.FormControlType.layout,
-    //     propertys: [
-    //         {
-    //             name: 'title', title: '子页标题', 
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
-    //         }, {
-    //             name: 'disabled', title: '是否禁用', default: false, 
-    //             group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
-    //         }, {
-    //             name: 'url', title: '跳转链接', 
-    //             group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.singerLine
-    //         }, {
-    //             name: 'replace', title: '替换历史页面', default: false,
-    //             group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
-    //         }, {
-    //             name: 'name', title: '标签名称', default: '', 
-    //             group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-    //         }
-    //     ]
-    // }, 
 
     /**
      * 折叠面板
@@ -214,10 +150,12 @@ let formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'gj-form-design-control-collapse',
+            control: 'form-design-control-collapse',
             attrs: {},
             slot: {},
-            defaultAttrs: {}
+            defaultAttrs: {
+                value: [ 0, 1, 2 ]
+            }
         },
         name: 'collapse',
         title: '折叠面板',
@@ -227,10 +165,14 @@ let formControls: Array<FormDesign.FormControl> = [
         propertys: [
             {
                 name: 'accordion', title: '手风琴模式', default: false, 
-                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean 
-            }, {
-                name: 'border', title: '外边框', default: true, 
-                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean 
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean,
+                change(prop, propMap, control, value, refs) {
+                    if (!value) {
+                        control[0].control.attrs.value = [
+                            control[0].control.attrs['value']
+                        ];
+                    }
+                }
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -240,7 +182,13 @@ let formControls: Array<FormDesign.FormControl> = [
                     { title: '标题2', icon: '', rightIcon: 'arrow' },
                     { title: '标题3', icon: '', rightIcon: 'arrow' },
                 ],
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json,
+                layout: Enum.PropertyLayout.block,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
+                attrs: { rowKey: 'title', columns: [
+                    { name: 'icon', width: '25%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
+                    { name: 'rightIcon', width: '25%', title: '右侧图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
+                    { name: 'title', width: '50%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                ], onRemove(value, index, control) { return control.children[index].length == 0; } }
             }
         ]
     }, 
@@ -277,9 +225,6 @@ let formControls: Array<FormDesign.FormControl> = [
     //             name: 'label', title: '描述信息', 
     //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.multiLine 
     //         }, {
-    //             name: 'border', title: '内边框', default: true,
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean 
-    //         }, {
     //             name: 'is-link', title: '显示右侧箭头', default: true,
     //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean 
     //         }, {
@@ -307,12 +252,12 @@ let formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'gj-form-design-control-cell-group',
+            control: 'form-design-control-cell-group',
             attrs: {},
             slot: {
                 default: [
                     {
-                        control: 'gj-form-design-blank-control',
+                        control: 'form-design-blank-control',
                         attrs: {},
                         slot: {}
                     }
@@ -476,9 +421,6 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'title', title: '左侧标题', default: '标签',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
-                name: 'border', title: '是否显示外边框', default: false,
-                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean
-            }, {
                 name: 'icon', title: '左侧图标', 
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.icon
             }, {
@@ -630,7 +572,7 @@ let formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'gj-form-design-control-radio-group', //van-radio-group
+            control: 'form-design-control-radio-group', //van-radio-group
             attrs: {},
             slot: {},
             defaultAttrs: {
@@ -665,7 +607,13 @@ let formControls: Array<FormDesign.FormControl> = [
                 }
             }, {
                 name: 'options', title: '单选框列表项', default: [ { id: '1', title: '单选框 1', icon: '' }, { id: '2', title: '单选框 2', icon: '' } ],
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json
+                layout: Enum.PropertyLayout.block,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
+                attrs: { rowKey: 'title', columns: [
+                    { name: 'id', width: '30%', title: 'Id', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                    { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
+                    { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                ] }
             }, {
                 name: 'data-source-type', title: '数据源类型', default: 'basic-data', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.dataSourceType,
@@ -694,7 +642,7 @@ let formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'van-checkbox-group',
+            control: 'form-design-control-checkbox-group',
             attrs: {},
             slot: {},
             defaultAttrs: {
@@ -719,6 +667,41 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'required', title: '是否必填', default: false,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+            }, {
+                name: 'use-datasouce', title: '使用数据源', default: false,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.boolean,
+                change(prop, propMap, control, value, refs) {
+                    propMap['data-source-type'].visible = value;
+                    propMap['view-data'].visible = value;
+                    propMap['basic-data'].visible = false;
+                    propMap['user'].visible = false;
+                    propMap['group'].visible = false;
+                    propMap['options'].visible = !value;
+                }
+            }, {
+                name: 'options', title: '单选框列表项', default: [ { id: '1', title: '复选框 1', icon: '' }, { id: '2', title: '复选框 2', icon: '' } ],
+                layout: Enum.PropertyLayout.block,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
+                attrs: { rowKey: 'title', columns: [
+                    { name: 'id', width: '30%', title: 'Id', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                    { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
+                    { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                ] }
+            }, {
+                name: 'data-source-type', title: '数据源类型', default: 'basic-data', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.dataSourceType,
+                change(prop, propMap, control, value, refs) {
+                    propMap['view-data'].visible = value == 'view-data';
+                    propMap['basic-data'].visible = value == 'basic-data';
+                    propMap['user'].visible = value == 'user';
+                    propMap['group'].visible = value == 'group';
+                }
+            }, {
+                name: 'basic-data', title: '可选基础数据', require: true, leaf: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.basicData
+            }, {
+                name: 'view-data', title: '可选视图数据', visible: false, require: true, leaf: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.viewData
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -792,9 +775,6 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'title', title: '左侧标题',  default: '标签',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
-            }, {
-                name: 'border', title: '内边框',  default: true,
-                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean
             }, {
                 name: 'checked-color', title: '选中框颜色',  default: '#1989fa',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.color
@@ -1167,9 +1147,6 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'title', title: '左侧标题', default: '倒计时',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
-                name: 'border', title: '是否显示外边框', default: false,
-                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean
-            }, {
                 name: 'icon', title: '左侧图标', 
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.icon
             }, {
@@ -1230,9 +1207,6 @@ let formControls: Array<FormDesign.FormControl> = [
             {
                 name: 'title', title: '左侧标题', default: '评分',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
-            }, {
-                name: 'border', title: '是否显示外边框', default: false,
-                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean
             }, {
                 name: 'icon', title: '左侧图标', 
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.icon,
@@ -1315,7 +1289,7 @@ let formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'gj-form-design-control-grid',
+            control: 'form-design-control-grid',
             attrs: {},
             slot: {},
             defaultAttrs: {}
@@ -1331,9 +1305,6 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'gutter', title: '格子间距(px)', default: 0, 
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.int 
-            }, {
-                name: 'border', title: '显示边框', default: true, 
-                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean 
             }, {
                 name: 'center', title: '居中显示', default: true, 
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean 

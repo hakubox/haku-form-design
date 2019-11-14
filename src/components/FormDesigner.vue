@@ -62,10 +62,10 @@
 
             <!-- 画布 -->
             <div class="form-design-body-canvas">
-                <div class="form-design-body-canvas-page-list">
-                    <div class="form-design-body-canvas-page-item" @mousedown="changeSelectedFormControl([])">
+                <div class="form-design-body-canvas-page-list" @mousedown="changeSelectedFormControl([])">
+                    <div class="form-design-body-canvas-page-item">
                         <h3>{{formConfig.canvasTitle}}</h3>
-                        <gj-form-design-canvas 
+                        <form-design-canvas 
                             ref="controlCanvas"
                             :preview="false"
                             :panel="panel"
@@ -115,13 +115,14 @@
                         <a-collapse :activeKey="['p0','p1','p2','p3']" :bordered="false">
                             <a-collapse-panel v-for="(propGroup, index) in currentSelectedControlPropertyGroups" :key="'p' + index" :header="propGroup.title">
                                 <template v-for="prop in propGroup.propertys">
-                                    <label class="form-design-body-property-item" v-if="prop.visible !== false" :key="prop.name">
+                                    <component :is="prop.layout == 'block' ? 'div' : 'label'" class="form-design-body-property-item" :class="{ 'form-design-body-property-item-block': prop.layout == 'block' }" v-if="prop.visible !== false" :key="prop.name">
                                         <span class="form-design-body-property-item-label" :class="{ require: prop.require, leaf: prop.leaf }">{{prop.title}}</span>
                                         <div class="form-design-body-property-item-value">
                                             <template v-for="(control, index2) in propertyEditors[prop.editor].control">
                                                     <component
                                                         :key="index2"
                                                         :ref="control.id"
+                                                        :control="currentSelectedControl[0]"
                                                         v-bind="Object.assign({}, prop.attrs, control.attrs)" 
                                                         v-model="currentSelectedControl[0].control.attrs[prop.name]" 
                                                         @change="propChangeListener($event, prop, currentSelectedControlPropertyMap, currentSelectedControl)"
@@ -156,12 +157,15 @@
                                             </template>
                                             
                                         </div>
-                                    </label>
+                                    </component>
                                 </template>
                             </a-collapse-panel>
                         </a-collapse>
                     </a-tab-pane>
                     <a-tab-pane tab="事件" key="event">
+                        <a-table row-key="title" :pagination="false" size="small" :columns="[{title:'标题',dataIndex:'title'},{title:'图标',dataIndex:'icon'}]" :dataSource="[{title:'标题A',icon:'icon-star'}, {title:'标题B',icon:'icon-user'}]">
+                            
+                        </a-table>
                     </a-tab-pane>
                     <a-tab-pane tab="表单配置" key="config">
                         <a-collapse :activeKey="['c0','c1','c2','c3']" :bordered="false">
@@ -256,8 +260,8 @@
 
         <!-- JSON -->
         <a-drawer width="800px" title="导出JSON" :mask-closable="false" @close="jsonEditorVisible = false" :visible="jsonEditorVisible">
-            <gj-code-editor class="json-editor page-config-editor" language="json" ref="jsonEditor" v-model="editorJson">
-            </gj-code-editor>
+            <code-editor class="json-editor page-config-editor" language="json" ref="jsonEditor" v-model="editorJson">
+            </code-editor>
             <div class="bottom-btn-list">
                 <a-button @click="editorJson = generateJSON()" type="link">重新生成</a-button>
                 <a-button @click="exportJSONFile()" type="primary">导出JSON文件</a-button>
@@ -266,7 +270,7 @@
 
         <!-- 预览界面 -->
         <a-modal wrap-class-name="preview-modal" :footer="null" :centered="true" :width="devices[formConfig.deviceId].width + 58" :height="devices[formConfig.deviceId].height" title="预览界面" @cancel="previewVisible = false" :visible="previewVisible">
-            <gj-form-design-canvas 
+            <form-design-canvas 
                 ref="controlCanvas"
                 :preview="true"
                 :panel="panel"
@@ -287,12 +291,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Provide } from 'vue-property-decorator';
 import { FormDesign } from '@/@types/form-design.d';
-import { initPropertyEditors } from '@/lib/form-design/propertyEditor';
+import { initPropertyEditors } from '@/propertyEditor';
 import { Enum } from '@/config/enum';
-import { initControls } from '@/lib/form-design/formControls';
-import { initFormControlGroups } from '@/lib/form-design/formControlGroups';
+import { initControls } from '@/formControls';
+import { initFormControlGroups } from '@/formControlGroups';
 import { cloneForce } from '@/lib/clone/index';
 import { base64 } from '@/lib/base64/base64';
 
@@ -317,7 +321,7 @@ let _controlGroups: Array<FormDesign.FormControlGroup> = initFormControlGroups()
         }
     }
 })
-export default class GjFormDesign extends Vue {
+export default class FormDesigner extends Vue {
 
     /** JSON编辑器弹出框是否显示 */
     jsonEditorVisible: boolean = false;
@@ -424,7 +428,7 @@ export default class GjFormDesign extends Vue {
     }));
 
     /** 属性编辑器库 */
-    propertyEditors = initPropertyEditors();
+    @Provide() propertyEditors: Record<string, FormDesign.PropertyEditor> = initPropertyEditors();
 
     /** 分组画布组件列表 */
     get controlListByGroup() {
@@ -436,6 +440,7 @@ export default class GjFormDesign extends Vue {
 
     /** 切换当前选择的控件 */
     changeSelectedFormControl(formControlList) {
+        console.log(formControlList);
         this.currentSelectedControl = formControlList;
         if (formControlList && formControlList.length) {
             this.currentSelectedFirstControlId = formControlList[0].id;
@@ -1126,7 +1131,6 @@ export default class Task_01 extends Vue {
                         > .form-design-canvas {
                             position: relative;
                             box-shadow: 0 2px 2px 0 rgba(40, 120, 255, 0.1), 0 0 2px 0 rgba(0, 0, 0, 0.12);
-                            margin-bottom: 40px;
                         }
                     }
                 }
@@ -1197,6 +1201,20 @@ export default class Task_01 extends Vue {
         white-space: nowrap;
         line-height: 32px;
         margin-bottom: 5px;
+
+        &.form-design-body-property-item-block {
+            display: block;
+            margin-bottom: 10px;
+            
+            > .form-design-body-property-item-label {
+                display: block;
+                width: 100%;
+            }
+
+            > .form-design-body-property-item-value {
+                margin-left: 0px;
+            }
+        }
 
         &:last-child {
             margin-bottom: 0px;

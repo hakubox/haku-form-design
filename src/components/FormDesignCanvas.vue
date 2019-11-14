@@ -3,14 +3,15 @@
         :class="{ 'preview': preview }"
         :style="{ 
             width: devices[formConfig.deviceId].width + 'px', 
-            'min-height': devices[formConfig.deviceId].height + 'px' 
+            'min-height': devices[formConfig.deviceId].height + 'px',
+            height: preview ? devices[formConfig.deviceId].height + 'px' : 'auto'
         }"
         @scroll="refresh">
         <van-nav-bar :title="formConfig.formTitle" left-arrow />
 
         <div ref="form-design-canvas-mainpanel" class="form-design-canvas-mainpanel">
 
-            <gj-form-design-control v-for="(control, index) in panel.children" 
+            <form-design-control v-for="(control, index) in panel.children" 
                 :control-id="control.id"
                 :ref="control.id"
                 :class="{
@@ -53,7 +54,7 @@ Vue.use(Toast);
     components: {
     }
 })
-export default class GjFormDesignCanvas extends Vue {
+export default class FormDesignCanvas extends Vue {
 
     /** 是否为预览模式 */
     @Prop({ default: true }) preview!: boolean;
@@ -193,6 +194,7 @@ export default class GjFormDesignCanvas extends Vue {
         > .form-design-canvas-mainpanel {
             flex-grow: 1;
             flex-shrink: 1;
+            overflow-y: auto;
         }
     }
 

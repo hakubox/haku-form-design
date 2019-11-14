@@ -4,14 +4,15 @@
     >
         <van-tab
             v-for="(item, index) in control.attrs.options" 
+            :key="index"
             :title="item.title"
             :name="index"
         >
             <div slot="title">
-                <van-icon :name="item.icon" />{{item.title}}
+                <van-icon :name="item.icon" />&nbsp; {{item.title}}
             </div>
             <slot :name="'child' + index">
-                <gj-form-design-blank-control />
+                <form-design-blank-control />
             </slot>
         </van-tab>
     </van-tabs>
@@ -25,7 +26,7 @@ import { get, post } from '@/tools/common';
     components: {
     }
 })
-export default class GjFormDesignControlTabs extends Vue {
+export default class FormDesignControlTabs extends Vue {
     @Prop({ type: Object }) control: any;
     @Prop({ type: String }) controlId!: string;
     @Prop({ default: 0 }) value!: number;

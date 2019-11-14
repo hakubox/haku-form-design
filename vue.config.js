@@ -67,8 +67,7 @@ module.exports = {
             sass: {
                 prependData: `@import "~@/assets/scss/variables.scss";`
             }
-        },
-        modules: true
+        }
     },
 
     pwa: {

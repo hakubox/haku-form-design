@@ -37,6 +37,14 @@ export namespace Enum {
         function = '函数',
     }
 
+    /** 属性布局方式 */
+    export enum PropertyLayout {
+        /** 行内布局（默认） */
+        inline = 'inline',
+        /** 整块布局 */
+        block = 'block'
+    }
+
     /** 属性编辑器 */
     export enum FormControlPropertyEditor {
         /** 任意值 */
@@ -70,7 +78,9 @@ export namespace Enum {
         /** 视图类型 */
         viewData = 'view-data',
         /** 函数类型 */
-        function = 'function'
+        function = 'function',
+        /** 对象列表类型 */
+        modelList = 'model-list'
     }
 
     /** 表单区域中的控件堆叠方向 */

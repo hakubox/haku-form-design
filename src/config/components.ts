@@ -35,7 +35,8 @@ import {
     Collapse,
     Spin,
     Avatar,
-    Menu
+    Menu,
+    TreeSelect
 } from 'ant-design-vue';
 
 import InputSearch from 'ant-design-vue/lib/input';
@@ -85,6 +86,7 @@ Vue.use(Card);
 Vue.use(Spin);
 Vue.use(Avatar);
 Vue.use(Menu);
+Vue.use(TreeSelect);
 
 Vue.component(InputSearch.name, InputSearch);
 Vue.component(Empty.name, Empty);

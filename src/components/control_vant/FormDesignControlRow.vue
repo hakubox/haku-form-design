@@ -1,8 +1,13 @@
 <template lang="html">
     <van-row v-bind="control.attrs">
-        <van-col v-for="(item, index) in control.attrs.options" :span="item.span" :offset="item.offset" icon="photo-o" text="文字">
+        <van-col 
+            v-for="(item, index) in control.attrs.options"
+            :key="index" 
+            :span="item.span"
+            :offset="item.offset"
+        >
             <slot :name="'child' + index">
-                <gj-form-design-blank-control />
+                <form-design-blank-control />
             </slot>
         </van-col>
     </van-row>
@@ -16,7 +21,7 @@ import { get, post } from '@/tools/common';
   components: {
   }
 })
-export default class GjFormDesignControlRow extends Vue {
+export default class FormDesignControlRow extends Vue {
     @Prop({ type: Object }) control!: any;
     @Prop({ type: String }) value!: string;
     @Prop({ type: String }) controlId!: string;

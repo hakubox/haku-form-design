@@ -77,7 +77,7 @@
             "no-magic-numbers": 0,
             "space-before-blocks": [0, "always"],
             "space-before-function-paren": [0, "always"],
-            "no-param-reassign": 2,
+            "no-param-reassign": 0,
             "newline-per-chained-call": 0,
             "vue/html-quotes": 1,
             "vue/no-multi-spaces": 0,

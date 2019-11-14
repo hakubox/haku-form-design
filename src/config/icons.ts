@@ -57,6 +57,7 @@ export { default as InfoOutline } from '@ant-design/icons/lib/outline/InfoOutlin
 export { default as CopyOutline } from '@ant-design/icons/lib/outline/CopyOutline';
 export { default as AreaChartOutline } from '@ant-design/icons/lib/outline/AreaChartOutline';
 export { default as PieChartOutline } from '@ant-design/icons/lib/outline/PieChartOutline';
+export { default as EllipsisOutline } from '@ant-design/icons/lib/outline/EllipsisOutline';
 
 
 

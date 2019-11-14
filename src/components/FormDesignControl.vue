@@ -6,7 +6,7 @@
             :is="control.control.control" 
         >
             <template v-for="(controls, slotIndex) in children" #[`child${slotIndex}`]>
-                <gj-form-design-control
+                <form-design-control
                     v-for="(control, index) in controls"
                     :control-id="control.id"
                     :ref="control.id"
@@ -22,10 +22,10 @@
                     :control="control"
                     :key="index"
                 >
-                </gj-form-design-control>
+                </form-design-control>
             </template>
             <template v-for="slot in Object.keys(control.control.slot)" #[slot]>
-                <div>
+                <div :key="slot">
                     <component 
                         v-for="detailControl in control.control.slot[slot]" 
                         :key="slot + detailControl.control.name"
@@ -64,7 +64,7 @@ import { get, post } from '@/tools/common';
   components: {
   }
 })
-export default class GjFormDesignControl extends Vue {
+export default class FormDesignControl extends Vue {
     @Prop({ type: String }) controlId!: string;
 
     @Prop({ }) control!: any;

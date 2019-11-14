@@ -1,46 +1,46 @@
 <template lang="html">
-	<div class="gj-color-picker" :class="`gj-color-picker-${size}${isShowPicker ? ' active' : ''}`" @mousedown.stop="extendPicker">
-        <input class="gj-color-picker-input" ref="colorInput" type="text" :value="value" @change="changeColor($event)">
-        <div class="gj-color-picker-color-box">
-            <div class="gj-color-picker-color-value" :style="{ 'background-color': value }"></div>
+	<div class="color-picker" :class="`color-picker-${size}${isShowPicker ? ' active' : ''}`" @mousedown.stop="extendPicker">
+        <input class="color-picker-input" ref="colorInput" type="text" :value="value" @change="changeColor($event)">
+        <div class="color-picker-color-box">
+            <div class="color-picker-color-value" :style="{ 'background-color': value }"></div>
         </div>
         
-        <div class="gj-color-picker-dropdown" ref="colorPicker" :class="{ 'gj-color-picker-dropdown-show': showPicker, 'gj-color-picker-dropdown-top': showPickerTop }" @mousedown.stop>
-            <div class="gj-color-picker-disk" ref="colorPickerDisk" :style="{ 'background-color': diskBackGround }" @mousedown="handleStartDrag">
-                <div class="gj-color-picker-disk-point" :style="{ transform: `translate(${cursorLeft}px, ${cursorTop}px)` }">
+        <div class="color-picker-dropdown" ref="colorPicker" :class="{ 'color-picker-dropdown-show': showPicker, 'color-picker-dropdown-top': showPickerTop }" @mousedown.stop>
+            <div class="color-picker-disk" ref="colorPickerDisk" :style="{ 'background-color': diskBackGround }" @mousedown="handleStartDrag">
+                <div class="color-picker-disk-point" :style="{ transform: `translate(${cursorLeft}px, ${cursorTop}px)` }">
                 
                 </div>
             </div>
 
-            <div class="gj-color-picker-color">
-                <div class="gj-color-picker-oldcolor" :style="{ 'background': oldValue }"></div>
-                <div class="gj-color-picker-newcolor" :style="{ 'background': newValue }"></div>
+            <div class="color-picker-color">
+                <div class="color-picker-oldcolor" :style="{ 'background': oldValue }"></div>
+                <div class="color-picker-newcolor" :style="{ 'background': newValue }"></div>
             </div>
 
             <!-- 色环值 -->
-            <gj-color-picker-slider v-model="hue" :max="360" class="gj-color-picker-slider-disk" :slider-style="{ 'background': 'linear-gradient(90deg,red 0,#ff0 17%,#0f0 33%,#0ff 50%,#00f 67%,#f0f 83%,red)' }" />
+            <color-picker-slider v-model="hue" :max="360" class="color-picker-slider-disk" :slider-style="{ 'background': 'linear-gradient(90deg,red 0,#ff0 17%,#0f0 33%,#0ff 50%,#00f 67%,#f0f 83%,red)' }" />
             <!-- 透明度 -->
-            <gj-color-picker-slider v-model="alpha" :max="100" class="gj-color-picker-slider-alpha" :slider-style="{ 'background': `linear-gradient(90deg,${setAlpha(0)} 0%,${setAlpha(1)} 100%)` }" />
+            <color-picker-slider v-model="alpha" :max="100" class="color-picker-slider-alpha" :slider-style="{ 'background': `linear-gradient(90deg,${setAlpha(0)} 0%,${setAlpha(1)} 100%)` }" />
 
             <hr />
 
-            <div class="gj-color-picker-history">
-                <div class="gj-color-picker-history-item" v-for="item in history">
-                    <div class="gj-color-picker-history-item-color" :title="item" :style="{ background: item }" @click="selectHistoryColor(item)"></div>
+            <div class="color-picker-history">
+                <div class="color-picker-history-item" v-for="item in history" :key="item.id">
+                    <div class="color-picker-history-item-color" :title="item" :style="{ background: item }" @click="selectHistoryColor(item)"></div>
                 </div>
             </div>
 
             <hr style="margin-top: 2px;" v-show="history.length" />
 
-            <div class="gj-color-picker-footer">
-                <div class="gj-color-picker-footer-text">
+            <div class="color-picker-footer">
+                <div class="color-picker-footer-text">
                     <input type="text" v-model="newValue">
-                    <div class="gj-color-picker-footer-text-type">{{colorType}}</div>
-                    <i v-if="canChangeColorType" title="切换类型" class="gj-color-picker-footer-text-changetype fal fa-exchange" @click="changeColorType"></i>
+                    <div class="color-picker-footer-text-type">{{colorType}}</div>
+                    <i v-if="canChangeColorType" title="切换类型" class="color-picker-footer-text-changetype fal fa-exchange" @click="changeColorType"></i>
                 </div>
-                <div class="gj-color-picker-footer-tools">
-                    <button class="gj-color-picker-footer-tools-clear">清空</button>
-                    <button class="gj-color-picker-footer-tools-confirm" @click="comfirm">确定</button>
+                <div class="color-picker-footer-tools">
+                    <button class="color-picker-footer-tools-clear">清空</button>
+                    <button class="color-picker-footer-tools-confirm" @click="comfirm">确定</button>
                 </div>
             </div>
 
@@ -57,7 +57,7 @@ import Color from '@/lib/color/Color';
   components: {
   }
 })
-export default class GjColorPicker extends Vue {
+export default class ColorPicker extends Vue {
 	/** 当前颜色 */
     @Prop({
         default: ''
@@ -299,7 +299,7 @@ export default class GjColorPicker extends Vue {
 
 <style lang="scss" scoped>
     // 颜色选择器
-    .gj-color-picker {
+    .color-picker {
         position: relative;
         display: inline-block;
         width: 100%;
@@ -309,21 +309,21 @@ export default class GjColorPicker extends Vue {
         font-size: 14px;
         line-height: 26px;
 
-        &.gj-color-picker-large {
+        &.color-picker-large {
 
         }
-        &.gj-color-picker-default {
+        &.color-picker-default {
             
         }
-        &.gj-color-picker-small {
+        &.color-picker-small {
             line-height: 20px;
 
-            > .gj-color-picker-color-box {
+            > .color-picker-color-box {
                 top: 3px;
             }
         }
 
-        > .gj-color-picker-input {
+        > .color-picker-input {
             border: none;
             width: 100%;
             border-radius: 4px;
@@ -331,7 +331,7 @@ export default class GjColorPicker extends Vue {
             padding-left: 10px;
         }
 
-        > .gj-color-picker-color-box {
+        > .color-picker-color-box {
             position: absolute;
             top: 6px;
             right: 6px;
@@ -340,7 +340,7 @@ export default class GjColorPicker extends Vue {
             height: 16px;
             background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);
 
-            > .gj-color-picker-color-value {
+            > .color-picker-color-value {
                 position: absolute;
                 top: 0px;
                 left: 0px;
@@ -352,7 +352,7 @@ export default class GjColorPicker extends Vue {
         }
 
         // 下拉框
-        > .gj-color-picker-dropdown {
+        > .color-picker-dropdown {
             position: absolute;
             z-index: 3;
             background-color: white;
@@ -368,18 +368,18 @@ export default class GjColorPicker extends Vue {
             visibility: hidden;
             will-change: transform, opacity;
 
-            &.gj-color-picker-dropdown-show {
+            &.color-picker-dropdown-show {
                 visibility: visible;
                 transform: translateY(0px);
                 opacity: 1;
             }
 
-            &.gj-color-picker-dropdown-top {
+            &.color-picker-dropdown-top {
                 top: initial;
                 bottom: calc(100% + 4px);
                 transform: translateY(-20px);
 
-                &.gj-color-picker-dropdown-show {
+                &.color-picker-dropdown-show {
                     visibility: visible;
                     transform: translateY(0px);
                     opacity: 1;
@@ -389,7 +389,7 @@ export default class GjColorPicker extends Vue {
             > hr {
             }
 
-            > .gj-color-picker-color {
+            > .color-picker-color {
                 display: flex;
                 flex-direction: column;
                 width: 50px;
@@ -400,7 +400,7 @@ export default class GjColorPicker extends Vue {
                 border: 1px solid #E0E0E0;
                 background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);
             
-                > .gj-color-picker-oldcolor {
+                > .color-picker-oldcolor {
                     position: relative;
                     flex-grow: 1;
                     border-top-left-radius: 4px;
@@ -415,7 +415,7 @@ export default class GjColorPicker extends Vue {
                         font-size: 12px;
                     }
                 }
-                > .gj-color-picker-newcolor {
+                > .color-picker-newcolor {
                     position: relative;
                     flex-grow: 1;
                     border-bottom-left-radius: 4px;
@@ -432,13 +432,13 @@ export default class GjColorPicker extends Vue {
                 }
             }
 
-            > .gj-color-picker-disk {
+            > .color-picker-disk {
                 user-select: none;
                 position: relative;
                 width: 290px;
                 height: 190px;
 
-                > .gj-color-picker-disk-point {
+                > .color-picker-disk-point {
                     position: absolute;
                     cursor: pointer;
                     top: -6px;
@@ -471,14 +471,14 @@ export default class GjColorPicker extends Vue {
                 }
             }
 
-            > .gj-color-picker-slider-disk {
+            > .color-picker-slider-disk {
                 position: absolute;
                 top: 213px;
                 left: 100px;
                 width: calc(100% - 115px);
             }
 
-            > .gj-color-picker-slider-alpha {
+            > .color-picker-slider-alpha {
                 position: absolute;
                 top: 238px;
                 left: 100px;
@@ -486,11 +486,11 @@ export default class GjColorPicker extends Vue {
             }
 
             // 历史列表
-            > .gj-color-picker-history {
+            > .color-picker-history {
                 display: flex;
                 flex-wrap: wrap;
 
-                > .gj-color-picker-history-item {
+                > .color-picker-history-item {
                     position: relative;
                     cursor: pointer;
                     display: inline-block;
@@ -500,7 +500,7 @@ export default class GjColorPicker extends Vue {
                     border-radius: 3px;
                     background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAIAAADZF8uwAAAAGUlEQVQYV2M4gwH+YwCGIasIUwhT25BVBADtzYNYrHvv4gAAAABJRU5ErkJggg==);
 
-                    > .gj-color-picker-history-item-color {
+                    > .color-picker-history-item-color {
                         position: absolute;
                         top: 0px;
                         left: 0px;
@@ -513,11 +513,11 @@ export default class GjColorPicker extends Vue {
             }
 
             // 选择器底部
-            > .gj-color-picker-footer {
+            > .color-picker-footer {
                 display: flex;
                 width: 290px;
 
-                > .gj-color-picker-footer-text {
+                > .color-picker-footer-text {
                     flex-grow: 1;
                     display: flex;
                     width: 100%;
@@ -536,7 +536,7 @@ export default class GjColorPicker extends Vue {
                         width: 100%;
                     }
 
-                    > .gj-color-picker-footer-text-type {
+                    > .color-picker-footer-text-type {
                         display: inline-block;
                         cursor: default;
                         width: 30px;
@@ -546,7 +546,7 @@ export default class GjColorPicker extends Vue {
                         color: #AAA;
                     }
 
-                    > .gj-color-picker-footer-text-changetype {
+                    > .color-picker-footer-text-changetype {
                         display: inline-block;
                         cursor: pointer;
                         width: 26px;
@@ -565,11 +565,11 @@ export default class GjColorPicker extends Vue {
                     }
                 }
 
-                > .gj-color-picker-footer-tools {
+                > .color-picker-footer-tools {
                     text-align: right;
                     flex-shrink: 0;
 
-                    > .gj-color-picker-footer-tools-confirm {
+                    > .color-picker-footer-tools-confirm {
                         border: 1px solid #d9d9d9;
                         background-color: white;
                         border-radius: 4px;
@@ -586,7 +586,7 @@ export default class GjColorPicker extends Vue {
                         }
                     }
 
-                    > .gj-color-picker-footer-tools-clear {
+                    > .color-picker-footer-tools-clear {
                         border: none;
                         background-color: white;
                         border-radius: 4px;

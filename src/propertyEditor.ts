@@ -1,6 +1,6 @@
 import { FormDesign } from '@/@types/form-design';
-import { Enum } from '../../config/enum';
-import { icons } from './iconEditor';
+import { Enum } from '@/config/enum';
+import { icons } from '@/iconEditor';
 
 let propertyEditors: Array<FormDesign.PropertyEditor> = [
     {
@@ -40,7 +40,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
         name: 'color',
         control: [
             {
-                control: 'gj-color-picker',
+                control: 'color-picker',
                 slot: {},
                 attrs: {
                     style: { width: '100%' },
@@ -306,6 +306,17 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
             }
         ],
         editor: Enum.FormControlPropertyEditor.json
+    }, {
+        name: 'model-list',
+        control: [
+            {
+                control: 'model-list-editor',
+                slot: {},
+                attrs: {
+                }
+            }
+        ],
+        editor: Enum.FormControlPropertyEditor.modelList
     }, 
 ]
 

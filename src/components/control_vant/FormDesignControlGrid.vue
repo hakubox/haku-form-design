@@ -1,6 +1,10 @@
 <template lang="html">
     <van-grid v-bind="control.attrs">
-        <van-grid-item v-for="item in control.attrs.options" :icon="item.icon" :text="item.text" />
+        <van-grid-item 
+            v-for="(item, index) in control.attrs.options"
+            :key="index"
+            :icon="item.icon" 
+            :text="item.text" />
     </van-grid>
 </template>
 
@@ -12,7 +16,7 @@ import { get, post } from '@/tools/common';
   components: {
   }
 })
-export default class GjFormDesignControlGrid extends Vue {
+export default class FormDesignControlGrid extends Vue {
     @Prop({ type: Object }) control!: any;
     @Prop({ type: String }) value!: string;
     @Prop({ type: String }) controlId!: string;

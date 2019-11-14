@@ -12,7 +12,7 @@ import { get, post } from '@/tools/common';
   components: {
   }
 })
-export default class GjFormDesignBlankControl extends Vue {
+export default class FormDesignBlankControl extends Vue {
     @Prop({ type: String, default: '暂无子组件' }) title!: string;
 }
 </script>

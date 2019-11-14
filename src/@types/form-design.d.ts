@@ -134,6 +134,8 @@ export namespace FormDesign {
         
         /** 附加属性 */
         attrs?: Record<string, any>;
+        /** 布局方式，默认为行内布局 */
+        layout?: Enum.PropertyLayout;
     }
 
     /** 基础组件 */

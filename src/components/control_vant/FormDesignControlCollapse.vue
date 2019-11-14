@@ -1,14 +1,15 @@
 <template lang="html">
-    <van-collapse v-bind="control.attrs" v-model="extendIndexs">
+    <van-collapse v-bind="control.attrs" v-model="control.attrs.value">
         <van-collapse-item 
             v-for="(item, index) in control.attrs.options" 
+            :key="index"
             :name="index"
             :title="item.title" 
             :icon="item.icon"
             :right-icon="item.rightIcon"
         >
             <slot :name="'child' + index">
-                <gj-form-design-blank-control />
+                <form-design-blank-control />
             </slot>
         </van-collapse-item>
     </van-collapse>
@@ -22,12 +23,9 @@ import { get, post } from '@/tools/common';
     components: {
     }
 })
-export default class GjFormDesignControlCollapse extends Vue {
+export default class FormDesignControlCollapse extends Vue {
     @Prop({ type: Object }) control!: any;
     @Prop({ type: String }) controlId!: string;
-    @Prop({ default: () => [0, 1, 2] }) value!: number | Array<number>;
-
-    extendIndexs: Array<number> = [0, 1, 2];
 }
 </script>
 

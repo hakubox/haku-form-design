@@ -1,6 +1,6 @@
 <template>
     <div class="page-form-design">
-        <gj-form-design />
+        <form-designer />
     </div>
 </template>
 

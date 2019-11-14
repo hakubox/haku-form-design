@@ -1,7 +1,7 @@
 <template lang="html">
     <van-cell-group :title="title">
         <slot name="child0">
-            <gj-form-design-blank-control />
+            <form-design-blank-control />
         </slot>
     </van-cell-group>
 </template>
@@ -14,7 +14,7 @@ import { get, post } from '@/tools/common';
   components: {
   }
 })
-export default class GjFormDesignControlCellGroup extends Vue {
+export default class FormDesignControlCellGroup extends Vue {
     @Prop({ type: String }) value!: string;
     @Prop({ type: String }) controlId!: string;
 

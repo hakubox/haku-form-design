@@ -1,7 +1,7 @@
 <template lang="html">
-	<div class="gj-color-picker-slider">
-        <div ref="slider" class="gj-color-picker-slider-content" :style="sliderStyle" @mousedown="startDrag">
-            <div :style="{ left: cursorLeft + 'px' }" class="gj-color-picker-slider-bar"></div>
+	<div class="color-picker-slider">
+        <div ref="slider" class="color-picker-slider-content" :style="sliderStyle" @mousedown="startDrag">
+            <div :style="{ left: cursorLeft + 'px' }" class="color-picker-slider-bar"></div>
         </div>
 	</div>
 </template>
@@ -14,7 +14,7 @@ import { get, post } from '@/tools/common';
   components: {
   }
 })
-export default class GjColorPickerSlider extends Vue {
+export default class ColorPickerSlider extends Vue {
 
     @Prop({
         type: Number,
@@ -73,7 +73,7 @@ export default class GjColorPickerSlider extends Vue {
 </script>
 
 <style lang="scss" scoped>
-    .gj-color-picker-slider {
+    .color-picker-slider {
         user-select: none;
         position: relative;
         display: block;
@@ -86,7 +86,7 @@ export default class GjColorPickerSlider extends Vue {
             content: '';
         }
 
-        > .gj-color-picker-slider-content {
+        > .color-picker-slider-content {
             user-select: none;
             position: absolute;
             top: 0px;
@@ -95,7 +95,7 @@ export default class GjColorPickerSlider extends Vue {
             height: 100%;
             border-radius: 3px;
 
-            > .gj-color-picker-slider-bar {
+            > .color-picker-slider-bar {
             user-select: none;
                 position: absolute;
                 cursor: default;

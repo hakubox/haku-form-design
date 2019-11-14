@@ -16,7 +16,7 @@ import { get, post } from '@/tools/common';
   components: {
   }
 })
-export default class GjFormDesignControlRadioGroup extends Vue {
+export default class FormDesignControlRadioGroup extends Vue {
     @Prop({ type: String }) value!: string;
     @Prop({ type: String }) controlId!: string;
 
