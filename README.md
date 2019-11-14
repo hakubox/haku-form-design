@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/hakubox/haku-formdesign/master/src/assets/logo.png" >
+<img src="https://raw.githubusercontent.com/hakubox/haku-formdesign/master/public/logo.svg" >
 </div>
 
 # haku-formdesign
@@ -9,7 +9,7 @@
 ## 示例图
 
 <div align="center">
-<img src="https://raw.githubusercontent.com/hakubox/haku-form-design/master/src/assets/printscreen.png" >
+<img src="https://raw.githubusercontent.com/hakubox/haku-form-design/master/public/printscreen.png" >
 </div>
 
 ### [示例DEMO](http://hakubox.gejinet.com)
