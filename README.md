@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/hakubox/haku-formdesign/master/public/haku-form-design.png" >
+<img src="https://raw.githubusercontent.com/hakubox/haku-formdesign/master/public/haku-formdesign.png" >
 </div>
 
 # haku-form-design
