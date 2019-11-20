@@ -3,23 +3,38 @@
 
         <!-- 头部菜单 -->
         <div class="form-design-header">
-            <h1>移动端表单设计器 v1.0.0</h1>
-            <a-menu v-model="currentMenu" mode="horizontal">
+            <h1>移动端表单设计器 v1.0.0 <span class="form-design-header-subtitle">Vant组件库</span></h1>
+            <div class="form-design-header-center-tools"></div>
+            <a-menu :selectable="false" mode="horizontal" :forceSubMenuRender="true">
                 <a-sub-menu>
                     <span slot="title" class="submenu-title-wrapper">
-                        <a-icon type="appstore" />文件
+                        <a-icon type="file" />文件
                     </span>
                     
-                    <a-menu-item key="newFile">新建</a-menu-item>
+                    <a-menu-item @click="newForm()"><a-icon type="file-add" />新建</a-menu-item>
+                    <a-menu-item @click="onSaveForm()"><a-icon type="save" />保存</a-menu-item>
                     <a-menu-divider></a-menu-divider>
-                    <a-menu-item class="label-menu-item" key="import"><label for="importjson">导入</label></a-menu-item>
-                    <a-menu-item key="historyForm">最近的表单</a-menu-item>
-                    <a-menu-divider></a-menu-divider>
-                    <a-menu-item key="demo">示例表单</a-menu-item>
+                    <a-menu-item class="label-menu-item" ><label for="importjson"><a-icon type="select" />导入</label></a-menu-item>
+                    <a-sub-menu>
+                        <span slot="title" class="submenu-title-wrapper">
+                            <a-icon type="file-text" />最近的表单
+                        </span>
+                        <a-menu-item v-if="!historyForm.length" style="height: 130px;">
+                            <a-empty />
+                        </a-menu-item>
+                        <a-menu-item v-if="historyForm.length" @click="clearHistoryForm">
+                            清空历史
+                        </a-menu-item>
+                        <a-menu-divider v-if="historyForm.length"></a-menu-divider>
+                        <a-menu-item v-for="(form, index) in historyForm" :key="'sub1-2-' + index" @click="selectHistoryForm(form)">
+                            {{form.formConfig.formTitle}}
+                        </a-menu-item>
+                    </a-sub-menu>
+                    <a-menu-item><a-icon type="fire" />示例表单</a-menu-item>
                 </a-sub-menu>
                 <a-sub-menu>
                     <span slot="title" class="submenu-title-wrapper">
-                        <a-icon type="appstore" />编辑
+                        <a-icon type="edit" />编辑
                     </span>
                     
                     <a-menu-item key="undo">撤销</a-menu-item>
@@ -106,11 +121,12 @@
                 <a-select :showSearch="true" optionFilterProp="children" placeholder="界面控件清单" class="form-design-body-propertypanel-current-formcontrol" @change="changeSelectedFormControlBySelect" v-model="currentSelectedFirstControlId">
                     <a-select-opt-group v-for="controlGroup in controlListByGroup" :key="controlGroup.name">
                         <span slot="label"><a-icon :type="controlGroup.icon" /> {{controlGroup.title}}</span>
-                        <a-select-option v-for="item in controlGroup.controls" :value="item.id" :key="item.id">{{ item.title }}: {{ item.name }}</a-select-option>
+                        <a-select-option v-for="item in controlGroup.controls" :value="item.id" :key="item.id">{{ item.title }}: {{ item.control.attrs.remark }}</a-select-option>
                     </a-select-opt-group>
                 </a-select>
                 <a-tabs defaultActiveKey="prop">
-                    <a-tab-pane tab="属性" key="prop">
+                    <a-tab-pane key="prop">
+                        <span slot="tab"><a-icon type="profile" />属性</span>
                         <a-empty v-show="!currentSelectedControlPropertyGroups.length" description="请选择控件" :style="{ marginTop: '100px' }"></a-empty>
                         <a-collapse :activeKey="['p0','p1','p2','p3']" :bordered="false">
                             <a-collapse-panel v-for="(propGroup, index) in currentSelectedControlPropertyGroups" :key="'p' + index" :header="propGroup.title">
@@ -162,12 +178,11 @@
                             </a-collapse-panel>
                         </a-collapse>
                     </a-tab-pane>
-                    <a-tab-pane tab="事件" key="event">
-                        <a-table row-key="title" :pagination="false" size="small" :columns="[{title:'标题',dataIndex:'title'},{title:'图标',dataIndex:'icon'}]" :dataSource="[{title:'标题A',icon:'icon-star'}, {title:'标题B',icon:'icon-user'}]">
-                            
-                        </a-table>
+                    <a-tab-pane key="event">
+                        <span slot="tab"><a-icon type="thunderbolt" />事件</span>
                     </a-tab-pane>
-                    <a-tab-pane tab="表单配置" key="config">
+                    <a-tab-pane key="config">
+                        <span slot="tab"><a-icon type="setting" />表单配置</span>
                         <a-collapse :activeKey="['c0','c1','c2','c3']" :bordered="false">
                             <a-collapse-panel key="c1" header="基础配置" :force-render="true">
                                 <!-- 面板标题 -->
@@ -330,9 +345,6 @@ export default class FormDesigner extends Vue {
     /** JSON编辑器的值 */
     editorJson: string = '';
 
-    /** 当前选择菜单 */
-    currentMenu: Array<string> = [];
-
     /** 画板 */
     canvasEl: any;
     /** 画板主面板元素 */
@@ -399,6 +411,10 @@ export default class FormDesigner extends Vue {
         ipadpro: { name: 'iPad Pro', width: 1024, height: 1366, pixelRatio: 2 }
     };
 
+    /** 历史表单 */
+    historyForm: Array<{ formConfig: FormDesign.FormConfig, controls: FormDesign.FormPanel }> = [
+    ];
+
     /** 画布组件列表 */
     controlList: Array<FormDesign.FormControl> = [];
 
@@ -440,7 +456,6 @@ export default class FormDesigner extends Vue {
 
     /** 切换当前选择的控件 */
     changeSelectedFormControl(formControlList) {
-        console.log(formControlList);
         this.currentSelectedControl = formControlList;
         if (formControlList && formControlList.length) {
             this.currentSelectedFirstControlId = formControlList[0].id;
@@ -449,8 +464,7 @@ export default class FormDesigner extends Vue {
             this.currentSelectedFirstControlId = undefined;
         }
         
-        //@ts-ignore
-        this.currentSelectedControlPropertyMap = formControlList.length ? Object.assign.apply({}, [{}].concat(formControlList[0].propertys.map(i => ({[i.name]: i})))) : [];
+        this.currentSelectedControlPropertyMap = formControlList.length ? Object.assign.apply({}, [{}].concat(formControlList[0].propertys.map(i => ({[i.name]: i}))) as [object, ...any[]]) : [];
         this.currentSelectedControlPropertyGroups = formControlList.length ? Object.entries(Enum.FormControlPropertyGroup).map(([key, value]) => ({
             title: value,
             propertys: formControlList ? formControlList[0].propertys.filter(i => 
@@ -473,7 +487,7 @@ export default class FormDesigner extends Vue {
     }
 
     changeSelectedFormControlBySelect(e) {
-        if(e) {
+        if (e) {
             this.changeSelectedFormControl([ this.controlList.find(i => i.id == e) ]);
         } else {
             this.changeSelectedFormControl([  ]);
@@ -585,8 +599,16 @@ export default class FormDesigner extends Vue {
                                     return;
                                 }
                             }
-                        } else {
-                            console.log('其他情况')
+
+                            // 计算父组件下单未插入到子组件中的情况
+                            if (_y >= _currentHeight - _height / 2 && _y <= _currentHeight + _height / 2) {
+                                this.dragConfig.insertControlId = _id;
+                                _currentHeight += _height;
+                                break;
+                            } else if (_y > _currentHeight + _height / 2 && index < this.panel.children.length - 1) {
+                                this.dragConfig.insertControlId = this.panel.children[index + 1].id;
+                            }
+
                         }
                         
                     } else {
@@ -628,10 +650,12 @@ export default class FormDesigner extends Vue {
 
             /** 放置控件 */
             if (this.dragConfig.isDragArea) {
-                let _newControl = cloneForce({
+                let _newControl: FormDesign.FormControl = cloneForce({
                     ..._controls.find(i => i.name == this.dragConfig.control.name),
                     height: 0
                 });
+
+                _newControl.control.attrs.remark = _newControl.title + this.$common.createNumberId(3);
 
                 // 新控件和老控件以不同方式处理Id
                 if (!this.dragConfig.targetFormControlId) {
@@ -654,8 +678,12 @@ export default class FormDesigner extends Vue {
                     }
                 } else {
                     // 刚刚插入界面或添加到最后处理方式
+                    if (this.dragConfig.insertControlSlotIndex !== undefined) {
+                        ((this.panel.children.find(i => i.id == this.dragConfig.insertControlId) as FormDesign.FormControl).children as Array<Array<FormDesign.FormControl>>)[this.dragConfig.insertControlSlotIndex].splice(_insertIndex, 0, _newControl);
+                    } else {
+                        this.panel.children.splice(_insertIndex, 0, _newControl);
+                    }
                     this.controlList.push(_newControl);
-                    this.panel.children.splice(_insertIndex, 0, _newControl);
                 }
             }
 
@@ -686,7 +714,6 @@ export default class FormDesigner extends Vue {
 
     mounted() {
         this.toolsEl = document.querySelector('.form-control-tools');
-        console.log(this.toolsEl);
         this.canvasPanelEl = document.querySelector('.form-design-canvas-mainpanel');
         let { y, x } = this.canvasPanelEl.getBoundingClientRect();
         this.canvasLocation.y = this.canvasPanelEl.scrollTop - y;
@@ -729,7 +756,7 @@ export default class FormDesigner extends Vue {
                         this.$message.error('JSON文件格式不正确。');
                         return;
                     }
-                    if (files[0].size > 102400) {
+                    if (files[0].size > 204800) {
                         _importJson.value = '';
                         this.$message.error('JSON文件过大。');
                         return;
@@ -750,23 +777,7 @@ export default class FormDesigner extends Vue {
                             console.error('用于导入配置的文件不能为空。');
                         }
 
-                        //赋值
-                        this.formConfig.canvasTitle = config.formConfig.canvasTitle || '';
-                        this.formConfig.formTitle = config.formConfig.formTitle || '';
-                        this.formConfig.formName = config.formConfig.formName || '';
-                        this.formConfig.width = config.formConfig.width || '';
-                        this.formConfig.height = config.formConfig.height || '';
-                        this.formConfig.headerHeight = config.formConfig.headerHeight || '';
-                        this.formConfig.data = config.formConfig.data || '';
-                        this.formConfig.deviceId = config.formConfig.deviceId || '';
-                        //表单底部配置
-                        this.formConfig.footer.isShow = config.formConfig.footer.isShow || '';
-                        this.formConfig.footer.submitButtonText = config.formConfig.footer.submitButtonText || '';
-                        this.formConfig.footer.cancelButton = config.formConfig.footer.cancelButton || '';
-                        this.formConfig.footer.cancelButtonText = config.formConfig.footer.cancelButtonText || '';
-                        //控件配置
-                        this.panel = config.controls;
-
+                        this.loadConfig(config);
                         _importJson.value = '';
                     }
                 }
@@ -776,6 +787,25 @@ export default class FormDesigner extends Vue {
     created() {
         document.body.addEventListener('mousemove', this.dragMove);
         document.body.addEventListener('mouseup', this.dragUp);
+
+        if (!localStorage.getItem('HistoryDesignForm')) localStorage.setItem('HistoryDesignForm', '[]');
+        else {
+            let _formNames = JSON.parse(localStorage.getItem('HistoryDesignForm') as string);
+            let _forms: Array<any> = [];
+            _formNames.forEach(i => {
+                _forms.push(JSON.parse(localStorage.getItem(`HistoryDesignForm_${i}`) as string));
+            })
+            this.historyForm = _forms;
+        }
+
+        let _autoSave = () => {
+            setTimeout(() => {
+                this.$message.success('已自动保存快照。');
+                this.save('TempDesignForm');
+                _autoSave();
+            }, 600000);
+        }
+        _autoSave();
 
         this.bus.$on('control_handle', (eventName, params) => {
             this[eventName].apply(this, params);
@@ -798,8 +828,10 @@ export default class FormDesigner extends Vue {
             formConfig: this.formConfig,
             controls: this.panel
         };
-
-        return JSON.stringify(_exportJson, null, '    ');
+        const ignoreKeys = [
+            'propertys', 'height'
+        ];
+        return JSON.stringify(_exportJson, (key, value) => ignoreKeys.includes(key) ? undefined : value, '    ');
     }
 
     /** 控件快捷操作 */
@@ -867,6 +899,7 @@ export default class FormDesigner extends Vue {
                 ...panel.children[slotIndex],
                 id: this.$common.createModelId(10)
             });
+            _newControl.control.attrs.remark = _newControl.title + this.$common.createNumberId(3);
             panel.children.splice(slotIndex + 1, 0, _newControl);
             this.controlList.splice(_index + 1, 0, _newControl);
         }
@@ -903,10 +936,132 @@ export default class FormDesigner extends Vue {
         this.$common.downLoadFile(`${this.formConfig.formTitle}_${this.formConfig.formName}_${new Date().format('yyyy-MM-dd')}.json`, this.editorJson);
     }
 
+    newForm() {
+        this.$confirm({
+            title: '警告',
+            content: '将覆盖现有表单，是否确认新建表单？',
+            okType: 'danger',
+            icon: 'warning',
+            onOk: () => {
+                this.formConfig = {
+                    canvasTitle: '主页',
+                    formTitle: '测试流程',
+                    formName: 'TestTask',
+                    width: 0,
+                    height: 0,
+                    headerHeight: 46,
+                    deviceId: 'iphone678',
+                    footer: {
+                        isShow: true,
+                        submitButtonText: '提交',
+                        cancelButton: false,
+                        cancelButtonText: '取消'
+                    },
+                    data: {
+
+                    }
+                };
+
+                this.controlList = [];
+                this.panel = {
+                    name: 'main',
+                    direction: 'row',
+                    children: []
+                };
+
+                this.currentSelectedControl = [];
+                this.currentSelectedFirstControlId = '';
+                this.currentSelectedControlPropertyGroups = [];
+                this.currentSelectedControlPropertyMap = [];
+            },
+            onCancel: () => {
+            },
+        });
+    }
+
+    /** 手动保存表单 */
+    onSaveForm() {
+        let _historyDesignForm: Array<string> = JSON.parse(localStorage.getItem('HistoryDesignForm') || '[]');
+        if (!_historyDesignForm.includes(this.formConfig.formName)) {
+            _historyDesignForm.push(this.formConfig.formName);
+            localStorage.setItem('HistoryDesignForm', JSON.stringify(_historyDesignForm));
+            this.save(`HistoryDesignForm_${this.formConfig.formName}`);
+        } else {
+            this.$confirm({
+                title: '警告',
+                content: '已存在同名表单存档，是否覆盖？',
+                okType: 'danger',
+                icon: 'warning',
+                onOk: () => {
+                    this.save(`HistoryDesignForm_${this.formConfig.formName}`);
+                },
+                onCancel: () => {
+                },
+            });
+        }
+    }
+
+    save(name) {
+        localStorage.setItem(name, JSON.stringify({
+            formConfig: this.formConfig,
+            controls: this.panel
+        }));
+    }
+
     /** 页面重绘 */
     refresh() {
         this.canvasPanelEl = document.querySelector('.form-design-canvas-mainpanel');
         this.canvasEl = document.querySelector('.form-design-body-canvas');
+    }
+
+    /** 清空历史表单 */
+    clearHistoryForm() {
+        let _historyDesignForm = localStorage.getItem('HistoryDesignForm');
+        if (_historyDesignForm != null) {
+            (JSON.parse(_historyDesignForm) as Array<string>).forEach((i: string) => {
+                localStorage.removeItem(`HistoryDesignForm_${i}`);
+            });
+        }
+        localStorage.setItem('HistoryDesignForm', '[]');
+    }
+
+    /** 选择历史表单 */
+    selectHistoryForm(item) {
+        this.$confirm({
+            title: '警告',
+            content: `将销毁现有表单，是否确认使用'${item.formConfig.formTitle}'？`,
+            okType: 'danger',
+            icon: 'warning',
+            onOk: () => {
+                this.loadConfig(item);
+            },
+            onCancel: () => {
+            },
+        });
+    }
+
+    /** 导入功能 */
+    loadConfig(config: { formConfig: FormDesign.FormConfig, controls: FormDesign.FormPanel }) {
+        this.formConfig = config.formConfig;
+
+        /** 用于处理controlList的回调函数 */
+        let _controlList: Array<FormDesign.FormControl> = [];
+        const _cb = (parentNode) => {
+            _controlList.push(parentNode);
+            if (parentNode.children?.length) {
+                parentNode.children.forEach(_cb);
+            }
+        };
+        config.controls.children.forEach(_cb);
+
+        /** 包括导入，需要单独处理 controlList */
+        this.controlList = _controlList;
+        this.panel = config.controls;
+
+        this.currentSelectedControl = [];
+        this.currentSelectedFirstControlId = '';
+        this.currentSelectedControlPropertyGroups = [];
+        this.currentSelectedControlPropertyMap = [];
     }
 
     /** 导出为Vue页面文件 */
@@ -1026,12 +1181,22 @@ export default class Task_01 extends Vue {
                 padding-left: 20px;
                 margin-right: 10px;
                 margin-bottom: 0px;
+
+                > .form-design-header-subtitle {
+                    display: inline-block;
+                    font-size: 14px;
+                    font-weight: normal;
+                    margin-left: 10px;
+                    color: #888;
+                }
+            }
+
+            > .form-design-header-center-tools {
+                flex-grow: 1;
+                flex-shrink: 1;
             }
 
             > .ant-menu {
-                text-align: right;
-                flex-grow: 1;
-                flex-shrink: 1;
             }
         }
 

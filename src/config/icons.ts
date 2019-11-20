@@ -58,7 +58,12 @@ export { default as CopyOutline } from '@ant-design/icons/lib/outline/CopyOutlin
 export { default as AreaChartOutline } from '@ant-design/icons/lib/outline/AreaChartOutline';
 export { default as PieChartOutline } from '@ant-design/icons/lib/outline/PieChartOutline';
 export { default as EllipsisOutline } from '@ant-design/icons/lib/outline/EllipsisOutline';
-
+export { default as FileTextOutline } from '@ant-design/icons/lib/outline/FileTextOutline';
+export { default as ThunderboltOutline } from '@ant-design/icons/lib/outline/ThunderboltOutline';
+export { default as ToolOutline } from '@ant-design/icons/lib/outline/ToolOutline';
+export { default as FileAddOutline } from '@ant-design/icons/lib/outline/FileAddOutline';
+export { default as FireOutline } from '@ant-design/icons/lib/outline/FireOutline';
+export { default as WarningOutline } from '@ant-design/icons/lib/outline/WarningOutline';
 
 
 export { default as CheckCircleFill } from '@ant-design/icons/lib/fill/CheckCircleFill';

@@ -69,6 +69,8 @@ export default class ModelListEditor extends Vue {
     }) value!: Array<any>;
     /** 删除判断函数 */
     @Prop({ }) onRemove!: Function;
+    /** splice函数 */
+    @Prop({ }) onChange!: Function;
     /** 主列名 */
     @Prop({ default: 'title', type: String }) rowKey!: string;
 
@@ -110,13 +112,15 @@ export default class ModelListEditor extends Vue {
     /** 新增行 */
     addRow(index) {
         this.value.splice(index, 0, {});
+        this.onChange?.(this.control, index, 0, 1);
     }
 
     /** 删除行 */
     removeRow(index) {
-        let _re = this.onRemove && this.onRemove(this.value, index, this.control);
+        let _re = this.onRemove?.(this.value, index, this.control);
         if (_re !== false) {
             this.value.splice(index, 1);
+            this.onChange?.(this.control, index, 1, 0);
         } else {
             this.$message.warning('无法删除，请确认后重试');
         }

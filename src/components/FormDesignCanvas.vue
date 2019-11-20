@@ -194,7 +194,6 @@ export default class FormDesignCanvas extends Vue {
         > .form-design-canvas-mainpanel {
             flex-grow: 1;
             flex-shrink: 1;
-            overflow-y: auto;
         }
     }
 
@@ -413,6 +412,10 @@ export default class FormDesignCanvas extends Vue {
         
         .van-cell-group {
             min-height: 0px;
+        }
+
+        > .form-design-canvas-mainpanel {
+            overflow-y: auto;
         }
     }
 </style>

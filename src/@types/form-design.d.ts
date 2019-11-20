@@ -203,6 +203,8 @@ export namespace FormDesign {
         childrenSlot?: string;
         /** 子控件 */
         children?: Array<Array<FormControl>>;
+        /** 备注名 */
+        remark?: string;
     }
 
     //Record<string, any>;

@@ -57,10 +57,19 @@ let formControls: Array<FormDesign.FormControl> = [
                 ],
                 layout: Enum.PropertyLayout.block,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
-                attrs: { columns: [
-                    { name: 'span', title: '栅格大小', editor: Enum.FormControlPropertyEditor.int, attrs: { max: 24, min: 0 } },
-                    { name: 'offset', title: '位移', editor: Enum.FormControlPropertyEditor.int, attrs: { max: 24, min: 0 } },
-                ], onRemove(value, index, control) { return control.children[index].length == 0; } }
+                attrs: { 
+                    columns: [
+                        { name: 'span', title: '栅格大小', editor: Enum.FormControlPropertyEditor.int, attrs: { max: 24, min: 0 } },
+                        { name: 'offset', title: '位移', editor: Enum.FormControlPropertyEditor.int, attrs: { max: 24, min: 0 } },
+                    ],
+                    onRemove: (value, index, control) => control.children[index].length == 0,
+                    onChange(control, index, removeCount, insertCount) { 
+                        [].splice.apply(control.children, [index, removeCount].concat(new Array(insertCount).fill([])) as [number, number, ...never[]])
+                    }
+                }
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ]
     }, 
@@ -136,10 +145,20 @@ let formControls: Array<FormDesign.FormControl> = [
                 ],
                 layout: Enum.PropertyLayout.block,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
-                attrs: { rowKey: 'title', columns: [
-                    { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
-                    { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
-                ], onRemove(value, index, control) { return control.children[index].length == 0; } }
+                attrs: { 
+                    rowKey: 'title', 
+                    columns: [
+                        { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
+                        { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                    ],
+                    onRemove: (value, index, control) => control.children[index].length == 0,
+                    onChange(control, index, removeCount, insertCount) { 
+                        [].splice.apply(control.children, [index, removeCount].concat(new Array(insertCount).fill([])) as [number, number, ...never[]])
+                    }
+                }
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ]
     }, 
@@ -184,67 +203,24 @@ let formControls: Array<FormDesign.FormControl> = [
                 ],
                 layout: Enum.PropertyLayout.block,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
-                attrs: { rowKey: 'title', columns: [
-                    { name: 'icon', width: '25%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
-                    { name: 'rightIcon', width: '25%', title: '右侧图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
-                    { name: 'title', width: '50%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
-                ], onRemove(value, index, control) { return control.children[index].length == 0; } }
+                attrs: { 
+                    rowKey: 'title', 
+                    columns: [
+                        { name: 'icon', width: '25%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
+                        { name: 'rightIcon', width: '25%', title: '右侧图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
+                        { name: 'title', width: '50%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                    ],
+                    onRemove: (value, index, control) => control.children[index].length == 0,
+                    onChange(control, index, removeCount, insertCount) { 
+                        [].splice.apply(control.children, [index, removeCount].concat(new Array(insertCount).fill([])) as [number, number, ...never[]])
+                    }
+                }
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ]
     }, 
-
-    /**
-     * 折叠面板子项
-     */
-    // {
-    //     id: '',
-    //     control: {
-    //         control: 'van-collapse-item',
-    //         attrs: {},
-    //         slot: {},
-    //         defaultAttrs: {}
-    //     },
-    //     name: 'collapse-item',
-    //     title: '折叠面板子项',
-    //     type: Enum.FormControlType.layout,
-    //     propertys: [
-    //         {
-    //             name: 'icon', title: '左侧图标', 
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.icon 
-    //         }, {
-    //             name: 'size', title: '标题栏大小', 
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
-    //             attrs: { options: [ { title: '——', value: '' }, { title: '大型 Large', value: 'large' } ] }
-    //         }, {
-    //             name: 'title', title: '左侧标题', default: '标签',
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine 
-    //         }, {
-    //             name: 'value', title: '右侧内容', 
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine 
-    //         }, {
-    //             name: 'label', title: '描述信息', 
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.multiLine 
-    //         }, {
-    //             name: 'is-link', title: '显示右侧箭头', default: true,
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean 
-    //         }, {
-    //             name: 'title-class', title: '左侧标题额外类名', 
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine 
-    //         }, {
-    //             name: 'value-class', title: '右侧内容额外类名', 
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine 
-    //         }, {
-    //             name: 'label-class', title: '描述信息额外类名', 
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine 
-    //         }, {
-    //             name: 'disabled', title: '是否禁用', default: false,
-    //             group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean 
-    //         }, {
-    //             name: 'v-model', title: 'v-model', default: '', require: true,
-    //             group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-    //         }, 
-    //     ]
-    // }, 
     
     /**
      * 控件组
@@ -274,7 +250,10 @@ let formControls: Array<FormDesign.FormControl> = [
             {
                 name: 'title', title: '区域标题', default: '表单区域', 
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine 
-            },
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
     
@@ -331,7 +310,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-            }, 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
     
@@ -386,7 +368,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-            }, 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
     
@@ -487,7 +472,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-            }, 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
     
@@ -562,7 +550,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'view-data', title: '可选视图数据', visible: false, require: true, leaf: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.viewData
-            }, 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     },
 
@@ -632,7 +623,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-            }, 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
 
@@ -705,7 +699,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-            }, 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
 
@@ -749,7 +746,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-            }, 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
 
@@ -796,7 +796,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-            }, 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
 
@@ -879,7 +882,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'before-delete', title: '删除前回调函数', 
                 group: Enum.FormControlPropertyGroup.function, editor: Enum.FormControlPropertyEditor.function
-            } 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
 
@@ -964,7 +970,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'before-delete', title: '删除前回调函数', 
                 group: Enum.FormControlPropertyGroup.function, editor: Enum.FormControlPropertyEditor.function
-            } 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
 
@@ -1013,7 +1022,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-            }, 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
 
@@ -1071,7 +1083,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-            }, 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
 
@@ -1112,7 +1127,10 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'v-model', title: 'v-model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
-            }, 
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
         ]
     }, 
 
@@ -1173,6 +1191,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 change(prop, propMap, control, value, refs) {
                     control[0].control.slot['default'][0].attrs['millisecond'] = value;
                 }
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ]
     }, 
@@ -1279,6 +1300,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 change(prop, propMap, control, value, refs) {
                     control[0].control.slot['default'][0].attrs['touchable'] = value;
                 }
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ]
     }, 
@@ -1300,7 +1324,7 @@ let formControls: Array<FormDesign.FormControl> = [
         children: [ [] ],
         propertys: [
             {
-                name: 'column-num', title: '列数', default: 4, 
+                name: 'column-num', title: '列数', default: 3, 
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.int 
             }, {
                 name: 'gutter', title: '格子间距(px)', default: 0, 
@@ -1319,17 +1343,25 @@ let formControls: Array<FormDesign.FormControl> = [
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.int 
             }, {
                 name: 'options', title: '子项', default: [
-                    { title: '标题1', icon: '' },
-                    { title: '标题2', icon: '' },
-                    { title: '标题3', icon: '' },
-                    { title: '标题4', icon: '' },
-                    { title: '标题5', icon: '' },
-                    { title: '标题6', icon: '' },
-                    { title: '标题7', icon: '' },
-                    { title: '标题8', icon: '' },
-                    { title: '标题9', icon: '' },
+                    { text: '标题1', icon: 'photo-o' },
+                    { text: '标题2', icon: 'photo-o' },
+                    { text: '标题3', icon: 'photo-o' },
+                    { text: '标题4', icon: 'photo-o' },
+                    { text: '标题5', icon: 'photo-o' },
+                    { text: '标题6', icon: 'photo-o' },
+                    { text: '标题7', icon: 'photo-o' },
+                    { text: '标题8', icon: 'photo-o' },
+                    { text: '标题9', icon: 'photo-o' },
                 ],
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json,
+                layout: Enum.PropertyLayout.block,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
+                attrs: { rowKey: 'title', columns: [
+                    { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
+                    { name: 'text', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                ] }
+            }, {
+                name: 'remark', title: '备注名', default: '', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ]
     }, 
@@ -1340,6 +1372,9 @@ export function initControls() {
         ...i,
         control: {
             ...i.control,
+            propertys: i.propertys.concat([
+                
+            ]),
             // @ts-ignore
             attrs: Object.assign.apply({}, Object.entries(i.control.defaultAttrs)
                 .map(([key, value]) => ({[key]:value}))
