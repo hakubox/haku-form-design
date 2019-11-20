@@ -1,8 +1,8 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/hakubox/haku-formdesign/master/public/logo.svg" >
+<img src="https://raw.githubusercontent.com/hakubox/haku-form-design/master/public/haku-formdesign.png" >
 </div>
 
-# haku-formdesign
+# haku-form-design
 
 > 白箱表单设计器
 
