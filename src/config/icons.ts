@@ -64,6 +64,8 @@ export { default as ToolOutline } from '@ant-design/icons/lib/outline/ToolOutlin
 export { default as FileAddOutline } from '@ant-design/icons/lib/outline/FileAddOutline';
 export { default as FireOutline } from '@ant-design/icons/lib/outline/FireOutline';
 export { default as WarningOutline } from '@ant-design/icons/lib/outline/WarningOutline';
+export { default as LaptopOutline } from '@ant-design/icons/lib/outline/LaptopOutline';
+export { default as MobileOutline } from '@ant-design/icons/lib/outline/MobileOutline';
 
 
 export { default as CheckCircleFill } from '@ant-design/icons/lib/fill/CheckCircleFill';

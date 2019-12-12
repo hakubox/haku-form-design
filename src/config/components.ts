@@ -36,7 +36,10 @@ import {
     Spin,
     Avatar,
     Menu,
-    TreeSelect
+    TreeSelect,
+    Checkbox,
+    Rate,
+    AutoComplete
 } from 'ant-design-vue';
 
 import InputSearch from 'ant-design-vue/lib/input';
@@ -87,6 +90,9 @@ Vue.use(Spin);
 Vue.use(Avatar);
 Vue.use(Menu);
 Vue.use(TreeSelect);
+Vue.use(Checkbox);
+Vue.use(Rate);
+Vue.use(AutoComplete);
 
 Vue.component(InputSearch.name, InputSearch);
 Vue.component(Empty.name, Empty);

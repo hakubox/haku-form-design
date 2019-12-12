@@ -9,8 +9,24 @@ export namespace Enum {
         visitor
     }
 
+    /** 表单类型 */
+    export enum FormType {
+        /** 移动端 */
+        mobile = 'mobile',
+        /** PC端 */
+        pc = 'pc'
+    }
+
+    /** 表单组件库 */
+    export enum formComponentLib {
+        vant = 'vant',
+        antDesignVue = 'ant-design-vue'
+    }
+
     /** 控件类型 */
     export enum FormControlType {
+        /** 子表单控件 */
+        childform = 'childform',
         /** 布局控件 */
         layout = 'layout',
         /** 输入控件 */
@@ -25,6 +41,10 @@ export namespace Enum {
 
     /** 控件属性组 */
     export enum FormControlPropertyGroup {
+        /** 表单分组 */
+        childform = '子表单属性',
+        /** 表单分组 */
+        form = '表单属性',
         /** 外观分组 */
         style = '外观',
         /** 行为分组 */
@@ -43,6 +63,20 @@ export namespace Enum {
         inline = 'inline',
         /** 整块布局 */
         block = 'block'
+    }
+
+    /** 属性附加选项 */
+    export enum FormControlPropertyAttach {
+        /** 计算表达式 */
+        expression = 'expression',
+        /** 绑定变量 */
+        variable = 'variable',
+        /** 系统-视图 Array<any> */
+        view = 'view',
+        /** 系统-基础数据 Record<string, any> */
+        basicData = 'basic-data',
+        /** 远端请求 */
+        request = 'request'
     }
 
     /** 属性编辑器 */
@@ -73,14 +107,21 @@ export namespace Enum {
         list = 'list',
         /** 数据源类型 */
         dataSourceType = 'data-source-type',
-        /** 基础数据类型 */
-        basicData = 'basic-data',
-        /** 视图类型 */
-        viewData = 'view-data',
         /** 函数类型 */
         function = 'function',
         /** 对象列表类型 */
-        modelList = 'model-list'
+        modelList = 'model-list',
+        
+        /** 计算表达式 */
+        expression = 'expression',
+        /** 绑定变量 */
+        variable = 'variable',
+        /** 系统-视图 Array<any> */
+        view = 'view',
+        /** 系统-基础数据 Record<string, any> */
+        basicData = 'basic-data',
+        /** 远端请求 */
+        request = 'request'
     }
 
     /** 表单区域中的控件堆叠方向 */

@@ -1,3 +1,573 @@
+// 移动端表单编辑器样式
+.form-design {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    background-color: white;
+    align-items: stretch;
+    
+    .ant-tabs-bar {
+        margin-bottom: 0px;
+    }
+
+    // 表单编辑器头部
+    > .form-design-header {
+        display: flex;
+        border-bottom: 1px solid #EEE;
+
+        > h1 {
+            font-size: 20px;
+            line-height: 46px;
+            padding-left: 20px;
+            margin-right: 10px;
+            margin-bottom: 0px;
+
+            > .form-design-header-subtitle {
+                display: inline-block;
+                font-size: 14px;
+                font-weight: normal;
+                margin-left: 10px;
+                color: #888;
+            }
+        }
+
+        > .form-design-header-center-tools {
+            flex-grow: 1;
+            flex-shrink: 1;
+        }
+
+        > .ant-menu {
+        }
+    }
+
+    // 表单编辑器主体内容
+    > .form-design-body {
+        position: relative;
+        display: flex;
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-direction: row;
+        align-items: stretch;
+        overflow: auto;
+
+        // 组件库
+        > .form-design-body-controlpanel {
+            user-select: none;
+            position: relative;
+            flex-grow: 0;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            padding: 15px;
+            overflow: auto;
+
+            > dl {
+                margin-bottom: 10px;
+
+                &:last-child {
+                    margin-bottom: 0px;
+                }
+                
+                > dt {
+                    margin-bottom: 6px;
+                    color: #999;
+                }
+
+                > dd {
+                    cursor: grab;
+                    position: relative;
+                    display: inline-block;
+                    box-sizing: border-box;
+                    background-color: #F4F6FC;
+                    border-radius: 4px;
+                    line-height: 30px;
+                    width: calc(49.999% - 5px);
+                    margin-right: 10px;
+                    padding-left: 10px;
+
+                    &:hover {
+                        background-color: $-primary-color;
+                        color: white;
+                    }
+
+                    &:active {
+                        cursor: grabbing;
+                    }
+
+                    &:nth-child(2n + 1) {
+                        margin-right: 0px;
+                    }
+
+                    > i {
+                        margin-right: 6px;
+                    }
+                }
+            }
+        }
+
+        // 画布
+        > .form-design-body-canvas {
+            position: relative;
+            flex-grow: 1;
+            flex-shrink: 1;
+            border-left: 1px solid #EEE;
+            border-right: 1px solid #EEE;
+            background-color: #F0F2F5;
+            overflow: auto;
+
+            &.form-design-body-canvas-mobile {
+                text-align: center;
+
+                > .form-design-body-canvas-page {
+                    position: relative;
+                    display: inline-block;
+                    margin-top: 40px;
+                    text-align: initial;
+
+                    > h3 {
+                        cursor: default;
+                        user-select: none;
+                        font-size: 20px;
+                        color: #666;
+                    }
+
+                    > .form-design-canvas {
+                        position: relative;
+                        background-color: #F7F7F7;
+                        box-shadow: 0 2px 2px 0 rgba(40, 120, 255, 0.1), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+                        border-radius: 6px;
+                    }
+
+                    > .form-control-tools {
+                        user-select: none;
+                        position: absolute;
+                        display: inline-block;
+                        cursor: default;
+                        visibility: visible;
+                        top: 90px;
+                        right: -52px;
+                        opacity: 1.0;
+                        transition: 0.2s;
+
+                        &.form-control-tools-hidden {
+                            opacity: 0;
+                            visibility: hidden;
+                        }
+
+                        > .form-control-tools-split-item {
+                            display: block;
+                            color: #888;
+                            font-weight: normal;
+                            background-color: #FFFFFF;
+                            line-height: 46px;
+                            border-radius: 20px;
+                            width: 40px;
+                            font-size: 18px;
+                            margin-left: 10px;
+                            margin-bottom: 10px;
+                            transition: 0.2s;
+                            box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
+                    
+                            > .form-control-tools-line {
+                                left: 8px;
+                                height: 1px;
+                                width: calc(100% - 16px);
+                                border-top: 1px solid #EEE;
+                                margin-top: 2px;
+                                margin-bottom: 2px;
+                            }
+                    
+                            > .form-control-tools-item {
+                                cursor: pointer;
+                                display: block;
+                                height: 40px;
+                                width: 40px;
+                                line-height: 46px;
+                                border-radius: 50%;
+                    
+                                &:first-child {
+                                    border-bottom-left-radius: 0px;
+                                    border-bottom-right-radius: 0px;
+                                }
+                    
+                                &:last-child {
+                                    border-top-left-radius: 0px;
+                                    border-top-right-radius: 0px;
+                                }
+                                
+                                &:hover {
+                                    color: #1D87EA;
+                                    background-color: rgba(137, 217, 255, 0.2);
+                                }
+                            }
+                        }
+                    
+                        > .form-control-tools-item {
+                            cursor: pointer;
+                            display: block;
+                            color: #888;
+                            font-weight: normal;
+                            background-color: #FFFFFF;
+                            line-height: 46px;
+                            border-radius: 50%;
+                            height: 40px;
+                            width: 40px;
+                            font-size: 18px;
+                            margin-left: 10px;
+                            margin-bottom: 10px;
+                            transition: 0.2s;
+                            box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
+                            // border: 2px solid rgba(48, 166, 121, 1);
+                    
+                            &:hover {
+                                color: #1D87EA;
+                                background-color: rgba(137, 217, 255, 0.2);
+                            }
+                    
+                            &.form-control-tools-item-danger {
+                                color: #f5222d;
+                                // background-color: rgba(252, 193, 196, 0.8);
+                                // border: 2px solid #f5222d;
+                    
+                                &:hover {
+                                    color: white;
+                                    background-color: #f5222d;
+                                }
+                            }
+                    
+                            &.form-control-tools-item-warning {
+                                color: #FAAD14;
+                                // background-color: rgba(255, 229, 179, 0.8);
+                                // border: 2px solid #f5222d;
+                    
+                                &:hover {
+                                    color: white;
+                                    background-color: #FAAD14;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.form-design-body-canvas-pc {
+                text-align: center;
+    
+                > .form-design-body-canvas-page {
+                    position: relative;
+                    display: inline-block;
+                    height: 100%;
+
+                    > .form-design-canvas {
+                        position: relative;
+                        background-color: #FFFFFF;
+                        height: 100% !important;
+                    }
+
+                    > .form-control-tools {
+                        user-select: none;
+                        position: absolute;
+                        display: inline-block;
+                        cursor: default;
+                        visibility: visible;
+                        top: 0px;
+                        right: 0px;
+                        opacity: 1.0;
+                        transition: 0.2s;
+                        white-space: nowrap;
+
+                        &.form-control-tools-hidden {
+                            opacity: 0;
+                            visibility: hidden;
+                        }
+
+                        > .form-control-tools-split-item {
+                            position: relative;
+                            display: inline-block;
+                            color: #888;
+                            font-weight: normal;
+                            background-color: #FFFFFF;
+                            line-height: 46px;
+                            border-radius: 20px;
+                            height: 40px;
+                            font-size: 18px;
+                            margin-right: 10px;
+                            transition: 0.2s;
+                            white-space: nowrap;
+                            box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
+                            vertical-align: top;
+                    
+                            > .form-control-tools-line {
+                                display: inline-block;
+                                top: 8px;
+                                width: 1px;
+                                height: calc(100% - 21px);
+                                border-left: 1px solid #EEE;
+                                margin-left: 2px;
+                                margin-right: 2px;
+                                vertical-align: top;
+                            }
+                    
+                            > .form-control-tools-item {
+                                cursor: pointer;
+                                display: inline-block;
+                                height: 40px;
+                                width: 40px;
+                                line-height: 46px;
+                                border-radius: 50%;
+                                vertical-align: top;
+                    
+                                &:first-child {
+                                    border-top-right-radius: 0px;
+                                    border-bottom-right-radius: 0px;
+                                }
+                    
+                                &:last-child {
+                                    border-top-left-radius: 0px;
+                                    border-bottom-left-radius: 0px;
+                                }
+                                
+                                &:hover {
+                                    color: #1D87EA;
+                                    background-color: rgba(137, 217, 255, 0.2);
+                                }
+                            }
+                        }
+                    
+                        > .form-control-tools-item {
+                            cursor: pointer;
+                            display: inline-block;
+                            color: #888;
+                            font-weight: normal;
+                            background-color: #FFFFFF;
+                            line-height: 46px;
+                            border-radius: 50%;
+                            height: 40px;
+                            width: 40px;
+                            font-size: 18px;
+                            margin-right: 10px;
+                            transition: 0.2s;
+                            box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
+                            vertical-align: top;
+                            // border: 2px solid rgba(48, 166, 121, 1);
+                    
+                            &:hover {
+                                color: #1D87EA;
+                                background-color: rgba(137, 217, 255, 0.2);
+                            }
+                    
+                            &.form-control-tools-item-danger {
+                                color: #f5222d;
+                                // background-color: rgba(252, 193, 196, 0.8);
+                                // border: 2px solid #f5222d;
+                    
+                                &:hover {
+                                    color: white;
+                                    background-color: #f5222d;
+                                }
+                            }
+                    
+                            &.form-control-tools-item-warning {
+                                color: #FAAD14;
+                                // background-color: rgba(255, 229, 179, 0.8);
+                                // border: 2px solid #f5222d;
+                    
+                                &:hover {
+                                    color: white;
+                                    background-color: #FAAD14;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+        }
+
+        // 属性栏
+        > .form-design-body-propertypanel {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 0;
+            flex-shrink: 0;
+
+            > .form-design-body-propertypanel-controllist {
+                flex-shrink: 0;
+                
+                > .form-design-body-propertypanel-current-formcontrol {
+                    width: 100%;
+                    font-weight: bold;
+                    border-bottom: 2px solid $-primary-color;
+    
+                    > .ant-select-selection {
+                        border: none;
+                        border-radius: 0px;
+                    }
+                }
+            }
+
+            > .form-design-body-propertypanel-props {
+                flex-shrink: 1;
+                flex-grow: 1;
+                overflow: hidden;
+
+                > .ant-tabs {
+                    position: relative;
+                    height: 100%;
+
+                    > .ant-tabs-content {
+                        height: calc(100% - 44px);
+
+                        > .ant-tabs-tabpane {
+                            overflow-y: auto;
+                            overflow-x: initial;
+                        }
+                    }
+                }
+            }
+
+            > .form-design-body-propertypanel-prop-remark {
+                flex-shrink: 0;
+                background-color: #F5F2F0;
+                padding: 10px;
+                border-top: 2px solid $-primary-color;
+                min-height: 64px;
+
+                > p {
+                    margin-bottom: 0px;
+                }
+            }
+        }
+    }
+
+    // 表单编辑器下方状态栏
+    > .form-design-status {
+        display: flex;
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-direction: row;
+        align-items: stretch;
+        background-color: $-primary-color;
+        color: white;
+
+        > .form-design-status-left {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        > .form-design-status-right {
+            flex-grow: 1;
+            text-align: right;
+        }
+
+        > .form-design-status-left, .form-design-status-right {
+            
+            > li {
+                display: inline-block;
+                cursor: pointer;
+                padding: 2px 10px;
+
+                &:hover {
+                    background-color: rgba(0,0,0,0.2);
+                }
+            }
+        }
+    }
+}
+
+// 属性栏-属性列表
+.form-design-body-property-item {
+    display: flex;
+    white-space: nowrap;
+    line-height: 32px;
+    margin-bottom: 5px;
+
+    &.form-design-body-property-item-block {
+        display: block;
+        margin-bottom: 10px;
+        
+        > .form-design-body-property-item-label {
+            display: block;
+            width: 100%;
+        }
+
+        > .form-design-body-property-item-value {
+            margin-left: 0px;
+        }
+    }
+
+    &:last-child {
+        margin-bottom: 0px;
+    }
+
+    > .form-design-body-property-item-label {
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+        user-select: none;
+        min-width: 100px;
+
+        &.require:after {
+            content: '*';
+            position: absolute;
+            display: inline-block;
+            color: #f5222d;
+            font-size: 16px;
+            line-height: 1;
+            top: 8px;
+            left: -10px;
+        }
+
+        &.leaf:before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-left: 1px solid #AAA;
+            border-bottom: 1px solid #AAA;
+            display: inline-block;
+            margin-right: 3px;
+            font-size: 16px;
+            margin-bottom: 4px;
+            margin-left: 3px;
+            line-height: 1;
+            border-bottom-left-radius: 2px;
+        }
+    }
+
+    > .form-design-body-property-item-value {
+        flex-grow: 1;
+        margin-left: 20px;
+
+        > .ant-input-group-wrapper {
+            position: relative;
+            height: 24px;
+            top: 4px;
+            
+            .ant-btn {
+                padding: 0 12px;
+            }
+        }
+
+        .ant-input-wrapper {
+        }
+    }
+}
+
+/** JSON编辑器样式 */
+.page-config-editor.json-editor {
+    position: relative;
+    height: calc(100vh - 150px);
+    width: 100%;
+
+    .CodeMirror {
+        height: 100% !important;
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, .2);
+        }
+    }
+}
 
 // 图标选择器
 .icon-editor-select {
@@ -53,116 +623,6 @@
     min-width: 236px;
 }
 
-.form-control-tools {
-    user-select: none;
-    position: absolute;
-    display: inline-block;
-    cursor: default;
-    visibility: visible;
-    top: 90px;
-    right: -52px;
-    opacity: 1.0;
-    transition: 0.2s;
-
-    &.form-control-tools-hidden {
-        opacity: 0;
-        visibility: hidden;
-    }
-
-    > .form-control-tools-split-item {
-        display: block;
-        color: #888;
-        font-weight: normal;
-        background-color: #FFFFFF;
-        line-height: 46px;
-        border-radius: 20px;
-        width: 40px;
-        font-size: 18px;
-        margin-left: 10px;
-        margin-bottom: 10px;
-        transition: 0.2s;
-        box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
-
-        > .form-control-tools-line {
-            left: 8px;
-            height: 1px;
-            width: calc(100% - 16px);
-            border-top: 1px solid #EEE;
-            margin-top: 2px;
-            margin-bottom: 2px;
-        }
-
-        > .form-control-tools-item {
-            cursor: pointer;
-            display: block;
-            height: 40px;
-            width: 40px;
-            line-height: 46px;
-            border-radius: 50%;
-
-            &:first-child {
-                border-bottom-left-radius: 0px;
-                border-bottom-right-radius: 0px;
-            }
-
-            &:last-child {
-                border-top-left-radius: 0px;
-                border-top-right-radius: 0px;
-            }
-            
-            &:hover {
-                color: #1D87EA;
-                background-color: rgba(137, 217, 255, 0.2);
-            }
-        }
-    }
-
-    > .form-control-tools-item {
-        cursor: pointer;
-        display: block;
-        color: #888;
-        font-weight: normal;
-        background-color: #FFFFFF;
-        line-height: 46px;
-        border-radius: 50%;
-        height: 40px;
-        width: 40px;
-        font-size: 18px;
-        margin-left: 10px;
-        margin-bottom: 10px;
-        transition: 0.2s;
-        box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
-        // border: 2px solid rgba(48, 166, 121, 1);
-
-        &:hover {
-            color: #1D87EA;
-            background-color: rgba(137, 217, 255, 0.2);
-        }
-
-        &.form-control-tools-item-danger {
-            color: #f5222d;
-            // background-color: rgba(252, 193, 196, 0.8);
-            // border: 2px solid #f5222d;
-
-            &:hover {
-                color: white;
-                background-color: #f5222d;
-            }
-        }
-
-        &.form-control-tools-item-warning {
-            color: #FAAD14;
-            // background-color: rgba(255, 229, 179, 0.8);
-            // border: 2px solid #f5222d;
-
-            &:hover {
-                color: white;
-                background-color: #FAAD14;
-            }
-        }
-    }
-}
-
 // 拖拽出来的控件
 .form-design-drag-control {
     user-select: none;
@@ -189,36 +649,73 @@
 // 预览模式
 .preview-modal {
 
-    .ant-modal-header {
-        display: none;
-    }
+    &.antd {
+        
+        .ant-row-flex {
 
-    .ant-modal-close {
-        display: none;
-    }
-
-    .ant-modal-content {
-        background-color: transparent;
-        border-radius: 0px;
-        background-image: url(/img/devices/iphonex.png);
-        background-size: 100% 100%;
-        padding-top: 24px;
-        box-shadow: none;
-
-        > .ant-modal-body {
-            padding-bottom: 22px;
+            > .ant-col {
+                outline: none;
+            }
         }
 
-        .form-design-canvas {
-            margin: auto;
-            border-radius: 36px;
-            border: none;
+        .ant-modal-content {
 
-            .form-control {
-                user-select: text;
+            .ant-modal-body {
+                padding: 0px;
 
-                &:after {
-                    display: none;
+                .form-design-canvas {
+                    margin: auto;
+                    border-radius: 36px;
+                    border: none;
+        
+                    .form-control {
+                        user-select: text;
+        
+                        &:after {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    &.vant {
+        .ant-modal-header {
+            display: none;
+        }
+    
+        .ant-modal-close {
+            display: none;
+        }
+    
+        .ant-col {
+            outline: none !important;
+        }
+    
+        .ant-modal-content {
+            background-color: transparent;
+            border-radius: 0px;
+            background-image: url(/img/devices/iphonex.png);
+            background-size: 100% 100%;
+            padding-top: 24px;
+            box-shadow: none;
+    
+            > .ant-modal-body {
+                padding-bottom: 22px;
+            }
+    
+            .form-design-canvas {
+                margin: auto;
+                border-radius: 36px;
+                border: none;
+    
+                .form-control {
+                    user-select: text;
+    
+                    &:after {
+                        display: none;
+                    }
                 }
             }
         }
@@ -328,9 +825,15 @@
     user-select: none;
 }
 
-// 属性栏显示颜色选择器
-.ant-collapse-content {
-    overflow: visible;
+.form-design-body-propertypanel {
+
+    // 属性栏显示颜色选择器
+    .ant-collapse-content {
+        overflow: visible;
+        display: block !important;
+        height: auto !important;
+        opacity: 1.0 !important;
+    }
 }
 
 
@@ -342,5 +845,43 @@
             vertical-align: middle;
 
         }
+    }
+}
+
+.form-json-editor-drawer {
+    height: 100%;
+
+    .ant-drawer-wrapper-body {
+        overflow: visible;
+
+        > .ant-drawer-body {
+            height: 100%;
+        }
+    }
+}
+
+// 高级子表单项
+.complex-child-form-item {
+    display: flex;
+    flex-direction: row;
+    vertical-align: middle;
+    justify-content: space-around;
+    align-items: center;
+    padding-top: 6px;
+    padding-bottom: 6px;
+
+    > .complex-child-form-item-label {
+        flex-shrink: 0;
+        flex-grow: 2;
+        padding-left: 20px;
+        padding-right: 20px;
+        min-width: 150px;
+        text-align: right;
+    }
+
+    > .complex-child-form-item-content {
+        display: inline-block;
+        flex-grow: 1;
+        width: 100%;
     }
 }

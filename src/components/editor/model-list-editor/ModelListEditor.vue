@@ -1,7 +1,7 @@
 <template lang="html">
 	<div class="model-list-editor">
         
-        <a-table :row-key="rowKey" :pagination="false" size="small" :columns="tableColumns" :dataSource="value">
+        <a-table :row-key="rowKey" :pagination="false" size="small" :columns="tableColumns" :scroll="scroll" :dataSource="value">
             <template v-for="col in columns" #[`slot_${col.name}`]="item, record, index">
                 <template v-for="(control, index2) in propertyEditors[col.editor].control">
                     <component
@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch, Inject } from 'vue-property-decorator';
-import { FormDesign } from '@/@types/form-design.d';
+import FormDesign from '@/@types/form-design';
 import { get, post } from '@/tools/common';
 import { Enum } from '@/config/enum';
 import Color from '@/lib/color/Color';
@@ -75,6 +75,7 @@ export default class ModelListEditor extends Vue {
     @Prop({ default: 'title', type: String }) rowKey!: string;
 
     @Prop({ }) control!: FormDesign.FormControl;
+    @Prop({ }) scroll: any;
 	/** 配置列 */
     @Prop({ }) columns!: Array<{ 
         name: string,

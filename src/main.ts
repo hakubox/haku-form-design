@@ -20,10 +20,10 @@ import components from "@/tools/registerGlobalComponents.ts";
 //主样式
 import '@/assets/scss/basic.scss';
 //Fontawesome
-import '@fortawesome/fontawesome-pro/scss/fontawesome.scss';
-import '@fortawesome/fontawesome-pro/scss/light.scss';
-import '@fortawesome/fontawesome-pro/scss/regular.scss';
-import '@fortawesome/fontawesome-pro/scss/solid.scss';
+// import '@fortawesome/fontawesome-pro/scss/fontawesome.scss';
+// import '@fortawesome/fontawesome-pro/scss/light.scss';
+// import '@fortawesome/fontawesome-pro/scss/regular.scss';
+// import '@fortawesome/fontawesome-pro/scss/solid.scss';
 //多语言
 import VueI18n from 'vue-i18n';
 import lang_en from '@/lang/en';

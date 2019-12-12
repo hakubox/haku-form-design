@@ -1,18 +1,21 @@
 <template lang="html">
-    <van-collapse v-bind="control.attrs" v-model="control.attrs.value">
-        <van-collapse-item 
+    <van-tabs 
+        v-bind="control.attrs"
+    >
+        <van-tab
             v-for="(item, index) in control.attrs.options" 
             :key="index"
+            :title="item.title"
             :name="index"
-            :title="item.title" 
-            :icon="item.icon"
-            :right-icon="item.rightIcon"
         >
+            <div slot="title">
+                <van-icon :name="item.icon" />&nbsp; {{item.title}}
+            </div>
             <slot :name="'child' + index">
                 <form-design-blank-control />
             </slot>
-        </van-collapse-item>
-    </van-collapse>
+        </van-tab>
+    </van-tabs>
 </template>
 
 <script lang="ts">
@@ -23,9 +26,10 @@ import { get, post } from '@/tools/common';
     components: {
     }
 })
-export default class FormDesignControlCollapse extends Vue {
-    @Prop({ type: Object }) control!: any;
+export default class VantFormDesignControlTabs extends Vue {
+    @Prop({ type: Object }) control: any;
     @Prop({ type: String }) controlId!: string;
+    @Prop({ default: 0 }) value!: number;
 }
 </script>
 
@@ -39,7 +43,7 @@ export default class FormDesignControlCollapse extends Vue {
         }
     }
 
-    ::v-deep .van-collapse-item__content {
+    ::v-deep .van-tab__pane {
         position: relative;
         min-height: 44px;
     }

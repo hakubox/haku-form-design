@@ -1,15 +1,15 @@
 <template>
-    <div class="code-editor" ref="editor"></div>
+    <div class="code-editor" ref="editor" :style="{ height: height }"></div>
 </template>
  
 <script>
     import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
     export default {
-        name: 'CodeEditor',
+        name: 'ObjectEditor',
         props: {
             value: {
-                type: String
+                type: Array
             },
             marker: {
                 type: Function
@@ -18,13 +18,14 @@
                 type: String,
                 default: '20px'
             },
-            language: {
-                type: String,
-                default: 'json'
-            },
             options: {
                 type: Object,
                 default: () => ({})
+            },
+            /** 是否为表单表达式 */
+            isFormExpression: {
+                type: Boolean,
+                default: false
             },
             unseenLines: {
                 type: Array
@@ -32,6 +33,11 @@
             placeholder: {
                 type: String,
                 default: '请输入JSON字符串'
+            },
+            /** 表单变量 */
+            variables: {
+                type: Array,
+                default: () => []
             }
         },
         data: () => ({
@@ -59,16 +65,23 @@
                 ]
             });
 
-            const _languages = monaco.languages.getLanguages().map(i => i.id);
-            if (!_languages.includes(this.language)) {
-                switch (this.language) {
-                    case 'sql':
-                        require('@/lib/monaco-language/sql/sql.contribution');
-                        break;
-                    default:
-                        break;
-                }
-            }
+            // validation settings
+            monaco.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+                noSemanticValidation: true,
+                noSyntaxValidation: false
+            });
+
+            // compiler options
+            monaco.languages.typescript.javascriptDefaults.setCompilerOptions({
+                target: monaco.languages.typescript.ScriptTarget.ESNext,
+                allowNonTsExtensions: true
+            });
+
+            // 引入变量
+            let _variables = this.variables.map(i => `
+                ${i.remark ? '/** ' +  i.remark + ' */\n' : ''}${i.keyword} ${i.name}: ${i.type};
+            `);
+            monaco.languages.typescript.javascriptDefaults.addExtraLib(_variables.join('\n'), 'vars.d.ts');
         },
         mounted() {
             this.initialize();
@@ -85,17 +98,18 @@
                     ...this.defaultOptions,
                     ...this.options,
                     theme: 'gj-dark',
-                    language: this.language
+                    language: 'javascript'
                 };
 
                 this.editor = monaco.editor.create(this.$refs.editor, {
-                    value: this.value,
+                    value: JSON.stringify(this.value, '', '    '),
                     ..._options
                 });
 
                 this.editor.onDidChangeModelContent(event => {
                     if (!this.__preventTriggerChangeEvent) {
-                        this.$emit('input', this.getValue());
+                        console.log('parse', JSON.parse(this.getValue()));
+                        this.$emit('input', JSON.parse(this.getValue()));
                     }
                 });
 
@@ -160,7 +174,6 @@
  
 <style lang="scss" scoped>
     .code-editor {
-        height: 100%;
         position: relative;
 
         ::v-deep > .monaco-editor {

@@ -1,0 +1,18 @@
+// PC端表单样式
+.form-design-canvas {
+    
+    &.pc {
+        text-align: initial;
+        padding: 30px;
+        
+        // 表单大标题
+        > .form-title {
+            text-align: center;
+            color: #333;
+            font-size: 30px;
+            margin-bottom: 30px;
+            // font-weight: normal;
+            letter-spacing: 2px;
+        }
+    }
+}

@@ -1,9 +1,6 @@
 <template lang="html">
-    <van-cell-group :title="title">
-        <slot name="child0">
-            <form-design-blank-control />
-        </slot>
-    </van-cell-group>
+    <a-table v-bind="control.control.attrs" :scroll="{ x: control.control.attrs.scrollX, y: control.control.attrs.scrollY }">
+    </a-table>
 </template>
 
 <script lang="ts">
@@ -14,11 +11,10 @@ import { get, post } from '@/tools/common';
   components: {
   }
 })
-export default class FormDesignControlCellGroup extends Vue {
+export default class AntdFormDesignChildform extends Vue {
+    @Prop({ type: Object }) control!: any;
     @Prop({ type: String }) value!: string;
     @Prop({ type: String }) controlId!: string;
-
-    @Prop({ type: String, default: '表单区域' }) title!: string;
 }
 </script>
 

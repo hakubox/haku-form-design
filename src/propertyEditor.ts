@@ -1,10 +1,11 @@
-import { FormDesign } from '@/@types/form-design';
+import FormDesign from './@types/form-design';
 import { Enum } from '@/config/enum';
 import { icons } from '@/iconEditor';
 
 let propertyEditors: Array<FormDesign.PropertyEditor> = [
     {
         name: 'any',
+        description: '任意',
         control: [
             {
                 control: 'a-input',
@@ -13,13 +14,15 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     style: { width: '100%' },
                     allowClear: true,
                     size: 'small'
-                }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.any,
         format: val => eval(val)
     }, {
         name: 'pixel',
+        description: '像素',
         control: [
             {
                 control: 'a-input',
@@ -31,13 +34,15 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     allowClear: true,
                     addonAfter: '像素',
                     size: 'small'
-                }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.pixel,
         format: val => val + 'px'
     }, {
         name: 'color',
+        description: '颜色',
         control: [
             {
                 control: 'color-picker',
@@ -47,12 +52,14 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     allowClear: true,
                     addonAfter: '颜色',
                     size: 'small'
-                }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.color
     }, {
         name: 'byte',
+        description: '字节',
         control: [
             {
                 control: 'a-input-number',
@@ -63,7 +70,8 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     parser: value => value.replace('byte', ''),
                     allowClear: true,
                     size: 'small'
-                }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.byte
@@ -71,6 +79,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
     
     {
         name: 'singer-line',
+        description: '单行文本',
         control: [
             {
                 control: 'a-input',
@@ -79,12 +88,14 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     style: { width: '100%' },
                     allowClear: true,
                     size: 'small'
-                }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.singerLine
     }, {
         name: 'multi-line',
+        description: '多行文本',
         control: [
             {
                 control: 'a-textarea',
@@ -94,25 +105,29 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     allowClear: true,
                     size: 'small',
                     autosize: { minRows: 2, maxRows: 6 }
-                }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.multiLine
     }, {
         name: 'boolean',
+        description: '真假',
         control: [
             {
                 control: 'a-switch',
                 slot: {},
                 attrs: {
-                    checkedChildren: '开',
-                    unCheckedChildren: '关'
-                }
+                    checkedChildren: '是',
+                    unCheckedChildren: '否'
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.boolean
     }, {
         name: 'int',
+        description: '整数',
         control: [
             {
                 control: 'a-input-number',
@@ -123,12 +138,14 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     style: { width: '100%' },
                     allowClear: true,
                     size: 'small'
-                }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.int
     }, {
         name: 'float',
+        description: '小数',
         control: [
             {
                 control: 'a-input-number',
@@ -139,12 +156,14 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     style: { width: '100%' },
                     allowClear: true,
                     size: 'small'
-                }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.float
     }, {
         name: 'list',
+        description: '列表',
         control: [
             {
                 control: 'a-select',
@@ -153,33 +172,37 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     buttonStyle: 'solid',
                     style: { width: '100%' },
                     size: 'small'
-                }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.list
     }, {
         name: 'data-source-type',
+        description: '数据源类型',
         control: [
             {
                 control: 'a-radio-group',
                 slot: {
                     default: [
-                        { control: 'a-radio-button', attrs: { value: 'basic-data' }, slot: {}, html: '基础数据' },
-                        { control: 'a-radio-button', attrs: { value: 'view-data' }, slot: {}, html: '数据视图' },
-                        { control: 'a-radio-button', attrs: { value: 'user' }, slot: {}, html: '用户' },
-                        { control: 'a-radio-button', attrs: { value: 'group' }, slot: {}, html: '组织' },
+                        { control: 'a-radio-button', attrs: { value: 'basic-data' }, propAttrs: {}, slot: {}, html: '基础数据' },
+                        { control: 'a-radio-button', attrs: { value: 'view-data' }, propAttrs: {}, slot: {}, html: '数据视图' },
+                        { control: 'a-radio-button', attrs: { value: 'user' }, propAttrs: {}, slot: {}, html: '用户' },
+                        { control: 'a-radio-button', attrs: { value: 'group' }, propAttrs: {}, slot: {}, html: '组织' },
                     ]
                 },
                 attrs: {
                     buttonStyle: 'solid',
                     style: { width: '100%' },
                     size: 'small'
-                }
+                }, 
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.dataSourceType
     }, {
         name: 'view-data',
+        description: '视图',
         control: [
             {
                 control: 'a-select',
@@ -197,12 +220,14 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                         { value: 'bbb', label: 'bbb' },
                         { value: 'ccc', label: 'ccc' },
                     ]
-                }
+                }, 
+                propAttrs: {}
             }
         ],
-        editor: Enum.FormControlPropertyEditor.viewData
+        editor: Enum.FormControlPropertyEditor.view
     }, {
         name: 'basic-data',
+        description: '基础数据',
         control: [
             {
                 control: 'a-tree-select',
@@ -222,24 +247,14 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                             { value: 'ccc', title: 'ccc', key: 'ccc' },
                         ] },
                     ]
-                }
+                }, 
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.basicData
-    }, 
-    
-    // <a-select dropdownClassName="icon-select" defaultValue="lucy" style="width: 200px" :open="true">
-    //     <a-select-opt-group>
-    //         <span slot="label"><a-icon type="user" />Manager</span>
-    //         <a-select-option value="jack"><van-icon name="success" /></a-select-option>
-    //         <a-select-option value="lucy"><van-icon name="plus" /></a-select-option>
-    //     </a-select-opt-group>
-    //     <a-select-opt-group label="Engineer">
-    //         <a-select-option value="Yiminghe">yiminghe</a-select-option>
-    //     </a-select-opt-group>
-    // </a-select>
-    {
+    }, {
         name: 'icon',
+        description: '图标',
         control: [
             {
                 control: 'a-select',
@@ -278,6 +293,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
         editor: Enum.FormControlPropertyEditor.icon
     }, {
         name: 'function',
+        description: '函数',
         control: [
             {
                 control: 'a-input',
@@ -287,36 +303,80 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     allowClear: true,
                     addonAfter: '函数',
                     size: 'small'
-                }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.function
     }, {
         name: 'json',
+        description: 'JSON',
         control: [
             {
-                control: 'a-textarea',
+                control: 'object-editor',
                 slot: {},
                 attrs: {
-                    style: { width: '100%' },
-                    allowClear: true,
-                    size: 'small',
-                    autosize: { minRows: 2, maxRows: 6 }
-                }
+                    isFormExpression: true,
+                    language: 'javascript',
+                    options: {
+                        lineNumbers: "off",
+                        scrollBeyondLastLine: false,
+                    },
+                    style: { width: '100%', height: '300px' }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.json
     }, {
         name: 'model-list',
+        description: '对象列表',
         control: [
             {
                 control: 'model-list-editor',
                 slot: {},
                 attrs: {
-                }
+                },
+                propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.modelList
+    }, {
+        name: 'expression',
+        description: '表达式',
+        control: [
+            {
+                control: 'code-editor',
+                slot: {},
+                attrs: {
+                    isFormExpression: true,
+                    language: 'javascript',
+                    options: {
+                        lineNumbers: "off",
+                        scrollBeyondLastLine: false,
+                    },
+                    style: { width: '100%', height: '80px' }
+                },
+                propAttrs: {}
+            }
+        ],
+        editor: Enum.FormControlPropertyEditor.singerLine
+    }, {
+        name: 'variable',
+        description: '变量',
+        control: [
+            {
+                control: 'variable-picker',
+                slot: {},
+                attrs: {
+                    style: { width: '100%' },
+                    allowClear: true,
+                    size: 'small'
+                },
+                propAttrs: {}
+            }
+        ],
+        editor: Enum.FormControlPropertyEditor.singerLine
     }, 
 ]
 

@@ -6,7 +6,7 @@
             :is="control.control.control" 
         >
             <template v-for="(controls, slotIndex) in children" #[`child${slotIndex}`]>
-                <form-design-control
+                <vant-form-design-control
                     v-for="(control, index) in controls"
                     :control-id="control.id"
                     :ref="control.id"
@@ -22,7 +22,7 @@
                     :control="control"
                     :key="index"
                 >
-                </form-design-control>
+                </vant-form-design-control>
             </template>
             <template v-for="slot in Object.keys(control.control.slot)" #[slot]>
                 <div :key="slot">
@@ -56,25 +56,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { FormDesign } from '@/@types/form-design.d';
+import { Component, Prop, Vue, Watch, Inject } from 'vue-property-decorator';
+import FormDesign from '@/@types/form-design';
 import { get, post } from '@/tools/common';
 
 @Component({
   components: {
   }
 })
-export default class FormDesignControl extends Vue {
+export default class VantFormDesignControl extends Vue {
     @Prop({ type: String }) controlId!: string;
 
     @Prop({ }) control!: any;
     @Prop({ type: Array, default: () => [] }) children!: Array<any>;
-    @Prop({ type: Object }) panel!: FormDesign.FormPanel;
     @Prop({ type: Number }) index!: number;
     @Prop({ }) dragConfig!: FormDesign.DragConfig;
     @Prop({ }) currentSelectedControl!: Array<FormDesign.FormControl>;
     /** 设计器事件总线 */
     @Prop({}) bus!: Vue;
+    /** 画布组件树 */
+    @Inject() readonly panel!: FormDesign.FormPanel;
 
     mouseDownEvent(e, control) {
         this.$emit('mouseDownEvent', e, control);

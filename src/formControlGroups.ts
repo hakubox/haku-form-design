@@ -1,4 +1,4 @@
-import { FormDesign } from '@/@types/form-design';
+import FormDesign from './@types/form-design';
 
 /** 组件分组列表 */
 let _controlGroups: Array<FormDesign.FormControlGroup> = [
