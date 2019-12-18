@@ -66,6 +66,10 @@ export { default as FireOutline } from '@ant-design/icons/lib/outline/FireOutlin
 export { default as WarningOutline } from '@ant-design/icons/lib/outline/WarningOutline';
 export { default as LaptopOutline } from '@ant-design/icons/lib/outline/LaptopOutline';
 export { default as MobileOutline } from '@ant-design/icons/lib/outline/MobileOutline';
+export { default as SkinOutline } from '@ant-design/icons/lib/outline/SkinOutline';
+export { default as CheckOutline } from '@ant-design/icons/lib/outline/CheckOutline';
+export { default as ApiOutline } from '@ant-design/icons/lib/outline/ApiOutline';
+
 
 
 export { default as CheckCircleFill } from '@ant-design/icons/lib/fill/CheckCircleFill';

@@ -40,6 +40,7 @@
                 default: () => []
             }
         },
+        inject: ['bus'],
         data: () => ({
             editor: null,
             content: '',
@@ -108,14 +109,26 @@
 
                 this.editor.onDidChangeModelContent(event => {
                     if (!this.__preventTriggerChangeEvent) {
-                        console.log('parse', JSON.parse(this.getValue()));
-                        this.$emit('input', JSON.parse(this.getValue()));
+                        // console.log('parse', JSON.parse(this.getValue()));
+                        // this.$emit('input', JSON.parse(this.getValue()));
                     }
                 });
 
                 this.$emit('ready', this.editor);
 
                 this.refresh();
+
+                this.$nextTick(() => {
+                    this.editor.onDidBlurEditorText(e => {
+                        if (!this.__preventTriggerChangeEvent) {
+                            this.$emit('input', JSON.parse(this.getValue()));
+                        }
+                    });
+                });
+
+                this.bus.$on('prop_change', () => {
+                    this.$emit('input', JSON.parse(this.getValue()));
+                });
             },
             refresh() {
                 this.editor.layout();

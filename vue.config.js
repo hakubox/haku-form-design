@@ -5,6 +5,25 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
     runtimeCompiler: true,
+    chainWebpack(config) {
+        // 换肤loader[scss]
+        const scss = config.module.rule('scss').toConfig();
+        const useable_scss = { ...scss.oneOf[3], test: /\.lazy\.scss$/ };
+        useable_scss.use = [...useable_scss.use];
+        useable_scss.use[0] = { loader: 'style-loader', options: { injectType: 'lazySingletonStyleTag' } };
+        config.module.rule('scss').merge({
+            oneOf: [useable_scss]
+        });
+
+        // 换肤loader[less]
+        const less = config.module.rule('less').toConfig();
+        const useable_less = { ...less.oneOf[3], test: /\.lazy\.less$/ };
+        useable_less.use = [...useable_less.use];
+        useable_less.use[0] = { loader: 'style-loader', options: { injectType: 'lazySingletonStyleTag' } };
+        config.module.rule('less').merge({
+            oneOf: [useable_less]
+        });
+    },
     configureWebpack: {
         module: {
             rules: [
@@ -58,13 +77,13 @@ module.exports = {
         }
     },
     css: {
-        sourceMap: true,
+        sourceMap: process.env.NODE_ENV !== 'production',
         requireModuleExtension: true,
         loaderOptions: {
             less: {
                 javascriptEnabled: true
             },
-            sass: {
+            scss: {
                 prependData: `@import "~@/assets/scss/variables.scss";`
             }
         }

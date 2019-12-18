@@ -101,12 +101,12 @@ export namespace Enum {
         byte = 'byte',
         /** Json类型 */
         json = 'json',
+        /** Javascript类型 */
+        javascript = 'javascript',
         /** 图标类型 */
         icon = 'icon',
         /** 列表型 */
         list = 'list',
-        /** 数据源类型 */
-        dataSourceType = 'data-source-type',
         /** 函数类型 */
         function = 'function',
         /** 对象列表类型 */

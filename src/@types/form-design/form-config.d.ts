@@ -24,4 +24,6 @@ export declare class FormConfig {
     footer: FormFooterConfig;
     /** 表单当前控件索引（自增） */
     controlIndex: number;
+    /** 表单主题 */
+    formTheme: string;
 }

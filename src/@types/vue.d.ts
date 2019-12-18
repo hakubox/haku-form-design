@@ -36,6 +36,8 @@ declare module 'vue/types/vue' {
         // $emum: typeof sysEnum;
         /** EventBus */
         $bus: Vue;
+        /** 设置主题 */
+        $setTheme(code: string): void;
         /** 系统级配置 */
         $config: SysConfig;
         /** 当前组件权限 */

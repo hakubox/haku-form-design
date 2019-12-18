@@ -15,6 +15,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     allowClear: true,
                     size: 'small'
                 },
+                events: {},
                 propAttrs: {}
             }
         ],
@@ -35,6 +36,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     addonAfter: '像素',
                     size: 'small'
                 },
+                events: {},
                 propAttrs: {}
             }
         ],
@@ -53,6 +55,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     addonAfter: '颜色',
                     size: 'small'
                 },
+                events: {},
                 propAttrs: {}
             }
         ],
@@ -71,13 +74,12 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     allowClear: true,
                     size: 'small'
                 },
+                events: {},
                 propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.byte
-    }, 
-    
-    {
+    }, {
         name: 'singer-line',
         description: '单行文本',
         control: [
@@ -89,6 +91,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     allowClear: true,
                     size: 'small'
                 },
+                events: {},
                 propAttrs: {}
             }
         ],
@@ -106,6 +109,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     size: 'small',
                     autosize: { minRows: 2, maxRows: 6 }
                 },
+                events: {},
                 propAttrs: {}
             }
         ],
@@ -121,6 +125,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     checkedChildren: '是',
                     unCheckedChildren: '否'
                 },
+                events: {},
                 propAttrs: {}
             }
         ],
@@ -139,6 +144,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     allowClear: true,
                     size: 'small'
                 },
+                events: {},
                 propAttrs: {}
             }
         ],
@@ -157,6 +163,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     allowClear: true,
                     size: 'small'
                 },
+                events: {},
                 propAttrs: {}
             }
         ],
@@ -169,37 +176,16 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                 control: 'a-select',
                 slot: {},
                 attrs: {
+                    allowClear: true,
                     buttonStyle: 'solid',
                     style: { width: '100%' },
                     size: 'small'
                 },
+                events: {},
                 propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.list
-    }, {
-        name: 'data-source-type',
-        description: '数据源类型',
-        control: [
-            {
-                control: 'a-radio-group',
-                slot: {
-                    default: [
-                        { control: 'a-radio-button', attrs: { value: 'basic-data' }, propAttrs: {}, slot: {}, html: '基础数据' },
-                        { control: 'a-radio-button', attrs: { value: 'view-data' }, propAttrs: {}, slot: {}, html: '数据视图' },
-                        { control: 'a-radio-button', attrs: { value: 'user' }, propAttrs: {}, slot: {}, html: '用户' },
-                        { control: 'a-radio-button', attrs: { value: 'group' }, propAttrs: {}, slot: {}, html: '组织' },
-                    ]
-                },
-                attrs: {
-                    buttonStyle: 'solid',
-                    style: { width: '100%' },
-                    size: 'small'
-                }, 
-                propAttrs: {}
-            }
-        ],
-        editor: Enum.FormControlPropertyEditor.dataSourceType
     }, {
         name: 'view-data',
         description: '视图',
@@ -221,6 +207,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                         { value: 'ccc', label: 'ccc' },
                     ]
                 }, 
+                events: {}, 
                 propAttrs: {}
             }
         ],
@@ -248,6 +235,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                         ] },
                     ]
                 }, 
+                events: {}, 
                 propAttrs: {}
             }
         ],
@@ -304,6 +292,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     addonAfter: '函数',
                     size: 'small'
                 },
+                events: {}, 
                 propAttrs: {}
             }
         ],
@@ -324,10 +313,32 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     },
                     style: { width: '100%', height: '300px' }
                 },
+                events: {}, 
                 propAttrs: {}
             }
         ],
         editor: Enum.FormControlPropertyEditor.json
+    }, {
+        name: 'javascript',
+        description: 'Javascript',
+        control: [
+            {
+                control: 'code-editor',
+                slot: {},
+                attrs: {
+                    isFormExpression: true,
+                    language: 'javascript',
+                    options: {
+                        lineNumbers: "off",
+                        scrollBeyondLastLine: false,
+                    },
+                    style: { width: '100%', height: '300px' }
+                },
+                events: {}, 
+                propAttrs: {}
+            }
+        ],
+        editor: Enum.FormControlPropertyEditor.javascript
     }, {
         name: 'model-list',
         description: '对象列表',
@@ -337,6 +348,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                 slot: {},
                 attrs: {
                 },
+                events: {}, 
                 propAttrs: {}
             }
         ],
@@ -357,6 +369,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     },
                     style: { width: '100%', height: '80px' }
                 },
+                events: {}, 
                 propAttrs: {}
             }
         ],
@@ -373,6 +386,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     allowClear: true,
                     size: 'small'
                 },
+                events: {}, 
                 propAttrs: {}
             }
         ],

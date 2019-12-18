@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { UserInfo } from '@/@types/basic.d';
 import { User } from 'model';
+import FormDesign from '@/@types/form-design';
 
 Vue.use(Vuex);
 
@@ -21,7 +22,8 @@ export default new Vuex.Store({
             nickname: '',
             email: '',
             phone: ''
-        }
+        },
+        formVariables: [] as Array<FormDesign.FormVariable>
     },
     getters: {
         /** 获取用户信息 */
@@ -43,6 +45,9 @@ export default new Vuex.Store({
                 re = value.every(val => !!state.permissions.find(i => i && i.code === val));
             }
             return re;
+        },
+        getFormVariables(state): Array<FormDesign.FormVariable> {
+            return state.formVariables;
         }
     },
     mutations: {
@@ -51,6 +56,9 @@ export default new Vuex.Store({
         },
         setUserInfo(state, userInfo) {
             state.userInfo = userInfo;
+        },
+        setAllFormVariables(state, variables) {
+            state.formVariables = variables;
         }
     },
     actions: {}

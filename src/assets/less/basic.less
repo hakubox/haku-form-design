@@ -1,0 +1,25 @@
+@primary-1: #E2EFFE;
+@primary-color: #1D87EA;
+
+// @primary-1: #e0f1e7;
+// @primary-color: #30A679;
+
+@error-color: #f5222d;
+// @form-item-margin-bottom: 14px;
+body {
+    .themeInit(@themeName);
+
+    background-color: @primary-color;
+}
+
+form textarea.ant-input {
+    margin-top: 4px;
+}
+
+.ant-notification-notice {
+    float: right;
+
+    .ant-notification-notice-message {
+        word-break: keep-all;
+    }
+}

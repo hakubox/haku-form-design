@@ -7,11 +7,13 @@ import { FormControlGroup } from "./form-control-group";
 import { RemoteDevice } from "./remote-device";
 import { FormPanel } from "./form-panel";
 import { FormControlProperty } from "./form-control-property";
+import { FormControlEvent } from "./form-control-event";
 import { PropertyEditor } from "./property-editor";
 import { BasicControl } from "./basic-control";
 import { PropertyGroup } from "./property-group";
 import { FormControl } from "./form-control";
 import { FormVariable } from "./form-variable";
+import { FormTheme } from "./form-theme";
 
 export {
     /** 简单坐标类 */
@@ -31,7 +33,9 @@ export {
     /** 包含一个控件列表的表单区域 */
     FormPanel,    
     /** 属性 */
-    FormControlProperty,    
+    FormControlProperty,
+    /** 事件 */
+    FormControlEvent,
     /** 基础组件 */
     BasicControl,    
     /** 属性编辑器 */
@@ -41,5 +45,7 @@ export {
     /** 表单控件 */
     FormControl,
     /** 表单变量 */
-    FormVariable
+    FormVariable,
+    /** 表单主题 */
+    FormTheme
 };

@@ -6,6 +6,8 @@ export declare class BasicControl {
     control: string;
     /** 组件属性 */
     attrs: Record<string, any>;
+    /** 组件属性 */
+    events: Record<string, string>;
     /** 修改前的组件属性 */
     propAttrs: Record<string, any>;
     /** 组件事件 */

@@ -12,6 +12,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'vant-form-design-control-row',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {}
@@ -72,6 +73,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -83,6 +87,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'vant-form-design-control-tabs',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {}
@@ -162,6 +167,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -173,6 +181,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'vant-form-design-control-collapse',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {
@@ -222,8 +231,11 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
-    }, 
+    },
     
     /**
      * 控件组
@@ -233,12 +245,14 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'vant-form-design-control-cell-group',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {
                 default: [
                     {
                         control: 'form-design-blank-control',
                         attrs: {},
+                        events: {},
                         propAttrs: {},
                         slot: {}
                     }
@@ -259,6 +273,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
     
@@ -270,6 +287,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'van-field',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {
@@ -320,6 +338,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
     
@@ -331,6 +352,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'van-field',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {
@@ -379,6 +401,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
     
@@ -391,12 +416,14 @@ let formControls: Array<FormDesign.FormControl> = [
             control: 'van-cell',
             isMain: false,
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {
                 default: [
                     {
                         control: 'van-stepper',
                         attrs: {},
+                        events: {},
                         propAttrs: {},
                         slot: {},
                         defaultAttrs: {
@@ -485,6 +512,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
     
@@ -496,6 +526,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'van-field',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {
                 button: [
@@ -507,6 +538,7 @@ let formControls: Array<FormDesign.FormControl> = [
                             type: 'primary',
                             icon: 'search'
                         },
+                        events: {},
                         propAttrs: {},
                     }
                 ]
@@ -547,24 +579,12 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'model', title: 'model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
-                name: 'data-source-type', title: '数据源类型', default: 'basic-data', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.dataSourceType,
-                change(prop, propMap, control, value, refs) {
-                    propMap['view-data'].visible = value == 'view-data';
-                    propMap['basic-data'].visible = value == 'basic-data';
-                    propMap['user'].visible = value == 'user';
-                    propMap['group'].visible = value == 'group';
-                }
-            }, {
-                name: 'basic-data', title: '可选基础数据', require: true, leaf: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.basicData
-            }, {
-                name: 'view-data', title: '可选视图数据', visible: false, require: true, leaf: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.view
-            }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     },
 
@@ -576,6 +596,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'form-design-control-radio-group', //van-radio-group
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {
@@ -598,40 +619,18 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'required', title: '是否必填', default: false,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'use-datasouce', title: '使用数据源', default: false,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.boolean,
-                change(prop, propMap, control, value, refs) {
-                    propMap['data-source-type'].visible = value;
-                    propMap['view-data'].visible = value;
-                    propMap['basic-data'].visible = false;
-                    propMap['user'].visible = false;
-                    propMap['group'].visible = false;
-                    propMap['options'].visible = !value;
-                }
-            }, {
-                name: 'options', title: '单选框列表项', default: [ { id: '1', title: '单选框 1', icon: '' }, { id: '2', title: '单选框 2', icon: '' } ],
+                name: 'options', title: '绑定数据源', default: [ 
+                    { id: '1', title: '单选框 1', icon: '' }, 
+                    { id: '2', title: '单选框 2', icon: '' } 
+                ],
                 layout: Enum.PropertyLayout.block,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
                 attrs: { rowKey: 'title', columns: [
                     { name: 'id', width: '30%', title: 'Id', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                     { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
                     { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                 ] }
-            }, {
-                name: 'data-source-type', title: '数据源类型', default: 'basic-data', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.dataSourceType,
-                change(prop, propMap, control, value, refs) {
-                    propMap['view-data'].visible = value == 'view-data';
-                    propMap['basic-data'].visible = value == 'basic-data';
-                    propMap['user'].visible = value == 'user';
-                    propMap['group'].visible = value == 'group';
-                }
-            }, {
-                name: 'basic-data', title: '可选基础数据', require: true, leaf: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.basicData
-            }, {
-                name: 'view-data', title: '可选视图数据', visible: false, require: true, leaf: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.view
             }, {
                 name: 'model', title: 'model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -639,6 +638,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -650,6 +652,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'form-design-control-checkbox-group',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {
@@ -675,18 +678,7 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'required', title: '是否必填', default: false,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'use-datasouce', title: '使用数据源', default: false,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.boolean,
-                change(prop, propMap, control, value, refs) {
-                    propMap['data-source-type'].visible = value;
-                    propMap['view-data'].visible = value;
-                    propMap['basic-data'].visible = false;
-                    propMap['user'].visible = false;
-                    propMap['group'].visible = false;
-                    propMap['options'].visible = !value;
-                }
-            }, {
-                name: 'options', title: '单选框列表项', default: [ { id: '1', title: '复选框 1', icon: '' }, { id: '2', title: '复选框 2', icon: '' } ],
+                name: 'options', title: '数据源', default: [ { id: '1', title: '复选框 1', icon: '' }, { id: '2', title: '复选框 2', icon: '' } ],
                 layout: Enum.PropertyLayout.block,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
                 attrs: { rowKey: 'title', columns: [
@@ -695,27 +687,15 @@ let formControls: Array<FormDesign.FormControl> = [
                     { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                 ] }
             }, {
-                name: 'data-source-type', title: '数据源类型', default: 'basic-data', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.dataSourceType,
-                change(prop, propMap, control, value, refs) {
-                    propMap['view-data'].visible = value == 'view-data';
-                    propMap['basic-data'].visible = value == 'basic-data';
-                    propMap['user'].visible = value == 'user';
-                    propMap['group'].visible = value == 'group';
-                }
-            }, {
-                name: 'basic-data', title: '可选基础数据', require: true, leaf: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.basicData
-            }, {
-                name: 'view-data', title: '可选视图数据', visible: false, require: true, leaf: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.view
-            }, {
                 name: 'model', title: 'model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -727,6 +707,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'van-field',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {
@@ -764,6 +745,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -775,6 +759,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'van-switch-cell',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {
@@ -812,6 +797,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -823,6 +811,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'van-uploader',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {
@@ -899,6 +888,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -911,12 +903,14 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'van-cell',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {
                 default: [
                     {
                         control: 'van-uploader',
                         attrs: {},
+                        events: {},
                         propAttrs: {},
                         slot: {
                             default: [
@@ -927,6 +921,7 @@ let formControls: Array<FormDesign.FormControl> = [
                                         type: 'primary',
                                         size: 'small'
                                     },
+                                    events: {},
                                     propAttrs: {},
                                     html: 'aa',
                                     slot: {}
@@ -990,6 +985,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -1002,6 +1000,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'van-pagination',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {
@@ -1040,6 +1039,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -1051,6 +1053,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'van-search',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {
@@ -1102,6 +1105,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -1113,6 +1119,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'van-slider',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {
@@ -1147,6 +1154,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -1159,12 +1169,14 @@ let formControls: Array<FormDesign.FormControl> = [
             control: 'van-cell',
             isMain: false,
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {
                 default: [
                     {
                         control: 'van-count-down',
                         attrs: {},
+                        events: {},
                         propAttrs: {},
                         slot: {},
                         defaultAttrs: {
@@ -1213,6 +1225,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -1225,12 +1240,14 @@ let formControls: Array<FormDesign.FormControl> = [
             control: 'van-cell',
             isMain: false,
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {
                 default: [
                     {
                         control: 'van-rate',
                         attrs: {},
+                        events: {},
                         propAttrs: {},
                         slot: {},
                         defaultAttrs: {
@@ -1324,6 +1341,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 
@@ -1335,6 +1355,7 @@ let formControls: Array<FormDesign.FormControl> = [
         control: {
             control: 'form-design-control-grid',
             attrs: {},
+            events: {},
             propAttrs: {},
             slot: {},
             defaultAttrs: {}
@@ -1384,6 +1405,9 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
+        ],
+        events: [
+            
         ]
     }, 
 ]

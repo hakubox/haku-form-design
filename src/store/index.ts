@@ -4,8 +4,15 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {},
-  mutations: {},
-  actions: {},
-  modules: {}
+    state: {
+        formVariables: []
+    },
+    mutations: {},
+    getters: {
+        getFormVariables: state => (value): any => {
+            return state.formVariables;
+        }
+    },
+    actions: {},
+    modules: {}
 });

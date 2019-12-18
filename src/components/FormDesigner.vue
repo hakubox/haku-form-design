@@ -51,6 +51,15 @@
                             {{form.formConfig.formTitle}}
                         </a-menu-item>
                     </a-sub-menu>
+                    <a-sub-menu>
+                        <span slot="title" class="submenu-title-wrapper">
+                            <a-icon type="skin" />主题
+                        </span>
+                        <a-menu-item :class="{ 'ant-menu-item-active': formConfig.formTheme == theme.code }" v-for="(theme, index) in formThemes" :key="'sub1-2-' + index" @click="selectTheme(theme)">
+                            <a-icon v-show="formConfig.formTheme == theme.code" type="check" />
+                            {{theme.title}}
+                        </a-menu-item>
+                    </a-sub-menu>
                     <a-menu-item><a-icon type="fire" />示例表单</a-menu-item>
                 </a-sub-menu>
                 <a-sub-menu>
@@ -74,9 +83,16 @@
                     <a-menu-item key="export-file" @click="menu_exportVuePage()">导出为Vue页面文件</a-menu-item>
                 </a-sub-menu>
 
-                <a-menu-item key="editdata" @click="variableEditorVisible = true;">
-                    <a-icon type="edit" />编辑数据
-                </a-menu-item>
+                <a-sub-menu>
+                    <span slot="title" class="submenu-title-wrapper">
+                        <a-icon type="edit" />数据配置
+                    </span>
+                    
+                    <a-menu-item @click="variableEditorVisible = true;"><a-icon type="profile" />变量配置</a-menu-item>
+                    <a-menu-item @click="eventEditorVisible = true;"><a-icon type="thunderbolt" />事件/函数配置</a-menu-item>
+                    <a-menu-item @click="apiEditorVisible = true;"><a-icon type="api" />接口配置</a-menu-item>
+                </a-sub-menu>
+
                 <a-menu-item key="about">
                     <a-icon type="info-circle" />关于
                 </a-menu-item>
@@ -146,10 +162,10 @@
                     </a-select>
                 </li>
                 <li class="form-design-body-propertypanel-props">
-                    <a-tabs defaultActiveKey="prop">
+                    <a-tabs defaultActiveKey="prop" @bus="changeMainPropertyPanel($event)">
                         <a-tab-pane key="prop">
                             <span slot="tab"><a-icon type="profile" />属性</span>
-                            <a-empty v-show="!currentSelectedControlPropertyGroups.length" description="请选择控件" :style="{ marginTop: '100px' }"></a-empty>
+                            <a-empty v-show="!currentSelectedControlPropertyGroups.length" description="暂无属性" :style="{ marginTop: '100px' }"></a-empty>
                             <a-collapse :activeKey="['p0','p1','p2','p3']" :bordered="false">
                                 <a-collapse-panel v-for="(propGroup, index) in currentSelectedControlPropertyGroups" :key="'p' + index" :header="propGroup.title">
                                     <template v-for="prop in propGroup.propertys">
@@ -158,13 +174,13 @@
                                                 {{prop.title}}
                                                 <div style="float: right;" v-if="prop.attach">
                                                     <a-button-group size="small">
-                                                        <a-button :type="currentSelectedControl[0].propertyEditors[prop.name] == prop.editor ? 'primary' : 'default'" value="default" @click="changePropAttach(prop, prop.editor)">常规</a-button>
-                                                        <a-button :type="currentSelectedControl[0].propertyEditors[prop.name] == attach ? 'primary' : 'default'" v-for="attach in prop.attach" :key="attach" :value="attach" @click="changePropAttach(prop, attach);">{{ propertyEditors[attach].description }}</a-button>
+                                                        <a-button :type="currentPropertyEditors[prop.name] == prop.editor ? 'primary' : 'default'" value="default" @click="changePropAttach(prop, prop.editor)">常规</a-button>
+                                                        <a-button :type="currentPropertyEditors[prop.name] == attach ? 'primary' : 'default'" v-for="attach in prop.attach" :key="attach" :value="attach" @click="changePropAttach(prop, attach);">{{ propertyEditors[attach].description }}</a-button>
                                                     </a-button-group>
                                                 </div>
                                             </span>
                                             <div class="form-design-body-property-item-value">
-                                                <div v-if="!prop.attach || !prop.attach.length || (prop.attach && currentSelectedControl[0].propertyEditors[prop.name] == prop.editor)">
+                                                <div v-if="!prop.attach || !prop.attach.length || (prop.attach && currentPropertyEditors[prop.name] == prop.editor)">
                                                     <template v-for="(control, index2) in propertyEditors[prop.editor].control">
                                                         <component @focus="currentProp = prop"
                                                             :key="index2"
@@ -205,7 +221,7 @@
                                                     </template>
                                                 </div>
                                                 <div v-else>
-                                                    <template v-show="currentSelectedControl[0].propertyEditors[prop.name] != prop.editor" v-for="(control, index2) in propertyEditors[currentSelectedControl[0].propertyEditors[prop.name]].control">
+                                                    <template v-show="currentPropertyEditors[prop.name] != prop.editor" v-for="(control, index2) in propertyEditors[currentPropertyEditors[prop.name]].control">
                                                         <component @focus="currentProp = prop"
                                                             :key="index2"
                                                             :ref="control.id"
@@ -251,6 +267,24 @@
                         </a-tab-pane>
                         <a-tab-pane key="event">
                             <span slot="tab"><a-icon type="thunderbolt" />事件</span>
+                            <a-empty v-show="!currentSelectedControlEventList.length" description="暂无事件" :style="{ marginTop: '100px' }"></a-empty>
+                            <div class="form-design-body-property-list">
+                                <div class="form-design-body-property-item" v-for="event in currentSelectedControlEventList" :key="event.name">
+                                    <span class="form-design-body-property-item-label">
+                                        {{event.title}}
+                                        <!-- <div style="float: right;">
+                                            <a-button-group size="small">
+                                                <a-button :type="currentPropertyEditors[prop.name] == prop.editor ? 'primary' : 'default'" value="default" @click="changePropAttach(prop, prop.editor)">常规</a-button>
+                                                <a-button :type="currentPropertyEditors[prop.name] == attach ? 'primary' : 'default'" v-for="attach in prop.attach" :key="attach" :value="attach" @click="changePropAttach(prop, attach);">{{ propertyEditors[attach].description }}</a-button>
+                                            </a-button-group>
+                                        </div> -->
+                                    </span>
+                                    <div class="form-design-body-property-item-value">
+                                        <a-select size="small" :allowClear="true" class="wfull">
+                                        </a-select>
+                                    </div>
+                                </div>
+                            </div>
                         </a-tab-pane>
                         <a-tab-pane key="config">
                             <span slot="tab"><a-icon type="setting" />表单配置</span>
@@ -287,7 +321,7 @@
                                                     <a-divider style="margin: 4px 0;" />
                                                     <div style="padding: 8px; cursor: pointer;"><a-icon type="plus" /> 新增设备</div>
                                                 </div>
-                                                <a-select-option v-for="device in Object.values(devices).filter(i => i.type == currentComponentLibrary.type)" :value="device.code" :key="device.code">{{device.name}}: {{device.width}}×{{device.height}}</a-select-option>
+                                                <a-select-option v-for="device in Object.values(devices).filter(function(i) { return i.type == currentComponentLibrary.type})" :value="device.code" :key="device.code">{{device.name}}: {{device.width}}×{{device.height}}</a-select-option>
                                             </a-select>
                                         </div>
                                     </label>
@@ -396,6 +430,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Provide } from 'vue-property-decorator';
+import { State, Getter, Mutation } from 'vuex-class';
 import FormDesign from '@/@types/form-design';
 import { initPropertyEditors } from '@/propertyEditor';
 import { Enum } from '@/config/enum';
@@ -406,6 +441,7 @@ import { initRemoteDevices } from '@/formDevices';
 import { cloneForce } from '@/lib/clone/index';
 import { base64 } from '@/lib/base64/base64';
 import { componentLibrarys } from '@/formLibrarys.ts';
+import less from 'less';
 
 import Icon from 'vant/lib/icon';
 import 'vant/lib/index.css';
@@ -433,8 +469,15 @@ export default class FormDesigner extends Vue {
 
     /** JSON编辑器弹出框是否显示 */
     jsonEditorVisible: boolean = false;
-    /** 页面变量编辑器弹出框是否显示 */
+
+    /** 变量编辑器弹出框是否显示 */
     variableEditorVisible: boolean = false;
+    /** 事件编辑器弹出框是否显示 */
+    eventEditorVisible: boolean = false;
+    /** API编辑器弹出框是否显示 */
+    apiEditorVisible: boolean = false;
+
+
     /** 预览界面是否显示 */
     previewVisible: boolean = false;
     /** JSON编辑器的值 */
@@ -461,9 +504,20 @@ export default class FormDesigner extends Vue {
     /** 组件库列表 */
     componentLibraryList: Array<FormDesign.ComponentLibrary> = componentLibrarys;
 
+    /** 表单主题清单 */
+    formThemes: Array<FormDesign.FormTheme> = [
+        { code: 'default', title: '默认主题' },
+        { code: 'gejiform', title: '戈吉表单主题' },
+    ];
+
     /** 当前组件库 */
     get currentComponentLibrary(): FormDesign.ComponentLibrary {
         return this.componentLibraryList.find(i => i.name == this.formConfig.formComponentLib) || componentLibrarys[0];
+    }
+
+    /** 当前控件对应的属性编辑器字典 */
+    get currentPropertyEditors(): Record<string, Enum.FormControlPropertyEditor> {
+        return this.currentSelectedControl[0].propertyEditors as Record<string, Enum.FormControlPropertyEditor>;
     }
 
     /** 当前焦点属性 */
@@ -488,9 +542,6 @@ export default class FormDesigner extends Vue {
         },
     };
 
-    /** 表单变量 */
-    formVariables: Array<FormDesign.FormVariable> = [];
-
     /** 表单基本配置 */
     formConfig: FormDesign.FormConfig = {
         formComponentLib: 'ant-design',
@@ -502,6 +553,7 @@ export default class FormDesigner extends Vue {
         headerHeight: 48,
         controlIndex: 1,
         deviceId: 'xsmallpc',
+        formTheme: 'default',
         footer: {
             isShow: true,
             submitButtonText: '提交',
@@ -519,6 +571,12 @@ export default class FormDesigner extends Vue {
     /** 历史表单 */
     historyForm: Array<{ formConfig: FormDesign.FormConfig, controls: FormDesign.FormPanel }> = [];
 
+    /** 表单变量 */
+    @Getter('getFormVariables') formVariables!: Array<FormDesign.FormVariable>;
+
+    /** 更新全部表单变量 */
+    @Mutation('setAllFormVariables') setAllFormVariables!: Function;
+
     /** 画布组件列表 */
     @Provide() controlList: Array<FormDesign.FormControl> = [];
 
@@ -535,11 +593,13 @@ export default class FormDesigner extends Vue {
     currentSelectedFirstControlId?: string = '';
     /** 当前选择控件所带来的控件属性组 */
     currentSelectedControlPropertyGroups: Array<FormDesign.PropertyGroup> = [];
+    /** 当前选择控件所带来的控件事件列表 */
+    currentSelectedControlEventList: Array<FormDesign.FormControlEvent> = [];
     /** 当前选择控件所带来的控件属性哈希表 */
     currentSelectedControlPropertyMap: Array<FormDesign.FormControlProperty> = [];
 
     /** 设计器事件总线 */
-    bus: Vue = new Vue();
+    @Provide() bus: Vue = new Vue();
 
     /** 组件库 */
     controlGroups = _controlGroups.map(i => ({
@@ -556,6 +616,11 @@ export default class FormDesigner extends Vue {
             ...i,
             controls: this.controlList.filter(o => o.type == i.name)
         })).filter(i => i.controls.length);
+    }
+
+    /** 切换右侧主Tabs */
+    changeMainPropertyPanel() {
+        this.bus.$emit('prop_change');
     }
 
     /** 切换组件库 */
@@ -590,6 +655,7 @@ export default class FormDesigner extends Vue {
 
     /** 切换当前选择的控件 */
     changeSelectedFormControl(formControlList) {
+        this.bus.$emit('prop_change');
         this.currentSelectedControl = formControlList;
         
         if (formControlList?.length) {
@@ -617,6 +683,8 @@ export default class FormDesigner extends Vue {
                     propertys: _props
                 };
             }).filter(i => i.propertys.length);
+
+            this.currentSelectedControlEventList = formControlList?.length ? formControlList[0].events : [];
         } else {
             this.currentProp = {};
             this.currentSelectedFirstControlId = undefined;
@@ -639,9 +707,11 @@ export default class FormDesigner extends Vue {
                     this.toolsEl.style.transform = `translateY(${rect.bottom + this.canvasEl.scrollTop - 380}px)`;
                 }
             } else {
+                let _width = _el.offsetWidth;
+                let _height = _el.offsetHeight;
                 console.log(_el);
                 if (bottom > 200) {
-                    this.toolsEl.style.transform = `translate(30px, ${rect.top + this.canvasEl.scrollTop}px)`;
+                    this.toolsEl.style.transform = `translate(${ -40 }px, ${rect.top + this.canvasEl.scrollTop + _height - 40}px)`;
                 } else if (rect.top > 200) {
                     this.toolsEl.style.transform = `translateY(-100px, ${rect.bottom + this.canvasEl.scrollTop - 380}px)`;
                 }
@@ -1136,31 +1206,56 @@ export default class FormDesigner extends Vue {
 
     /** 重新生成页面变量 */
     resetFormVariable() {
-        this.formVariables = this.controlList.filter(i => i.control.attrs.model).map(i => ({
+        let _formVariables = this.controlList.filter(i => i.control.attrs.model).map(i => ({
             keyword: 'let',
             name: i.control.attrs.model,
             type: (i.propertys.find(prop => prop.name == 'model') || { type: 'any' }).type,
             remark: i.control.attrs.remark,
         })) as Array<FormDesign.FormVariable>;
+        this.setAllFormVariables(_formVariables);
 
-        this.editorVariable = this.formVariables.map(i => `${i.remark ? '/** ' +  i.remark + ' */\n' : ''}${i.keyword} ${i.name}: ${i.type};`).join('\n\n');
+        this.editorVariable = _formVariables.map(i => `${i.remark ? '/** ' +  i.remark + ' */\n' : ''}${i.keyword} ${i.name}: ${i.type};`).join('\n\n');
     }
 
     /** 保存页面变量 */
     saveFormVariable(variables: Record<string, any> = {}) {
-        let _reg = /(\/\*\*\s*(?<remark>\S+)\s*\*\/(\n|\r|\t)*)?((?<keyword>var|let|const)\s)?(?<name>\S+)\s?(:\s?(?<type>\S+))?(\s?=\s?\S+)?(?<value>\S+)?;/g;
+        let _reg = /(\/\*\*\s*(?<remark>\S+)\s*\*\/(\n|\r|\t)*)?((?<keyword>var|let|const)\s)?(?<name>[a-zA-Z0-9_]+)\s?(:\s(?<type>[^=]+)\s)?(\s?=\s?)?['"]?(?<value>\D+?)?['"]?;/g;
         let _list: Array<any> = [];
         let _item: any;
 
         while(_item = _reg.exec(this.editorVariable)) {
+            let _type = _item.groups.type || undefined;
+            let _value = _item.groups.value || undefined;
+            if (!_type) {
+                if (_value) {
+                    if (!isNaN(_value)) {
+                        _type = 'number';
+                        _value = JSON.parse(_item.groups.value);
+                    }
+                    if (typeof(_item.groups.value) != 'object') {
+                        _type = typeof(_item.groups.value);
+                        if (_type != 'string') {
+                            _value = JSON.parse(_item.groups.value);
+                        }
+                    } else {
+                        _type = Object.prototype.toString.call(_item.groups.value).slice(8, -1);
+                        _value = JSON.parse(_item.groups.value);
+                    }
+                } else {
+                    _type = 'any';
+                }
+            } else if (_type != 'string' && _value) {
+                _value = Function('return ' + _item.groups.value)();
+            }
             _list.push({
                 ..._item.groups,
                 keyword: _item.groups.keyword || 'let',
-                type: _item.groups.type || 'any'
+                type: _type,
+                value: _value
             });
         }
         // @ts-ignore
-        this.formVariables = _list.map(i => Object.assign({}, i));
+        this.setAllFormVariables(_list.map(i => Object.assign({}, i)));
 
         this.$message.success('页面变量已保存');
         this.variableEditorVisible = false;
@@ -1268,7 +1363,7 @@ export default class FormDesigner extends Vue {
         let _index = this.controlList.findIndex(i => i.id == this.currentSelectedControl[0].id);
         if (_index >= 0) {
             let _propIndex = this.controlList[_index].propertys.findIndex(i => i.name == prop.name);
-            this.currentSelectedControl[0].propertyEditors[prop.name] = editor;
+            this.currentPropertyEditors[prop.name] = editor;
 
             this.currentSelectedControl[0].control.attrs[prop.name] = prop.default;
             this.$set(this.currentSelectedControl[0].control.attrs, '__' + prop.name, '');
@@ -1308,6 +1403,12 @@ export default class FormDesigner extends Vue {
             onCancel: () => {
             },
         });
+    }
+
+    /** 选择主题 */
+    selectTheme(theme: FormDesign.FormTheme) {
+        this.formConfig.formTheme = theme.code;
+        this.$setTheme(theme.code);
     }
 
     /** 导入功能 */

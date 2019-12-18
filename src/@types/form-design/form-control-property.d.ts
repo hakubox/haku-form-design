@@ -5,7 +5,7 @@ import { Enum } from "@/config/enum";
 export declare class FormControlProperty {
     /** 属性名 */
     name: string;
-    /** 属性中文名 */
+    /** 属性标题 */
     title: string;
     /** 属性类型（目前仅为model属性使用） */
     type?: string | Function;

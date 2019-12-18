@@ -14,11 +14,11 @@ require('moment').locale('zn-cn');
 import "@/tools/directives";
 //ant-design-vue
 import "@/config/components";
-import '@/assets/less/variables.less';
+// import '@/assets/less/variables.less';
 //自定义组件库
 import components from "@/tools/registerGlobalComponents.ts";
 //主样式
-import '@/assets/scss/basic.scss';
+// import '@/assets/scss/basic.scss';
 //Fontawesome
 // import '@fortawesome/fontawesome-pro/scss/fontawesome.scss';
 // import '@fortawesome/fontawesome-pro/scss/light.scss';
@@ -51,6 +51,11 @@ axios.interceptors.response.use(function (response) {
 }, function (error) {
     return Promise.reject(error);
 });
+
+//主题
+import setTheme from '@/config/theme';
+Vue.prototype.$setTheme = setTheme;
+setTheme('default');
 
 //EventBus
 const bus = new Vue();

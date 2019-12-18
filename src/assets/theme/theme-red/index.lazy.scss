@@ -1,0 +1,14 @@
+
+$-primary-color: #ce1818;
+// $-primary-color: #1D87EA;
+$-error-color: #f5222d;
+$-bg-color: #F0F2F5;
+
+@import '../../scss/system';
+@import '../../scss/form-design';
+@import '../../scss/form-design-pc';
+
+body {
+    background-color: $-primary-color !important;
+    color: $-primary-color !important;
+}

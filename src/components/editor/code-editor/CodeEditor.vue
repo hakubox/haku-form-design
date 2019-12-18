@@ -44,6 +44,7 @@
                 default: () => []
             }
         },
+        inject: ['bus'],
         data: () => ({
             editor: null,
             content: '',
@@ -131,15 +132,27 @@
                     ..._options
                 });
 
-                this.editor.onDidChangeModelContent(event => {
-                    if (!this.__preventTriggerChangeEvent) {
-                        this.$emit('input', this.getValue());
-                    }
-                });
+                // this.editor.onDidChangeModelContent(event => {
+                //     if (!this.__preventTriggerChangeEvent) {
+                //         this.$emit('input', this.getValue());
+                //     }
+                // });
 
                 this.$emit('ready', this.editor);
 
                 this.refresh();
+
+                this.$nextTick(() => {
+                    this.editor.onDidBlurEditorText(e => {
+                        if (!this.__preventTriggerChangeEvent) {
+                            this.$emit('input', this.getValue());
+                        }
+                    });
+                });
+
+                this.bus.$on('prop_change', () => {
+                    this.$emit('input', this.getValue());
+                });
             },
             refresh() {
                 this.editor.layout();
