@@ -168,7 +168,6 @@ export default class FormDesignCanvas extends Vue {
 
     /** 显示或隐藏游标 */
     changeControlCursor(isShow: boolean, control?: HTMLElement, inside: boolean = false) {
-        
         if (isShow) {
             if(!control) {
                 this.rootPanelEl.insertAdjacentElement('beforeend', this.controlCursorEl);

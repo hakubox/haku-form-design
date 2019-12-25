@@ -393,13 +393,13 @@
         <a-modal :width="1000" :bodyStyle="{ 'padding-top': '0px' }" title="选择模板" :footer="null" wrap-class-name="form-json-editor-drawer" v-model="templateSelectModalVisible" @cancel="templateSelectModalVisible = false;">
             
             <a-tabs defaultActiveKey="pc">
-                <a-tab-pane :key="tab" v-for="tab in ['pc', 'mobile']">
+                <a-tab-pane :key="tab.code" v-for="tab in [{ code: 'pc', title: 'PC端', icon: 'laptop' }, { code: 'mobile', title: '移动端', icon: 'mobile' }]">
                     <span slot="tab">
-                        <a-icon type="laptop" />
-                        PC端模板
+                        <a-icon :type="tab.icon" />
+                        {{ tab.title }}模板
                     </span>
 
-                    <a-list :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }" :dataSource="formTemplates.filter(i => i.deviceType == 'pc')">
+                    <a-list :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }" :dataSource="formTemplates.filter(i => i.deviceType == tab.code)">
                         <a-list-item slot="renderItem" slot-scope="item, index">
                             <a-card hoverable style="width: 300px">
                                 <img alt="预览图" @click="selectTemplate(item)" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" slot="cover" />
@@ -625,14 +625,21 @@ export default class FormDesigner extends Vue {
 
     /** 组件库组件列表 */
     get componentList() {
-        return _antdControls;
+        switch (this.formConfig.formComponentLib) {
+            case 'vant': return _vantControls;
+            case 'ant-design': return _antdControls;
+            default: return [];
+        };
     }
 
     /** 组件库 */
     get controlGroups() {
         return (_controlGroups || []).map(i => ({
             ...i,
-            controls: _antdControls.filter(o => o.type == i.name)
+            controls: ({
+                'vant': _vantControls.filter(o => o.type == i.name),
+                'ant-design': _antdControls.filter(o => o.type == i.name)
+            })[this.formConfig.formComponentLib]
         }));
     }
 
@@ -893,7 +900,7 @@ export default class FormDesigner extends Vue {
             /** 放置控件 */
             if (this.dragConfig.isDragArea) {
                 let _newControl: FormDesign.FormControl = cloneForce({
-                    ..._antdControls.find(i => i.name == this.dragConfig.control.name),
+                    ...this.componentList.find(i => i.name == this.dragConfig.control.name),
                     height: 0
                 });
 
@@ -1291,14 +1298,15 @@ export default class FormDesigner extends Vue {
 
     /** 初始化表单 */
     initForm(template: FormDesign.FormTemplate) {
+        let _deviceId = template.deviceType == 'pc' ? 'xsmallpc' : 'iphone678';
         this.formConfig = {
             canvasTitle: '主页',
             formTitle: '测试流程',
             formName: 'TestTask',
-            width: 0,
-            height: 0,
+            width: this.devices[_deviceId].width,
+            height: this.devices[_deviceId].height,
             headerHeight: 48,
-            deviceId: 'xsmallpc',
+            deviceId: _deviceId,
             footer: {
                 isShow: true,
                 submitButtonText: '提交',

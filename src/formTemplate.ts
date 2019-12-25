@@ -25,7 +25,7 @@ const _formTemplates: Array<FormTemplate> = [
                 children: [
                     [ { 
                         id: "", name: "custom", events: [], propertys: [], 
-                        control: { control: 'antd-form-design-control-custom', attrs: { label: "申请人", renderFn: "'李典'" }, events: {}, propAttrs: {}, slot: {} } 
+                        control: { control: 'antd-form-design-control-custom', attrs: { label: "申请人", renderFn: "'张三'" }, events: {}, propAttrs: {}, slot: {} } 
                     } ], [ { 
                         id: "", name: "custom", events: [], propertys: [], 
                         control: { control: 'antd-form-design-control-custom', attrs: { label: "申请时间", renderFn: "new Date().format('yyyy-MM-dd HH:mm:ss')" }, events: {}, propAttrs: {}, slot: {} } 
