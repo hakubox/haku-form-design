@@ -127,7 +127,7 @@
                 });
 
                 this.bus.$on('prop_change', () => {
-                    this.$emit('input', JSON.parse(this.getValue()));
+                    this.getValue() && this.$emit('input', JSON.parse(this.getValue()));
                 });
             },
             refresh() {

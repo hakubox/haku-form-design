@@ -17,9 +17,7 @@
 
         <div ref="form-design-canvas-mainpanel" class="form-design-canvas-mainpanel">
 
-            <a-form v-if="currentComponentLibrary.code == 'antd'" 
-                :form="form"
-            >
+            <a-form v-if="currentComponentLibrary.code == 'antd'" :form="form">
                 <component 
                     :is="`${currentComponentLibrary.code}-form-design-control`" 
                     v-for="(control, index) in panel.children" 

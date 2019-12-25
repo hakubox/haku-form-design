@@ -3,6 +3,8 @@
         "target": "esnext",
         "module": "esnext",
         "strict": true,
+        "allowJs": false,
+        "checkJs": false,
         "noImplicitAny": false,
         "jsx": "preserve",
         "importHelpers": true,

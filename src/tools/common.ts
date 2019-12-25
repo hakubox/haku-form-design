@@ -299,6 +299,7 @@ export function get(url: string, params?: object, config: AxiosRequestConfig = {
  * @param {AxiosRequestConfig} config 
  */
 export function post(url: string, params: object = {}, config: AxiosRequestConfig = {}):Promise<any> {
+    console.log('axios.defaults.baseURL', axios.defaults.baseURL);
     return new Promise((resolve, reject) => {
         axios.post(url, {
             ...params,

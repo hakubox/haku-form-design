@@ -9,4 +9,6 @@ export declare class FormControlEvent {
     title: string;
     /** 备注 */
     remark?: string;
+    /** 代码段 */
+    string?: string;
 }

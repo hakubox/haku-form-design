@@ -42,6 +42,25 @@ Vue.prototype.$axios = axios;
 Vue.prototype.$config = {};
 Object.defineProperties(Vue.prototype.$config, Object.assign({}, ...Object.entries(process.env).map(([key, value]) => ({ [key.replace('VUE_APP_', '')]: { get() { return process.env[key] } } }))));
 
+import serviceConfig from '@/config/service.ts';
+
+// 读取基础数据
+serviceConfig.baseDataUrl && common.post(serviceConfig.baseDataUrl).then(d => {
+    serviceConfig.baseData = d?.map(i => ({
+        label: `${i?.[serviceConfig.baseDataTitleField as string]} [${i?.[serviceConfig.baseDataValueField as any]}]`,
+        value: i?.[serviceConfig.baseDataValueField as any],
+    }));
+});
+
+// 读取视图数据
+serviceConfig.viewDataUrl && common.post(serviceConfig.viewDataUrl).then(d => {
+    serviceConfig.viewData = d?.map(i => ({
+        label: `${i?.[serviceConfig.viewDataTitleField as string]} [${i?.[serviceConfig.viewDataValueField as any]}]`,
+        value: i?.[serviceConfig.viewDataValueField as any],
+    }));
+    console.log(serviceConfig.viewData);
+});
+
 //Axios拦截器
 axios.interceptors.response.use(function (response) {
     if(response.headers['NewToken']) {

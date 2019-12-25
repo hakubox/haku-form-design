@@ -117,7 +117,7 @@ export namespace Enum {
         /** 绑定变量 */
         variable = 'variable',
         /** 系统-视图 Array<any> */
-        view = 'view',
+        viewData = 'view-data',
         /** 系统-基础数据 Record<string, any> */
         basicData = 'basic-data',
         /** 远端请求 */

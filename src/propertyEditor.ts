@@ -1,6 +1,10 @@
 import FormDesign from './@types/form-design';
 import { Enum } from '@/config/enum';
 import { icons } from '@/iconEditor';
+import { post } from './tools/common';
+import serviceConfig from '@/config/service.ts';
+
+let _service = serviceConfig;
 
 let propertyEditors: Array<FormDesign.PropertyEditor> = [
     {
@@ -201,23 +205,19 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     showSearch: true,
                     allowClear: true,
                     size: 'small',
-                    options: [
-                        { value: 'aaa', label: 'aaa' },
-                        { value: 'bbb', label: 'bbb' },
-                        { value: 'ccc', label: 'ccc' },
-                    ]
-                }, 
+                    get options() { return _service.viewData }
+                },
                 events: {}, 
                 propAttrs: {}
             }
         ],
-        editor: Enum.FormControlPropertyEditor.view
+        editor: Enum.FormControlPropertyEditor.viewData
     }, {
         name: 'basic-data',
         description: '基础数据',
         control: [
             {
-                control: 'a-tree-select',
+                control: 'a-select',
                 slot: {},
                 attrs: {
                     enterButton: '查询',
@@ -228,12 +228,7 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
                     size: 'small',
                     filterTreeNode: true,
                     treeDefaultExpandAll: true,
-                    treeData: [
-                        { value: 'aaa', title: 'aaa', key: 'aaa', children: [
-                            { value: 'bbb', title: 'bbb', key: 'bbb' },
-                            { value: 'ccc', title: 'ccc', key: 'ccc' },
-                        ] },
-                    ]
+                    get options() { return _service.baseData }
                 }, 
                 events: {}, 
                 propAttrs: {}

@@ -16,7 +16,7 @@ import { get, post } from '@/tools/common';
   components: {
   }
 })
-export default class FormDesignControlGrid extends Vue {
+export default class VantFormDesignControlGrid extends Vue {
     @Prop({ type: Object }) control!: any;
     @Prop({ type: String }) value!: string;
     @Prop({ type: String }) controlId!: string;

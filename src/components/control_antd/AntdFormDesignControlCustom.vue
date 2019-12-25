@@ -25,14 +25,14 @@ export default class AntdFormDesignControlCustom extends Vue {
         if (this.$attrs.renderFn) {
             console.log(('let { ' + Object.keys(this.variables).join(', ') + ' } = data;') + 'return ' + this.$attrs.renderFn);
             // 需要判断返回的是否为数值、当不为节点时需要另外处理。
-            return createElement('div', {
-                class: 'control-custom'
+            return createElement('span', {
+                class: 'control-custom ant-form-text'
             }, [
                 Function('h', 'data', ('let { ' + Object.keys(this.variables).join(', ') + ' } = data;') + 'return ' + this.$attrs.renderFn)(createElement, this.variables)
             ]);
         } else {
-            return createElement('div', {
-                class: 'control-custom'
+            return createElement('span', {
+                class: 'control-custom ant-form-text'
             }, [
                 createElement('form-design-blank-control', {
                 })

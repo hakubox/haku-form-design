@@ -1,7 +1,7 @@
 import FormDesign from '@/@types/form-design';
 import { Enum } from '@/config/enum';
 
-let basicProps: Array<FormDesign.FormControlProperty> = [
+export let basicProps: Array<FormDesign.FormControlProperty> = [
     {
         name: 'visible', title: '是否显示', default: true,
         group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean,
@@ -77,7 +77,7 @@ export let formItemProps: Array<FormDesign.FormControlProperty> = [
     }
 ];
 
-let formControls: Array<FormDesign.FormControl> = [
+export const formControls: Array<FormDesign.FormControl> = [
 
     /**
      * 高级子表单
@@ -120,7 +120,7 @@ let formControls: Array<FormDesign.FormControl> = [
                     { id: '3', name: '王五', age: 22 },
                 ],
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json,
-                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression, Enum.FormControlPropertyEditor.viewData ],
                 attrs: { style: { height: '200px' } }
                 // change(prop, propMap, control, value, refs) {
                 //     console.log(control);
@@ -479,9 +479,10 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'allowClear', title: '启用清除', default: true,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'defaultValue', title: '默认值',
+                name: 'defaultValue', title: '默认值', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine,
                 attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
+                remark: '文本框控件默认值。'
             }, {
                 name: 'model', title: '绑定变量', type: 'string',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable,
@@ -744,8 +745,12 @@ let formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'dataSource', title: '数据源', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json,
-                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
-                attrs: { style: { height: '200px' } }
+                attach: [ 
+                    Enum.FormControlPropertyEditor.variable, 
+                    Enum.FormControlPropertyEditor.expression, 
+                    Enum.FormControlPropertyEditor.basicData, 
+                    Enum.FormControlPropertyEditor.viewData
+                ]
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -786,7 +791,12 @@ let formControls: Array<FormDesign.FormControl> = [
                 ],
                 layout: Enum.PropertyLayout.block,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
-                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
+                attach: [ 
+                    Enum.FormControlPropertyEditor.variable, 
+                    Enum.FormControlPropertyEditor.expression, 
+                    Enum.FormControlPropertyEditor.basicData, 
+                    Enum.FormControlPropertyEditor.viewData
+                ],
                 attrs: { rowKey: 'title', columns: [
                     { name: 'value', width: '30%', title: '值', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                     { name: 'label', width: '40%', title: '文本', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
@@ -835,7 +845,12 @@ let formControls: Array<FormDesign.FormControl> = [
                 ],
                 layout: Enum.PropertyLayout.block,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
-                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
+                attach: [ 
+                    Enum.FormControlPropertyEditor.variable, 
+                    Enum.FormControlPropertyEditor.expression, 
+                    Enum.FormControlPropertyEditor.basicData, 
+                    Enum.FormControlPropertyEditor.viewData
+                ],
                 attrs: { rowKey: 'title', columns: [
                     { name: 'value', width: '30%', title: '值', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                     { name: 'label', width: '40%', title: '文本', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
@@ -1326,8 +1341,11 @@ let formControls: Array<FormDesign.FormControl> = [
     }, 
 ]
 
-export function initAntDesignControls() {
-    return formControls.map(i => ({
+export function initAntDesignControls(controlList?: Array<FormDesign.FormControl>) {
+    if (!controlList) {
+        controlList = formControls;
+    }
+    return controlList.map(i => ({
         ...i,
         // @ts-ignore
         propertyEditors: Object.assign.apply({}, basicProps
@@ -1353,6 +1371,10 @@ export function initAntDesignControls() {
                     basicProps.concat(i.propertys).concat(i.isFormItem ? [...columnItemProps, ...formItemProps] : [])
                         .filter(o => o.default !== undefined)
                         .map(o => ({[o.name]: o.default}))
+                )
+                .concat(
+                    Object.entries(i.control.attrs)
+                        .map(([key, value]) => ({[key]:value}))
                 )
             )
         },

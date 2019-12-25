@@ -5,24 +5,7 @@
         <div class="form-design-header">
             <h1>移动端表单设计器 v1.0.0 
                 <span class="form-design-header-subtitle">
-                    <a-button-group style="margin-left: 50px;">
-                        <a-button v-for="component in componentLibraryList" 
-                            :key="component.name" 
-                            :value="component.name" 
-                            :type="component.name == formConfig.formComponentLib ? 'primary' : 'default'"
-                            @click="changeFormComponentLibrary(component)"
-                        >
-                            <a-icon :type="component.type == 'pc' ? 'laptop' : 'mobile'" />&nbsp;
-                            &nbsp;{{component.name}}
-                        </a-button>
-                    </a-button-group>
-
-                    <!-- <a-select v-model="formConfig.formComponentLib" @change="changeFormComponentLibrary">
-                        <a-select-option v-for="component in componentLibraryList" :key="component.name" :value="component.name">
-                            <a-icon :type="component.type == 'pc' ? 'laptop' : 'mobile'" />&nbsp;
-                            &nbsp;{{component.name}}&nbsp;组件库
-                        </a-select-option>
-                    </a-select> -->
+                    
                 </span>
             </h1>
             <div class="form-design-header-center-tools"></div>
@@ -32,7 +15,7 @@
                         <a-icon type="file" />文件
                     </span>
                     
-                    <a-menu-item @click="newForm()"><a-icon type="file-add" />新建</a-menu-item>
+                    <a-menu-item @click="templateSelectModalVisible = true"><a-icon type="file-add" />新建</a-menu-item>
                     <a-menu-item @click="onSaveForm()"><a-icon type="save" />保存</a-menu-item>
                     <a-menu-divider></a-menu-divider>
                     <a-menu-item class="label-menu-item" ><label for="importjson"><a-icon type="select" />导入</label></a-menu-item>
@@ -60,7 +43,7 @@
                             {{theme.title}}
                         </a-menu-item>
                     </a-sub-menu>
-                    <a-menu-item><a-icon type="fire" />示例表单</a-menu-item>
+                    <a-menu-item @click="templateSelectModalVisible = true"><a-icon type="fire" />表单模板</a-menu-item>
                 </a-sub-menu>
                 <a-sub-menu>
                     <span slot="title" class="submenu-title-wrapper">
@@ -180,8 +163,8 @@
                                                 </div>
                                             </span>
                                             <div class="form-design-body-property-item-value">
-                                                <div v-if="!prop.attach || !prop.attach.length || (prop.attach && currentPropertyEditors[prop.name] == prop.editor)">
-                                                    <template v-for="(control, index2) in propertyEditors[prop.editor].control">
+                                               <div v-if="!prop.attach || !prop.attach.length || (prop.attach && currentPropertyEditors[prop.name] == prop.editor)">
+                                                     <template v-for="(control, index2) in propertyEditors[prop.editor].control">
                                                         <component @focus="currentProp = prop"
                                                             :key="index2"
                                                             :ref="control.id"
@@ -192,7 +175,6 @@
                                                             @change="propChangeListener($event, prop, currentSelectedControlPropertyMap, currentSelectedControl)"
                                                             :is="control.control"
                                                         >
-
                                                             {{control.html}}
                                                             <template v-for="slot in Object.keys(control.slot)" #[slot]>
                                                                 <component 
@@ -220,6 +202,7 @@
                                                         
                                                     </template>
                                                 </div>
+
                                                 <div v-else>
                                                     <template v-show="currentPropertyEditors[prop.name] != prop.editor" v-for="(control, index2) in propertyEditors[currentPropertyEditors[prop.name]].control">
                                                         <component @focus="currentProp = prop"
@@ -388,7 +371,7 @@
 
         <!-- JSON -->
         <a-drawer :width="800" title="导出JSON" wrap-class-name="form-json-editor-drawer" @close="jsonEditorVisible = false" :visible="jsonEditorVisible">
-            <code-editor class="json-editor page-config-editor" language="json" v-model="editorJson">
+            <code-editor style="height: calc(100vh - 110px);" class="json-editor page-config-editor" language="json" v-model="editorJson">
             </code-editor>
             <template #footer>
                 <a-button @click="editorJson = generateJSON()" type="link">重新生成</a-button>
@@ -404,6 +387,39 @@
                 <a-button @click="generateFormVariable()" type="link">重新生成</a-button>
                 <a-button @click="saveFormVariable()" type="primary">保存</a-button>
             </div>
+        </a-modal>
+
+        <!-- 选择模板 -->
+        <a-modal :width="1000" :bodyStyle="{ 'padding-top': '0px' }" title="选择模板" :footer="null" wrap-class-name="form-json-editor-drawer" v-model="templateSelectModalVisible" @cancel="templateSelectModalVisible = false;">
+            
+            <a-tabs defaultActiveKey="pc">
+                <a-tab-pane :key="tab" v-for="tab in ['pc', 'mobile']">
+                    <span slot="tab">
+                        <a-icon type="laptop" />
+                        PC端模板
+                    </span>
+
+                    <a-list :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }" :dataSource="formTemplates.filter(i => i.deviceType == 'pc')">
+                        <a-list-item slot="renderItem" slot-scope="item, index">
+                            <a-card hoverable style="width: 300px">
+                                <img alt="预览图" @click="selectTemplate(item)" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" slot="cover" />
+                                <template class="ant-card-actions" slot="actions">
+                                    <!-- <a-icon type="setting" /> -->
+                                    <a-tooltip placement="bottomLeft">
+                                        <template slot="title">编辑模板</template>
+                                        <a-icon type="form" />
+                                    </a-tooltip>
+                                    <a-icon type="ellipsis" />
+                                </template>
+                                <a-card-meta :title="item.title" :description="item.description" @click="selectTemplate(item)">
+                                    <a-avatar slot="avatar" src="/img/avatar/geji.png" />
+                                </a-card-meta>
+                            </a-card>
+                        </a-list-item>
+                    </a-list>
+                
+                </a-tab-pane>
+            </a-tabs>
         </a-modal>
 
         <!-- 预览界面 -->
@@ -441,7 +457,8 @@ import { initRemoteDevices } from '@/formDevices';
 import { cloneForce } from '@/lib/clone/index';
 import { base64 } from '@/lib/base64/base64';
 import { componentLibrarys } from '@/formLibrarys.ts';
-import less from 'less';
+import formTemplate from '@/formTemplate';
+import { flatControls, fillPropertys } from '@/tools/formCommon'
 
 import Icon from 'vant/lib/icon';
 import 'vant/lib/index.css';
@@ -452,10 +469,10 @@ Vue.use(Icon);
 let dragDom: any;
 
 /** 所有组件 */
-let _vantControls: Array<FormDesign.FormControl> = initVantControls();
-let _antdControls: Array<FormDesign.FormControl> = initAntDesignControls();
+const _vantControls: Array<FormDesign.FormControl> = initVantControls();
+const _antdControls: Array<FormDesign.FormControl> = initAntDesignControls();
 
-let _controlGroups: Array<FormDesign.FormControlGroup> = initFormControlGroups();
+const _controlGroups: Array<FormDesign.FormControlGroup> = initFormControlGroups();
 
 @Component({
     components: {
@@ -476,6 +493,8 @@ export default class FormDesigner extends Vue {
     eventEditorVisible: boolean = false;
     /** API编辑器弹出框是否显示 */
     apiEditorVisible: boolean = false;
+    /** 模板选择弹出框是否显示 */
+    templateSelectModalVisible: boolean = false;
 
 
     /** 预览界面是否显示 */
@@ -507,8 +526,11 @@ export default class FormDesigner extends Vue {
     /** 表单主题清单 */
     formThemes: Array<FormDesign.FormTheme> = [
         { code: 'default', title: '默认主题' },
-        { code: 'gejiform', title: '戈吉表单主题' },
+        { code: 'red', title: '红色主题' },
     ];
+
+    /** 表单模板清单 */
+    formTemplates: Array<FormDesign.FormTemplate> = formTemplate();
 
     /** 当前组件库 */
     get currentComponentLibrary(): FormDesign.ComponentLibrary {
@@ -559,9 +581,6 @@ export default class FormDesigner extends Vue {
             submitButtonText: '提交',
             cancelButton: false,
             cancelButtonText: '取消'
-        },
-        data: {
-            
         }
     };
 
@@ -601,56 +620,33 @@ export default class FormDesigner extends Vue {
     /** 设计器事件总线 */
     @Provide() bus: Vue = new Vue();
 
-    /** 组件库 */
-    controlGroups = _controlGroups.map(i => ({
-        ...i,
-        controls: _antdControls.filter(o => o.type == i.name)
-    }));
-
     /** 属性编辑器库 */
     @Provide() propertyEditors: Record<string, FormDesign.PropertyEditor> = initPropertyEditors();
 
+    /** 组件库组件列表 */
+    get componentList() {
+        return _antdControls;
+    }
+
+    /** 组件库 */
+    get controlGroups() {
+        return (_controlGroups || []).map(i => ({
+            ...i,
+            controls: _antdControls.filter(o => o.type == i.name)
+        }));
+    }
+
     /** 分组画布组件列表 */
     get controlListByGroup() {
-        return _controlGroups.map(i => ({
+        return (_controlGroups || []).map(i => ({
             ...i,
             controls: this.controlList.filter(o => o.type == i.name)
         })).filter(i => i.controls.length);
     }
 
     /** 切换右侧主Tabs */
-    changeMainPropertyPanel() {
+    changeMainPropertyPanel(e) {
         this.bus.$emit('prop_change');
-    }
-
-    /** 切换组件库 */
-    changeFormComponentLibrary(component) {
-        if (component.name != this.formConfig.formComponentLib) {
-            this.$confirm({
-                icon: 'warning',
-                centered: true,
-                title: `切换到 ${component.name} 组件库`,
-                content: '切换组件库将重置当前页面，是否确定切换？',
-                onOk: () => {
-                    let _device = Object.values(this.devices).find(i => i.type == component.type) as FormDesign.RemoteDevice;
-                    this.initForm({
-                        width: _device.width,
-                        height: _device.height,
-                        formComponentLib: component.name,
-                        deviceId: _device.code
-                    });
-                    this.$nextTick(() => {
-                        this.toolsEl = document.querySelector('.form-control-tools');
-                        this.canvasPanelEl = document.querySelector('.form-design-canvas-mainpanel');
-                        this.canvasEl = document.querySelector('.form-design-body-canvas');
-                        this.controlCanvas.refresh();
-                        this.refresh();
-                    });
-                },
-                onCancel: () => {
-                }
-            });
-        }
     }
 
     /** 切换当前选择的控件 */
@@ -1278,14 +1274,15 @@ export default class FormDesigner extends Vue {
         }
     }
 
-    newForm() {
+    /** 选择模板 */
+    selectTemplate(template: FormDesign.FormTemplate) {
         this.$confirm({
             title: '警告',
             content: '将覆盖现有表单，是否确认新建表单？',
             okType: 'danger',
             icon: 'warning',
             onOk: () => {
-                this.initForm();
+                this.initForm(template);
             },
             onCancel: () => {
             },
@@ -1293,7 +1290,7 @@ export default class FormDesigner extends Vue {
     }
 
     /** 初始化表单 */
-    initForm(params: any = {}) {
+    initForm(template: FormDesign.FormTemplate) {
         this.formConfig = {
             canvasTitle: '主页',
             formTitle: '测试流程',
@@ -1308,25 +1305,33 @@ export default class FormDesigner extends Vue {
                 cancelButton: false,
                 cancelButtonText: '取消'
             },
-            data: {
-
-            },
-            formComponentLib: 'vant',
+            formComponentLib: template.library,
             controlIndex: 1,
-            ...params
+            formTheme: 'default'
         };
 
-        this.controlList = [];
-        this.panel = {
-            name: 'main',
-            direction: 'row',
-            children: []
-        };
+        this.$set(this.panel, 'name', 'main');
+        this.$set(this.panel, 'direction', 'row');
+
+        let _controlTree = fillPropertys(template.controls, this.formConfig.formComponentLib);
+
+        this.$set(this.panel, 'children', _controlTree);
+
+        this.controlList = flatControls(_controlTree);
 
         this.currentSelectedControl = [];
         this.currentSelectedFirstControlId = '';
         this.currentSelectedControlPropertyGroups = [];
         this.currentSelectedControlPropertyMap = [];
+
+        this.$nextTick(() => {
+            this.toolsEl = document.querySelector('.form-control-tools');
+            this.canvasPanelEl = document.querySelector('.form-design-canvas-mainpanel');
+            this.canvasEl = document.querySelector('.form-design-body-canvas');
+            this.controlCanvas.refresh();
+            this.refresh();
+            this.templateSelectModalVisible = false;
+        });
     }
 
     /** 手动保存表单 */
@@ -1365,6 +1370,7 @@ export default class FormDesigner extends Vue {
             let _propIndex = this.controlList[_index].propertys.findIndex(i => i.name == prop.name);
             this.currentPropertyEditors[prop.name] = editor;
 
+            this.$set(this.currentSelectedControl[0].propertyEditors, prop.name, editor);
             this.currentSelectedControl[0].control.attrs[prop.name] = prop.default;
             this.$set(this.currentSelectedControl[0].control.attrs, '__' + prop.name, '');
         }

@@ -69,7 +69,7 @@ export { default as MobileOutline } from '@ant-design/icons/lib/outline/MobileOu
 export { default as SkinOutline } from '@ant-design/icons/lib/outline/SkinOutline';
 export { default as CheckOutline } from '@ant-design/icons/lib/outline/CheckOutline';
 export { default as ApiOutline } from '@ant-design/icons/lib/outline/ApiOutline';
-
+export { default as FormOutline } from '@ant-design/icons/lib/outline/FormOutline';
 
 
 export { default as CheckCircleFill } from '@ant-design/icons/lib/fill/CheckCircleFill';

@@ -1,7 +1,7 @@
 <template lang="html">
     <div class="form-control" :control-id="controlId" @mousedown.stop="mouseDownEvent($event, control)" >
         
-        <div class="complex-child-form-item" v-if="isFormChild">
+        <div class="complex-child-form-item" v-if="isComplexFormChild">
             <span class="complex-child-form-item-label">{{control.control.attrs.title}}</span>
             <div class="complex-child-form-item-content">
                 <antd-form-design-child-control 
@@ -185,10 +185,20 @@ export default class AntdFormDesignControl extends Vue {
         console.log();
     }
 
+    /** 判断节点是否为高级子表单的子节点 */
+    get isComplexFormChild() {
+        return this.panel.children
+            .filter(i => i.name == 'complex-childform')
+            .map(i => i.children)
+            .flat(2)
+            .map(i => i.id)
+            .includes(this.control.id);
+    }
+
     /** 判断节点是否为某节点的子节点 */
     get isFormChild() {
         return this.panel.children
-            .filter(i => i.name == 'complex-childform')
+            .filter(i => i.children?.length)
             .map(i => i.children)
             .flat(2)
             .map(i => i.id)

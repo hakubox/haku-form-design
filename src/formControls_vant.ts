@@ -579,6 +579,15 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'model', title: 'model', default: '', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
+                name: 'dataSource', title: '数据源', require: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json,
+                attach: [ 
+                    Enum.FormControlPropertyEditor.variable, 
+                    Enum.FormControlPropertyEditor.expression, 
+                    Enum.FormControlPropertyEditor.basicData, 
+                    Enum.FormControlPropertyEditor.viewData
+                ]
+            }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
@@ -625,11 +634,16 @@ let formControls: Array<FormDesign.FormControl> = [
                 ],
                 layout: Enum.PropertyLayout.block,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
-                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
+                attach: [ 
+                    Enum.FormControlPropertyEditor.variable, 
+                    Enum.FormControlPropertyEditor.expression, 
+                    Enum.FormControlPropertyEditor.basicData, 
+                    Enum.FormControlPropertyEditor.viewData
+                ],
                 attrs: { rowKey: 'title', columns: [
-                    { name: 'id', width: '30%', title: 'Id', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                    { name: 'value', width: '30%', title: '值', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                     { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
-                    { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                    { name: 'label', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                 ] }
             }, {
                 name: 'model', title: 'model', default: '', require: true,
@@ -681,10 +695,16 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'options', title: '数据源', default: [ { id: '1', title: '复选框 1', icon: '' }, { id: '2', title: '复选框 2', icon: '' } ],
                 layout: Enum.PropertyLayout.block,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
+                attach: [ 
+                    Enum.FormControlPropertyEditor.variable, 
+                    Enum.FormControlPropertyEditor.expression, 
+                    Enum.FormControlPropertyEditor.basicData, 
+                    Enum.FormControlPropertyEditor.viewData
+                ],
                 attrs: { rowKey: 'title', columns: [
-                    { name: 'id', width: '30%', title: 'Id', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                    { name: 'value', width: '30%', title: '值', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                     { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
-                    { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
+                    { name: 'label', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                 ] }
             }, {
                 name: 'model', title: 'model', default: '', require: true,
@@ -1427,6 +1447,10 @@ export function initVantControls() {
                     i.propertys
                         .filter(o => o.default !== undefined)
                         .map(o => ({[o.name]: o.default}))
+                )
+                .concat(
+                    Object.entries(i.control.attrs)
+                        .map(([key, value]) => ({[key]:value}))
                 )
             )
         }

@@ -12,11 +12,11 @@ export declare class FormControl {
     /** 控件图标 */
     icon?: string;
     /** 控件标题 */
-    title: string;
+    title?: string;
     /** 控件简要说明 */
     description?: string;
     /** 控件类型 */
-    type?: Enum.FormControlType;
+    type?: Enum.FormControlType | string;
     /** 控件属性 */
     propertys: Array<FormControlProperty>;
     /** 默认控件属性编辑器 */

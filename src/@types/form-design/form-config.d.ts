@@ -16,8 +16,6 @@ export declare class FormConfig {
     height: number;
     /** 表单头部高度 */
     headerHeight: number;
-    /** 表单数据 */
-    data: Record<string, any>;
     /** 设备类型 */
     deviceId: string;
     /** 底部按钮配置 */

@@ -14,6 +14,8 @@ import { PropertyGroup } from "./property-group";
 import { FormControl } from "./form-control";
 import { FormVariable } from "./form-variable";
 import { FormTheme } from "./form-theme";
+import { FormTemplate } from "./form-template";
+
 
 export {
     /** 简单坐标类 */
@@ -47,5 +49,7 @@ export {
     /** 表单变量 */
     FormVariable,
     /** 表单主题 */
-    FormTheme
+    FormTheme,
+    /** 表单模板 */
+    FormTemplate
 };
