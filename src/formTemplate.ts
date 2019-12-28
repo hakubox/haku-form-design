@@ -139,7 +139,12 @@ const applicationData: Record<string, any> = {
     /** 发起人邮箱 */
     initiatorEMail: '',
     /** 发起人部门 */
-    initiatorDepartment: ''
+    initiatorDepartment: '',
+
+    testABC: {
+
+        testABCD: ''
+    },
 };
 
 /** 表单数据 */

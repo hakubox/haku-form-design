@@ -18,5 +18,5 @@ export declare class FormTemplate {
     /** 初始变量 */
     variables?: string;
     /** 初始函数 */
-    events: string;
+    events?: string;
 }

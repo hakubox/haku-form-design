@@ -4,6 +4,7 @@
  
 <script>
     import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+    import { getDefaultStrForValue } from '@/tools/formCommon';
 
     export default {
         name: 'CodeEditor',
@@ -84,9 +85,21 @@
                 });
 
                 // 引入变量
-                let _variables = this.variables.map(i => `
-                    ${i.remark ? '/** ' +  i.remark + ' */\n' : ''}${i.keyword} ${i.name}: ${i.type};
-                `);
+                let _variables = this.variables.map(i => {
+                    let _variableStr = '';
+                    if (!i.children?.length) _variableStr += `\n\n${i.remark ? '/** ' +  i.remark + ' */' : ''}\n${i.keyword} ${i.name}: ${i.type};\n`;
+                    else {
+                        _variableStr += `${i.remark ? '\n/** ' +  i.remark + ' */' : ''}\n${i.keyword} ${i.name} = {`;
+                        i.children.map((child, index) => {
+                            _variableStr += `    ${child.remark ? '\n    /** ' +  child.remark + ' */' : ''}\n    ${child.name}: ${getDefaultStrForValue(child.default)}`;
+                            if (index <= i.children.length - 2) _variableStr += `,`;
+                            else _variableStr += `\n`;
+                        });
+                        _variableStr += `};`;
+                    }
+                    return _variableStr;
+                });
+
                 monaco.languages.typescript.javascriptDefaults.addExtraLib(_variables.join('\n'), 'vars.d.ts');
             } else {
                 monaco.editor.defineTheme('gj-dark', {

@@ -1,13 +1,26 @@
 <template>
-    <a-select v-model="inputValue" placeholder="请输入变量" @change="change" :size="size" :options="variableList" class="variable-picker" ref="editor">
-        
-    </a-select>
+    <a-tree-select v-model="inputValue" placeholder="请选择页面变量" searchPlaceHolder="搜索变量" @change="change" :size="size" 
+        treeNodeFilterProp="name"
+        treeNodeLabelProp="remark" 
+        :tree-data="variableList"
+        class="variable-picker"
+        :allowClear="true"
+        :searchValue.sync="searchTxt"
+        :showSearch="true"
+        :filterTreeNode="search"
+        :dropdownStyle="{
+            maxHeight: '500px'
+        }"
+        ref="editor"
+    >
+    </a-tree-select>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { get, post } from '@/tools/common';
+import { get, post, recursive } from '@/tools/common';
 import FormDesign from '@/@types/form-design';
+import { Getter } from 'vuex-class';
 
 @Component({
   components: {
@@ -28,10 +41,10 @@ export default class VariablePicker extends Vue {
         default: 'default'
     }) size!: ('large' | 'default' | 'small');
     /** 表单变量 */
-    @Prop({
-        type: Array,
-        default: () => []
-    }) variables!: Array<FormDesign.FormVariable>;
+    @Getter('getFormVariables') formVariables!: Array<FormDesign.FormVariable>;
+
+    /** 搜索文本 */
+    searchTxt: string = '';
 
     /** 真实值 */
     inputValue: string = '';
@@ -40,24 +53,14 @@ export default class VariablePicker extends Vue {
         this.init();
     }
 
-    get variableList() {
-        return this.variables.filter(i => {
-            if (i.type == 'any' || this.type == 'any') {
-                return true;
-            } else if (i.type) {
-                // 需过滤的类型集合
-                let types = this.type.split('|').map(o => o.trim());
-                // 实际数据的类型集合
-                let dataTypes = i.type.split('|').map(p => p.trim());
-                return types.some(o => dataTypes.includes(o));
-            } else {
-                return true;
-            }
-        }).map(i => ({
-            value: i.name,
-            label: i.name + (i.remark ? (': ' + i.remark) : ''),
-            title: i.remark
-        }))
+    search(inputValue: string, treeNode: any) {
+        return (''+treeNode.data.props.value).includes(inputValue) || treeNode.data.props.title.includes(inputValue);
+    }
+
+    get variableList(): Array<Record<string, any>> {
+        return recursive(this.formVariables, {
+            map: i => ({ label: i.remark + ': ' + i.name, value: i.name, children: i.children })
+        });
     }
 
     /** 初始化 */

@@ -59,6 +59,10 @@ export default new Vuex.Store({
         },
         setAllFormVariables(state, variables) {
             state.formVariables = variables;
+        },
+        /** 清空变量 */
+        clearFormVariables(state, variables) {
+            state.formVariables = [];
         }
     },
     actions: {}

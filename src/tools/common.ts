@@ -188,30 +188,6 @@ export function base64ToBuffer(b: string): Uint8Array {
     return buffer;
 }
 
-export function v(obj: any, property: string) {
-    let propertys = property.split('.'),
-		re = obj;
-	for(let i = 0;i < propertys.length;i++) {
-		if(re instanceof Array) {
-			let index = Number(propertys[i]);
-            re = re[index < 0 ? (re.length + index) : index];
-        } else if(/.*\(.*\)/.test(propertys[i])) {
-            let exp = /(.*)\((.*)\)/.exec(propertys[i]);
-            if(exp !== null) {
-                let _propertys = Function(`return [${exp[2]}]`)();
-                re = re[exp[1]].apply(null, _propertys);
-            } else {
-                return re;
-            }
-        } else {
-            if(re[propertys[i]]) re = re[propertys[i]];
-            else break;
-        }
-		if(re === undefined || re === null) return re;
-    }
-	return re;
-};
-
 export function initAPI(api: object) {
     let re = {};
     const fn = (parent: any, reParent: any, url: string) => {
@@ -447,11 +423,63 @@ export function registerComponent(templateName) {
     // });
 }
 
+/** 递归函数 */
+export function recursive(formVariables: Array<Record<string, any>>, callback?: {
+    filter?: (variable: Record<string, any>) => boolean,
+    map?: (variable: Record<string, any>) => any
+}, childField: string = 'children'): Array<Record<string, any>> {
+
+    if (!callback) {
+        return formVariables;
+    }
+
+    let _list: Array<Record<string, any>> = [];
+
+    // 递归
+    const _cb = (newParent: Record<string, any>, parent: Record<string, any>) => {
+        if (callback?.filter?.(newParent) === false) {
+            return;
+        }
+        let _item = {
+            ...parent,
+            children: []
+        };
+        if (parent?.children?.length) {
+            for (let i = 0; i < parent.children.length; i++) {
+                _cb(_item, parent.children[i]);
+            }
+        }
+        newParent.children.push(callback.map?.(_item) || _item);
+    };
+
+    formVariables.forEach(item => {
+        let _item = {
+            ...item,
+            children: []
+        };
+        if (callback?.filter?.(_item) === false) {
+            return;
+        }
+
+        if (item?.children?.length) {
+            for (let i = 0; i < item.children.length; i++) {
+                let _child = {
+                    ...item.children[i]
+                }
+                _cb(_item, item.children[i]);
+            }
+        }
+
+        _list.push(callback.map?.(_item) || _item);
+    });
+
+    return _list;
+}
+
 export default {
     getToken,
     dateFormat,
     getLocalstorge,
-    v,
     initAPI,
     get,
     post,
@@ -459,5 +487,6 @@ export default {
     thousandNum,
     getParams,
     downLoadFile,
-    registerComponent
+    registerComponent,
+    recursive
 };

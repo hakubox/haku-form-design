@@ -9,7 +9,6 @@ import { Getter } from 'vuex-class';
   }
 })
 export default class AntdFormDesignControlCustom extends Vue {
-    @Prop({ type: Object }) control!: any;
     @Prop({ type: String }) value!: string;
     @Prop({ type: String }) controlId!: string;
     /** 表单变量 */
@@ -18,12 +17,11 @@ export default class AntdFormDesignControlCustom extends Vue {
     get variables() {
         if (this.formVariables.length == 0) return {};
         // @ts-ignore
-        return Object.assign.apply({}, this.formVariables.map(i => ({ [i.name]: i.value })) || [{}]);
+        return Object.assign.apply({}, this.formVariables.map(i => ({ [i.name]: i.default })) || [{}]);
     };
 
     render(createElement) {
         if (this.$attrs.renderFn) {
-            console.log(('let { ' + Object.keys(this.variables).join(', ') + ' } = data;') + 'return ' + this.$attrs.renderFn);
             // 需要判断返回的是否为数值、当不为节点时需要另外处理。
             return createElement('span', {
                 class: 'control-custom ant-form-text'

@@ -85,3 +85,124 @@ export function flatControls(controls: Array<FormDesign.FormControl>) {
 
     return _controlList;
 }
+
+/** 获取变量真实值 */
+export function getValue(variable: FormDesign.FormVariable) {
+    return variable.default;
+}
+
+/** 根据变量返回对应类型的原始变量字符串 */
+export function getDefaultStrForValue(val: any): string {
+    if (typeof(val) != 'object') {
+        switch (typeof(val)) {
+            case 'string': return '\"\"';
+            case 'number': return '0';
+            case 'boolean': return 'false';
+            case 'function': return '() => {}';
+            case 'symbol': return 'Symbol()';
+            default: return 'undefined';
+        }
+    } else {
+        let type = Object.prototype.toString.apply(val).slice(8, -1);
+
+        if (type == 'Object') return JSON.stringify(val, undefined, '    ').split('\n').map((i, index) => {
+            if (index > 0) return '    ' + i.replace(/"\S+":/g, txt => txt.slice(1, -2) + ':');
+            else return i;
+        }).join('\n');
+        else return `new ${val}()`;
+    }
+}
+
+/** 解析变量 */
+export function variableParse(strVariable: string): Array<FormDesign.FormVariable> {
+    const _strVariables = strVariable.trim().replace(/\r|\n/g, '');
+
+    /** 解析子节点变量 */
+    const _parseChildren = (value: string, parent: FormDesign.FormVariable, regExp: RegExpExecArray) => {
+        const _value = value.replace(/\r|\n/g, '').trim();
+        const _reg = /(\/\*\*\s*(?<remark>\S+)\s*?\*\/[\s\n\r\t]*)?(?<name>[a-zA-Z0-9_]+)\s*:\s*(?<default>'\S+?'|"\S+?"|\[.*?\]|\{.*?\}|[^\s,{}]+?)(,|\s*$)/g;
+        const _list: Array<FormDesign.FormVariable> = [];
+        let _item: RegExpExecArray | null = null;
+        if (regExp.groups) {
+            parent.children = _list;
+
+            while(_item = _reg.exec(_value)) {
+                if (_item !== null) {
+                    let _var: FormDesign.FormVariable = {
+                        ..._item.groups,
+                        keyword: (_item.groups?.keyword as ('let' | 'var' | 'const')) || 'let',
+                        name: _item.groups?.name || '',
+                        type: _item.groups?.type || undefined,
+                        default: _item.groups?.default || undefined
+                    };
+                    if (!_var.type) {
+                        if (_var.default) {
+                            if (!isNaN(+_var.default)) {
+                                _var.type = 'number';
+                                _var.default = JSON.parse(_var.default);
+                            }
+                            if (typeof(_var.default) != 'object') {
+                                _var.default = Function('return ' + _var.default)();
+                                _var.type = typeof(_var.default);
+                            } else {
+                                _var.type = Object.prototype.toString.call(_var.default).slice(8, -1);
+                                // _var.default = JSON.parse(_var.default);
+                                _parseChildren(_var.default.trim().slice(1, -1), _var, _item);
+                            }
+                        } else {
+                            _var.type = 'any';
+                        }
+                    } else if (_var.type != 'string' && _var.default) {
+                        _var.default = Function('return ' + _var.default)();
+                    }
+                    _list.push(_var);
+                }
+            }
+        }
+    };
+
+    const _reg = /(\/\*\*\s*(?<remark>\S+)\s*\*\/[\s\n\r\t]*)?(?<keyword>var|let|const)\s(?<name>[a-zA-Z0-9_]+)\s*(:\s*(?<type>[^=]+)\s*)?(\s*=\s*)?(?<default>'\S+?'|"\S+?"|\[.*?\]|\{.*?\}|[^\s,{}]+?)?(;|$)/g;
+    const _list: Array<FormDesign.FormVariable> = [];
+    let _item: RegExpExecArray | null = null;
+    /** 最外层变量识别 */
+    while(_item = _reg.exec(_strVariables)) {
+        if (_item !== null) {
+            let _var: FormDesign.FormVariable = {
+                ..._item.groups,
+                keyword: (_item.groups?.keyword as ('let' | 'var' | 'const')) || 'let',
+                name: _item.groups?.name || '',
+                type: _item.groups?.type || undefined,
+                default: _item.groups?.default || undefined
+            };
+            if (!_var.type) {
+                if (_var.default) {
+                    if (!isNaN(+_var.default)) {
+                        _var.type = 'number';
+                        _var.default = JSON.parse(_var.default);
+                    }
+                    if (typeof(_var.default) != 'object') {
+                        _var.default = JSON.parse(_var.default);
+                        _var.type = typeof(_var.default);
+                    } else {
+                        _var.type = Object.prototype.toString.call(_var.default).slice(8, -1);
+                        _var.default = Function('return ' + _var.default)();
+                        _parseChildren(_item.groups?.value.trim().slice(1, -1) as string, _var, _item);
+                    }
+                } else {
+                    _var.type = 'any';
+                }
+            } else if (_var.type != 'string' && _var.default) {
+                if (_var.default.trim().startsWith('{') && _var.default.trim().endsWith('}')) {
+                    _var.default = Function('return ' + _var.default)();
+                    _parseChildren(_item.groups?.default as string, _var, _item);
+                } else {
+                    _var.default = Function('return ' + _var.default)();
+                }
+            }
+            _list.push(_var);
+        }
+    }
+
+    console.log(_list);
+    return _list;
+}

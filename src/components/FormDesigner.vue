@@ -380,7 +380,7 @@
         </a-drawer>
 
         <!-- 编辑页面变量 -->
-        <a-modal :width="1000" title="页面变量" wrap-class-name="form-json-editor-drawer" v-model="variableEditorVisible" @cancel="cancelFormVariable()">
+        <a-modal :width="1000" :centered="true" title="页面变量" wrap-class-name="form-json-editor-drawer" v-model="variableEditorVisible" @cancel="cancelFormVariable()">
             <code-editor class="page-config-editor" language="typescript" style="height: 500px;" v-model="editorVariable">
             </code-editor>
             <div class="bottom-btn-list" slot="footer">
@@ -458,7 +458,7 @@ import { cloneForce } from '@/lib/clone/index';
 import { base64 } from '@/lib/base64/base64';
 import { componentLibrarys } from '@/formLibrarys.ts';
 import formTemplate from '@/formTemplate';
-import { flatControls, fillPropertys } from '@/tools/formCommon'
+import { flatControls, fillPropertys, variableParse } from '@/tools/formCommon';
 
 import Icon from 'vant/lib/icon';
 import 'vant/lib/index.css';
@@ -505,6 +505,8 @@ export default class FormDesigner extends Vue {
     editorVariableHistory: string = '';
     /** 页面变量编辑器的值 */
     editorVariable: string = '';
+    /** 页面变量编辑器的值 */
+    editorEvents: string = '';
 
     /** 画板 */
     canvasEl: any;
@@ -595,6 +597,9 @@ export default class FormDesigner extends Vue {
 
     /** 更新全部表单变量 */
     @Mutation('setAllFormVariables') setAllFormVariables!: Function;
+
+    /** 清空变量 */
+    @Mutation('clearFormVariables') clearFormVariables!: Function;
 
     /** 画布组件列表 */
     @Provide() controlList: Array<FormDesign.FormControl> = [];
@@ -712,7 +717,6 @@ export default class FormDesigner extends Vue {
             } else {
                 let _width = _el.offsetWidth;
                 let _height = _el.offsetHeight;
-                console.log(_el);
                 if (bottom > 200) {
                     this.toolsEl.style.transform = `translate(${ -40 }px, ${rect.top + this.canvasEl.scrollTop + _height - 40}px)`;
                 } else if (rect.top > 200) {
@@ -769,9 +773,9 @@ export default class FormDesigner extends Vue {
     /** 拖拽已存在的组件 */
     startDragFormControl(e, control: FormDesign.FormControl) {
         this.dragConfig.targetFormControlId = control.id;
-        let _el = document.createElement('div');
+        let _el: HTMLElement = document.createElement('div');
         _el.classList.add('form-design-drag-control');
-        _el.innerHTML = control.title;
+        _el.innerHTML = control?.title || '';
         this.dragStart({
             target: _el,
             button: e.button,
@@ -1222,41 +1226,7 @@ export default class FormDesigner extends Vue {
 
     /** 保存页面变量 */
     saveFormVariable(variables: Record<string, any> = {}) {
-        let _reg = /(\/\*\*\s*(?<remark>\S+)\s*\*\/(\n|\r|\t)*)?((?<keyword>var|let|const)\s)?(?<name>[a-zA-Z0-9_]+)\s?(:\s(?<type>[^=]+)\s)?(\s?=\s?)?['"]?(?<value>\D+?)?['"]?;/g;
-        let _list: Array<any> = [];
-        let _item: any;
-
-        while(_item = _reg.exec(this.editorVariable)) {
-            let _type = _item.groups.type || undefined;
-            let _value = _item.groups.value || undefined;
-            if (!_type) {
-                if (_value) {
-                    if (!isNaN(_value)) {
-                        _type = 'number';
-                        _value = JSON.parse(_item.groups.value);
-                    }
-                    if (typeof(_item.groups.value) != 'object') {
-                        _type = typeof(_item.groups.value);
-                        if (_type != 'string') {
-                            _value = JSON.parse(_item.groups.value);
-                        }
-                    } else {
-                        _type = Object.prototype.toString.call(_item.groups.value).slice(8, -1);
-                        _value = JSON.parse(_item.groups.value);
-                    }
-                } else {
-                    _type = 'any';
-                }
-            } else if (_type != 'string' && _value) {
-                _value = Function('return ' + _item.groups.value)();
-            }
-            _list.push({
-                ..._item.groups,
-                keyword: _item.groups.keyword || 'let',
-                type: _type,
-                value: _value
-            });
-        }
+        let _list: Array<any> = variableParse(this.editorVariable);
         // @ts-ignore
         this.setAllFormVariables(_list.map(i => Object.assign({}, i)));
 
@@ -1332,6 +1302,11 @@ export default class FormDesigner extends Vue {
         this.currentSelectedControlPropertyGroups = [];
         this.currentSelectedControlPropertyMap = [];
 
+        this.editorVariable = template.variables || '';
+        this.editorEvents = template.events || '';
+
+        this.saveFormVariable();
+
         this.$nextTick(() => {
             this.toolsEl = document.querySelector('.form-control-tools');
             this.canvasPanelEl = document.querySelector('.form-design-canvas-mainpanel');
@@ -1378,9 +1353,11 @@ export default class FormDesigner extends Vue {
             let _propIndex = this.controlList[_index].propertys.findIndex(i => i.name == prop.name);
             this.currentPropertyEditors[prop.name] = editor;
 
-            this.$set(this.currentSelectedControl[0].propertyEditors, prop.name, editor);
-            this.currentSelectedControl[0].control.attrs[prop.name] = prop.default;
-            this.$set(this.currentSelectedControl[0].control.attrs, '__' + prop.name, '');
+            let _currentControl = this.currentSelectedControl[0];
+
+            if (_currentControl?.propertyEditors) this.$set(_currentControl.propertyEditors, prop.name, editor);
+            _currentControl.control.attrs[prop.name] = prop.default;
+            this.$set(_currentControl.control.attrs, '__' + prop.name, '');
         }
     }
 
