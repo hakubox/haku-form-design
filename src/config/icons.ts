@@ -80,3 +80,4 @@ export { default as FilterFill } from '@ant-design/icons/lib/fill/FilterFill';
 export { default as CaretUpFill } from '@ant-design/icons/lib/fill/CaretUpFill';
 export { default as CaretDownFill } from '@ant-design/icons/lib/fill/CaretDownFill';
 export { default as ExclamationCircleFill } from '@ant-design/icons/lib/fill/ExclamationCircleFill';
+export { default as CloseCircleFill } from '@ant-design/icons/lib/fill/CloseCircleFill';

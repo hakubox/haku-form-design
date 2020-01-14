@@ -52,58 +52,63 @@
         align-items: stretch;
         overflow: auto;
 
-        // 组件库
-        > .form-design-body-controlpanel {
-            user-select: none;
-            position: relative;
+        > .form-design-body-left {
+            display: flex;
             flex-grow: 0;
             flex-shrink: 0;
-            box-sizing: border-box;
-            padding: 15px;
-            overflow: auto;
 
-            > dl {
-                margin-bottom: 10px;
+            // 组件库
+            > .form-design-body-controlpanel {
+                user-select: none;
+                position: relative;
+                box-sizing: border-box;
+                padding: 15px;
+                overflow: auto;
 
-                &:last-child {
-                    margin-bottom: 0px;
-                }
-                
-                > dt {
-                    margin-bottom: 6px;
-                    color: #999;
-                }
+                > dl {
+                    margin-bottom: 10px;
 
-                > dd {
-                    cursor: grab;
-                    position: relative;
-                    display: inline-block;
-                    box-sizing: border-box;
-                    background-color: #F4F6FC;
-                    border-radius: 4px;
-                    line-height: 30px;
-                    width: calc(49.999% - 5px);
-                    margin-right: 10px;
-                    padding-left: 10px;
-
-                    &:hover {
-                        background-color: $-primary-color;
-                        color: white;
+                    &:last-child {
+                        margin-bottom: 0px;
+                    }
+                    
+                    > dt {
+                        margin-bottom: 6px;
+                        color: #999;
                     }
 
-                    &:active {
-                        cursor: grabbing;
-                    }
+                    > dd {
+                        cursor: grab;
+                        position: relative;
+                        display: inline-block;
+                        box-sizing: border-box;
+                        background-color: #F4F6FC;
+                        border-radius: 4px;
+                        line-height: 30px;
+                        width: calc(49.999% - 5px);
+                        margin-right: 10px;
+                        padding-left: 10px;
 
-                    &:nth-child(2n + 1) {
-                        margin-right: 0px;
-                    }
+                        &:hover {
+                            background-color: $-primary-color;
+                            color: white;
+                        }
 
-                    > i {
-                        margin-right: 6px;
+                        &:active {
+                            cursor: grabbing;
+                        }
+
+                        &:nth-child(2n + 1) {
+                            margin-right: 0px;
+                        }
+
+                        > i {
+                            margin-right: 6px;
+                        }
                     }
                 }
             }
+
         }
 
         // 画布
@@ -1038,6 +1043,10 @@
 
     &.is-drag {
         filter: blur(2px);
+    }
+
+    .form-control-hidden {
+        opacity: 0.4;
     }
 
     > .van-cell {

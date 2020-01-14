@@ -38,14 +38,19 @@
             placeholder: {
                 type: String,
                 default: '请输入JSON字符串'
-            },
-            /** 表单变量 */
-            variables: {
-                type: Array,
-                default: () => []
             }
         },
         inject: ['bus'],
+        computed: {
+            /** 表单变量 */
+            formVariables () {
+                return this.$store.getters.getFormVariables;
+            },
+            /** 表单函数 */
+            formFunctions () {
+                return this.$store.getters.getFormFunctions;
+            }
+        },
         data: () => ({
             editor: null,
             content: '',
@@ -85,13 +90,13 @@
                 });
 
                 // 引入变量
-                let _variables = this.variables.map(i => {
+                let _variables = this.formVariables.map(i => {
                     let _variableStr = '';
                     if (!i.children?.length) _variableStr += `\n\n${i.remark ? '/** ' +  i.remark + ' */' : ''}\n${i.keyword} ${i.name}: ${i.type};\n`;
                     else {
                         _variableStr += `${i.remark ? '\n/** ' +  i.remark + ' */' : ''}\n${i.keyword} ${i.name} = {`;
                         i.children.map((child, index) => {
-                            _variableStr += `    ${child.remark ? '\n    /** ' +  child.remark + ' */' : ''}\n    ${child.name}: ${getDefaultStrForValue(child.default)}`;
+                            _variableStr += `    ${child.remark ? '\n    /** ' +  child.remark + ' */' : ''}\n    ${child.name}: ${getDefaultStrForValue(child.default)} as ${child.type}`;
                             if (index <= i.children.length - 2) _variableStr += `,`;
                             else _variableStr += `\n`;
                         });
@@ -100,7 +105,10 @@
                     return _variableStr;
                 });
 
-                monaco.languages.typescript.javascriptDefaults.addExtraLib(_variables.join('\n'), 'vars.d.ts');
+                /** 引入函数 */
+                let _functtions = this.formFunctions.map(i => i.declare);
+
+                monaco.languages.typescript.javascriptDefaults.addExtraLib(`${_variables.join('\n')}\n\n${_functtions.join('\n')}`, 'vars.d.ts');
             } else {
                 monaco.editor.defineTheme('gj-dark', {
                     base: 'vs-dark',
@@ -161,6 +169,9 @@
                             this.$emit('input', this.getValue());
                         }
                     });
+                    this.editor.onDidFocusEditorText(e => {
+                        this.$emit('focus');
+                    })
                 });
 
                 this.bus.$on('prop_change', () => {
@@ -176,6 +187,10 @@
             },
             getValue() {
                 return this.editor.getValue();
+            },
+            getMarkers() {
+                debugger;
+                return this.editor.getModelMarkers({});
             },
             handerCodeChange(value) {
                 const model = this.editor.getModel();

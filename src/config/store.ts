@@ -23,7 +23,8 @@ export default new Vuex.Store({
             email: '',
             phone: ''
         },
-        formVariables: [] as Array<FormDesign.FormVariable>
+        formVariables: [] as Array<FormDesign.FormVariable>,
+        formFunctions: [] as Array<FormDesign.FormFunction>,
     },
     getters: {
         /** 获取用户信息 */
@@ -48,6 +49,9 @@ export default new Vuex.Store({
         },
         getFormVariables(state): Array<FormDesign.FormVariable> {
             return state.formVariables;
+        },
+        getFormFunctions(state): Array<FormDesign.FormFunction> {
+            return state.formFunctions;
         }
     },
     mutations: {
@@ -63,7 +67,10 @@ export default new Vuex.Store({
         /** 清空变量 */
         clearFormVariables(state, variables) {
             state.formVariables = [];
-        }
+        },
+        setAllFormFunctions(state, functions) {
+            state.formFunctions = functions;
+        },
     },
     actions: {}
 });

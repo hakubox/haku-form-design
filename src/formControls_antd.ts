@@ -7,7 +7,7 @@ export let basicProps: Array<FormDesign.FormControlProperty> = [
         group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean,
         attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
         remark: '是否在界面上显示。'
-    }, 
+    }
 ];
 
 /** 表格列字段相关属性 */
@@ -16,10 +16,6 @@ export let columnItemProps: Array<FormDesign.FormControlProperty> = [
         name: 'title', title: '列标题', default: '标签',
         group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.singerLine,
         remark: '表格列头部显示的文字标题。'
-    }, {
-        name: 'onlyText', title: '仅文本', default: false,
-        group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.boolean,
-        remark: '在表格内部是否仅以文本方式呈现数据。'
     }, {
         name: 'width', title: '列宽度', 
         group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.pixel,
@@ -32,6 +28,16 @@ export let columnItemProps: Array<FormDesign.FormControlProperty> = [
     }, {
         name: 'sorter', title: '允许排序', default: false,
         group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.boolean
+    }, {
+        name: 'onlyText', title: '仅文本', default: false,
+        group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.boolean,
+        attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
+        remark: '组件内容是否展示为纯文本。'
+    }, {
+        name: 'rules', title: '校验规则', default: [],
+        group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
+        attach: [ Enum.FormControlPropertyEditor.expression ],
+        remark: '控件值校验规则。'
     }
 ];
 
@@ -74,6 +80,16 @@ export let formItemProps: Array<FormDesign.FormControlProperty> = [
         group: Enum.FormControlPropertyGroup.form, editor: Enum.FormControlPropertyEditor.boolean,
         attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
         remark: '是否必填，如不设置，则会根据校验规则自动生成。'
+    }, {
+        name: 'onlyText', title: '仅文本', default: false,
+        group: Enum.FormControlPropertyGroup.form, editor: Enum.FormControlPropertyEditor.boolean,
+        attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
+        remark: '组件内容是否展示为纯文本。'
+    }, {
+        name: 'rules', title: '校验规则', default: [],
+        group: Enum.FormControlPropertyGroup.form, editor: Enum.FormControlPropertyEditor.rules,
+        attach: [ Enum.FormControlPropertyEditor.expression ],
+        remark: '控件值校验规则。'
     }
 ];
 
@@ -123,7 +139,6 @@ export const formControls: Array<FormDesign.FormControl> = [
                 attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression, Enum.FormControlPropertyEditor.viewData ],
                 attrs: { style: { height: '200px' } }
                 // change(prop, propMap, control, value, refs) {
-                //     console.log(control);
                 //     // propMap['view-data'].visible = value == JSON.parse(value);
                 // }
             }, {
@@ -1029,7 +1044,7 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
-                name: 'renderFn', title: 'JS表达式', default: '',
+                name: 'renderFn', title: 'JS表达式', default: '', remark: '使用JS构造字符串或节点，节点构造函数是h()',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.javascript,
             }
         ],
@@ -1327,7 +1342,6 @@ export const formControls: Array<FormDesign.FormControl> = [
                 attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
                 attrs: { style: { height: '200px' } }
                 // change(prop, propMap, control, value, refs) {
-                //     console.log(control);
                 //     // propMap['view-data'].visible = value == JSON.parse(value);
                 // }
             }, {

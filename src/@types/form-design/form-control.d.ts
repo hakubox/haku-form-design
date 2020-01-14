@@ -1,4 +1,4 @@
-import { BasicControl, FormControlProperty, FormControlEvent } from "./main";
+import { BasicControl, FormControlProperty, FormFunction } from "./main";
 import { Enum } from "@/config/enum";
 
 /** 表单控件 */
@@ -34,6 +34,6 @@ export declare class FormControl {
     autoPrefix?: string;
     /** 是否为表单项 */
     isFormItem?: boolean;
-    /** 控件属性 */
-    events: Array<FormControlEvent>;
+    /** 控件事件 */
+    events: Array<FormFunction>;
 }

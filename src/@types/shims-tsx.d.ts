@@ -3,7 +3,13 @@ import lodash from 'lodash';
 
 declare global {
 
+    interface Sass {
+        /** 编译 */
+        compile(scssTxt: string, cb: (result: { text: string }) => any);
+    }
+
     const _: typeof lodash;
+    const Sass: Sass;
     namespace JSX {
         // tslint:disable no-empty-interface
         interface Element extends VNode {}

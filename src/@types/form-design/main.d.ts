@@ -7,7 +7,7 @@ import { FormControlGroup } from "./form-control-group";
 import { RemoteDevice } from "./remote-device";
 import { FormPanel } from "./form-panel";
 import { FormControlProperty } from "./form-control-property";
-import { FormControlEvent } from "./form-control-event";
+import { FormFunction } from "./form-function";
 import { PropertyEditor } from "./property-editor";
 import { BasicControl } from "./basic-control";
 import { PropertyGroup } from "./property-group";
@@ -36,8 +36,6 @@ export {
     FormPanel,    
     /** 属性 */
     FormControlProperty,
-    /** 事件 */
-    FormControlEvent,
     /** 基础组件 */
     BasicControl,    
     /** 属性编辑器 */
@@ -48,6 +46,8 @@ export {
     FormControl,
     /** 表单变量 */
     FormVariable,
+    /** 函数 */
+    FormFunction,
     /** 表单主题 */
     FormTheme,
     /** 表单模板 */

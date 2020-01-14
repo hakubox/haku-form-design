@@ -9,7 +9,7 @@ const _formTemplates: Array<FormTemplate> = [
         library: 'ant-design',
         controls: [],
         variables: ``,
-        events: ``
+        functions: ``
     }, {
         code: 'pc_01',
         title: '标准流程模板',
@@ -19,55 +19,55 @@ const _formTemplates: Array<FormTemplate> = [
         controls: [
             {
                 id: "", name: "divider", events: [], propertys: [],
-                control: { control: "a-divider", slot: {}, propAttrs: {}, events: {}, attrs: { text: "基本信息" } }
+                control: { control: "a-divider", slot: {}, propAttrs: {}, events: {}, attrs: { text: "基本信息", remark: "基本信息" } }
             }, {
                 id: "", name: "row", icon: "", childrenSlot: ".ant-col", propertys: [], events: [],
                 children: [
                     [ { 
                         id: "", name: "custom", events: [], propertys: [], 
-                        control: { control: 'antd-form-design-control-custom', attrs: { label: "申请人", renderFn: "'张三'" }, events: {}, propAttrs: {}, slot: {} } 
+                        control: { control: 'antd-form-design-control-custom', attrs: { label: "申请人", remark: "申请人", renderFn: "'张三'" }, events: {}, propAttrs: {}, slot: {} } 
                     } ], [ { 
                         id: "", name: "custom", events: [], propertys: [], 
-                        control: { control: 'antd-form-design-control-custom', attrs: { label: "申请时间", renderFn: "new Date().format('yyyy-MM-dd HH:mm:ss')" }, events: {}, propAttrs: {}, slot: {} } 
+                        control: { control: 'antd-form-design-control-custom', attrs: { label: "申请时间", remark: "申请时间", renderFn: "new Date().format('yyyy-MM-dd HH:mm:ss')" }, events: {}, propAttrs: {}, slot: {} } 
                     } ]
                 ],
                 control: {
                     control: "antd-form-design-control-row",
-                    slot: {}, propAttrs: {}, events: {}, attrs: { options: [ { span: 12, offset: 0 }, { span: 12, offset: 0 } ] }
+                    slot: {}, propAttrs: {}, events: {}, attrs: { options: [ { span: 12, offset: 0 }, { span: 12, offset: 0 } ], remark: "基本信息" }
                 }
             }, {
                 id: "", name: "row", icon: "", childrenSlot: ".ant-col", propertys: [], events: [],
                 children: [
                     [ { 
                         id: "", name: "custom", events: [], propertys: [], 
-                        control: { control: 'antd-form-design-control-custom', attrs: { label: "所属部门", renderFn: "'设计部'" }, events: {}, propAttrs: {}, slot: {} } 
+                        control: { control: 'antd-form-design-control-custom', attrs: { label: "所属部门", remark: "所属部门", renderFn: "'设计部'" }, events: {}, propAttrs: {}, slot: {} } 
                     } ], [ { 
                         id: "", name: "custom", events: [], propertys: [], 
-                        control: { control: 'antd-form-design-control-custom', attrs: { label: "申请单号", renderFn: "''" }, events: {}, propAttrs: {}, slot: {} } 
+                        control: { control: 'antd-form-design-control-custom', attrs: { label: "申请单号", remark: "申请单号", renderFn: "''" }, events: {}, propAttrs: {}, slot: {} } 
                     } ]
                 ],
                 control: {
                     control: "antd-form-design-control-row",
-                    slot: {}, propAttrs: {}, events: {}, attrs: { options: [ { span: 12, offset: 0 }, { span: 12, offset: 0 } ] }
+                    slot: {}, propAttrs: {}, events: {}, attrs: { options: [ { span: 12, offset: 0 }, { span: 12, offset: 0 } ], remark: "基本信息" }
                 }
             }, {
                 id: "", name: "row", icon: "", childrenSlot: ".ant-col", propertys: [], events: [],
                 children: [
                     [ { 
                         id: "", name: "custom", events: [], propertys: [], 
-                        control: { control: 'antd-form-design-control-custom', attrs: { label: "公司信息", renderFn: "'戈吉网络'" }, events: {}, propAttrs: {}, slot: {} } 
+                        control: { control: 'antd-form-design-control-custom', attrs: { label: "公司信息", remark: "公司信息", renderFn: "'戈吉网络'" }, events: {}, propAttrs: {}, slot: {} } 
                     } ], [ { 
                         id: "", name: "custom", events: [], propertys: [], 
-                        control: { control: 'antd-form-design-control-custom', attrs: { label: "成本中心", renderFn: "'XA10000001'" }, events: {}, propAttrs: {}, slot: {} } 
+                        control: { control: 'antd-form-design-control-custom', attrs: { label: "成本中心", remark: "成本中心", renderFn: "'XA10000001'" }, events: {}, propAttrs: {}, slot: {} } 
                     } ]
                 ],
                 control: {
                     control: "antd-form-design-control-row",
-                    slot: {}, propAttrs: {}, events: {}, attrs: { options: [ { span: 12, offset: 0 }, { span: 12, offset: 0 } ] }
+                    slot: {}, propAttrs: {}, events: {}, attrs: { options: [ { span: 12, offset: 0 }, { span: 12, offset: 0 } ], remark: "基本信息" }
                 }
             }, {
                 id: "", name: "divider", events: [], propertys: [],
-                control: { control: "a-divider", slot: {}, propAttrs: {}, events: {}, attrs: { text: "详细信息" } }
+                control: { control: "a-divider", slot: {}, propAttrs: {}, events: {}, attrs: { text: "详细信息", remark: "详细信息" } }
             }
         ],
         variables: `/** 流程数据 */
@@ -151,18 +151,44 @@ const applicationData: Record<string, any> = {
 const formData: Record<string, any> = {
 
 }`,
-        events: `
-        `
+    functions: `/** 测试函数 */
+function fn(numA: number, numB: number): number {
+    if (numA && numB) {
+        return numA + numB;
+    } else {
+        return 0;
+    }
+}
+
+/** 测试函数2 */
+function fn2(numA: number, numB: number): number {
+    if (numA && numB) {
+        return numA * numB;
+    } else {
+        return 0;
+    }
+}`
     }, {
         code: 'mobile_00',
-        title: '空模板',
+        title: 'Vant空模板',
         description: '标准空模板。',
         deviceType: 'mobile',
         library: 'vant',
         controls: [],
         variables: ``,
-        events: ``
+        functions: ``
     }, 
+    
+    // {
+    //     code: 'miniapp_01',
+    //     title: 'Uni空模板',
+    //     description: '标准空模板。',
+    //     deviceType: 'mobile',
+    //     library: 'uni',
+    //     controls: [],
+    //     variables: ``,
+    //     functions: ``
+    // }, 
 ];
 
 export default function() {

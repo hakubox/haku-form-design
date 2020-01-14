@@ -16,51 +16,26 @@
         <h1 class="form-title" v-if="currentComponentLibrary.type == 'pc'">{{formConfig.formTitle}}</h1>
 
         <div ref="form-design-canvas-mainpanel" class="form-design-canvas-mainpanel">
-
-            <a-form v-if="currentComponentLibrary.code == 'antd'" :form="form">
-                <component 
-                    :is="`${currentComponentLibrary.code}-form-design-control`" 
-                    v-for="(control, index) in panel.children" 
-                    :control-id="control.id"
-                    :ref="control.id"
-                    :class="{
-                        'form-control-layout': control.type == 'layout',
-                        active: currentSelectedControl.find(i => i.id == control.id),
-                        'is-drag': dragConfig.targetFormControlId == control.id
-                    }"
-                    :currentSelectedControl="currentSelectedControl"
-                    :dragConfig="dragConfig"
-                    :children="control.children"
-                    @mouseDownEvent="changeSelectedFormControl"
-                    :control="control"
-                    :key="index"
-                    :index="index"
-                    :bus="bus"
-                />
-            </a-form>
-
-            <template v-else>
-                <component 
-                    :is="`${currentComponentLibrary.code}-form-design-control`" 
-                    v-for="(control, index) in panel.children" 
-                    :control-id="control.id"
-                    :ref="control.id"
-                    :class="{
-                        'form-control-layout': control.type == 'layout',
-                        active: currentSelectedControl.find(i => i.id == control.id),
-                        'is-drag': dragConfig.targetFormControlId == control.id
-                    }"
-                    :currentSelectedControl="currentSelectedControl"
-                    :dragConfig="dragConfig"
-                    :children="control.children"
-                    :preview="preview"
-                    @mouseDownEvent="changeSelectedFormControl"
-                    :control="control"
-                    :key="index"
-                    :index="index"
-                    :bus="bus"
-                />
-            </template>
+            <component 
+                :is="`${currentComponentLibrary.code}-form-design-control`" 
+                v-for="(control, index) in panel.children" 
+                :control-id="control.id"
+                :ref="control.id"
+                :class="{
+                    'form-control-layout': control.type == 'layout',
+                    active: currentSelectedControl.find(i => i.id == control.id),
+                    'is-drag': dragConfig.targetFormControlId == control.id
+                }"
+                :currentSelectedControl="currentSelectedControl"
+                :dragConfig="dragConfig"
+                :children="control.children"
+                :preview="preview"
+                @mouseDownEvent="changeSelectedFormControl"
+                :control="control"
+                :key="index"
+                :index="index"
+                :bus="bus"
+            />
         </div>
         
         <div class="fixed-bottom" v-if="currentComponentLibrary.type == 'mobile'">

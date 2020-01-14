@@ -111,6 +111,8 @@ export namespace Enum {
         function = 'function',
         /** 对象列表类型 */
         modelList = 'model-list',
+        /** 校验规则 */
+        rules = 'rules',
         
         /** 计算表达式 */
         expression = 'expression',

@@ -4,9 +4,9 @@ import { icons } from '@/iconEditor';
 import { post } from './tools/common';
 import serviceConfig from '@/config/service.ts';
 
-let _service = serviceConfig;
+const _service = serviceConfig;
 
-let propertyEditors: Array<FormDesign.PropertyEditor> = [
+const propertyEditors: Array<FormDesign.PropertyEditor> = [
     {
         name: 'any',
         description: '任意',
@@ -275,24 +275,6 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
         ],
         editor: Enum.FormControlPropertyEditor.icon
     }, {
-        name: 'function',
-        description: '函数',
-        control: [
-            {
-                control: 'a-input',
-                slot: {},
-                attrs: {
-                    style: { width: '100%' },
-                    allowClear: true,
-                    addonAfter: '函数',
-                    size: 'small'
-                },
-                events: {}, 
-                propAttrs: {}
-            }
-        ],
-        editor: Enum.FormControlPropertyEditor.function
-    }, {
         name: 'json',
         description: 'JSON',
         control: [
@@ -386,6 +368,37 @@ let propertyEditors: Array<FormDesign.PropertyEditor> = [
             }
         ],
         editor: Enum.FormControlPropertyEditor.singerLine
+    }, {
+        name: 'function',
+        description: '函数',
+        control: [
+            {
+                control: 'function-picker',
+                slot: {},
+                attrs: {
+                    style: { width: '100%' },
+                    allowClear: true,
+                    size: 'small'
+                },
+                events: {}, 
+                propAttrs: {}
+            }
+        ],
+        editor: Enum.FormControlPropertyEditor.function
+    }, {
+        name: 'rules',
+        description: '校验规则',
+        control: [
+            {
+                control: 'rules-editor',
+                slot: {},
+                attrs: {
+                },
+                events: {}, 
+                propAttrs: {}
+            }
+        ],
+        editor: Enum.FormControlPropertyEditor.rules
     }, 
 ]
 

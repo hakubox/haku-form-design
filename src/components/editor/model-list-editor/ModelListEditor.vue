@@ -65,6 +65,7 @@ import Color from '@/lib/color/Color';
 export default class ModelListEditor extends Vue {
 	/** 当前值 */
     @Prop({
+        type: Array,
         default: () => []
     }) value!: Array<any>;
     /** 删除判断函数 */
@@ -89,7 +90,7 @@ export default class ModelListEditor extends Vue {
     @Inject() readonly propertyEditors!: Record<string, FormDesign.PropertyEditor>;
 
     get tableColumns() {
-        return this.columns.map(i => ({
+        return (this.columns || []).map(i => ({
             title: i.title,
             key: i.name,
             dataIndex: i.name,

@@ -5,6 +5,7 @@ import router from "@/config/router";
 import store from "@/config/store";
 import axios from 'axios';
 import '@/config/enum';
+// import lessLoader from '@/lib/less-loader';
 //公共函数库
 import * as common from '@/tools/common';
 //全局枚举
@@ -32,34 +33,18 @@ import { Breadcrumb, PagePagination } from '@/@types/basic';
 
 //let hakuDebug = require('./lib/haku-debug/index').default;
 
+console.log(process.env.VUE_APP_INTERFACE);
+axios.defaults.baseURL = process.env.VUE_APP_INTERFACE;
+
 Vue.use(components);
 
-axios.defaults.baseURL = process.env.VUE_APP_INTERFACE;
 
 Vue.config.productionTip = false;
 Vue.prototype.$common = common;
 Vue.prototype.$axios = axios;
+Vue.prototype.$store = store;
 Vue.prototype.$config = {};
 Object.defineProperties(Vue.prototype.$config, Object.assign({}, ...Object.entries(process.env).map(([key, value]) => ({ [key.replace('VUE_APP_', '')]: { get() { return process.env[key] } } }))));
-
-import serviceConfig from '@/config/service.ts';
-
-// 读取基础数据
-serviceConfig.baseDataUrl && common.post(serviceConfig.baseDataUrl).then(d => {
-    serviceConfig.baseData = d?.map(i => ({
-        label: `${i?.[serviceConfig.baseDataTitleField as string]} [${i?.[serviceConfig.baseDataValueField as any]}]`,
-        value: i?.[serviceConfig.baseDataValueField as any],
-    }));
-});
-
-// 读取视图数据
-serviceConfig.viewDataUrl && common.post(serviceConfig.viewDataUrl).then(d => {
-    serviceConfig.viewData = d?.map(i => ({
-        label: `${i?.[serviceConfig.viewDataTitleField as string]} [${i?.[serviceConfig.viewDataValueField as any]}]`,
-        value: i?.[serviceConfig.viewDataValueField as any],
-    }));
-    console.log(serviceConfig.viewData);
-});
 
 //Axios拦截器
 axios.interceptors.response.use(function (response) {
@@ -103,6 +88,10 @@ let __vue:Vue = new Vue({
         breadcrumbSource: []
     }),
     async created() {
+
+        Sass.compile('$-color-red: red; .a { .b { &.c { background: $-color-red; } } }', function(result) {
+            console.log(result.text);
+        });
         //获取权限
         // if (localStorage.getItem('Authorization')) {
         //     let permissions = '';

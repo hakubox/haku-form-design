@@ -7,11 +7,9 @@ export declare class BasicControl {
     /** 组件属性 */
     attrs: Record<string, any>;
     /** 组件属性 */
-    events: Record<string, string>;
+    events: Record<string, any>;
     /** 修改前的组件属性 */
     propAttrs: Record<string, any>;
-    /** 组件事件 */
-    event?: Record<string, any>;
     /** 组件默认属性 */
     defaultAttrs?: Record<string, any>;
     /** 编辑器插槽 */

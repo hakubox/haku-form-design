@@ -109,7 +109,6 @@
 
                 this.editor.onDidChangeModelContent(event => {
                     if (!this.__preventTriggerChangeEvent) {
-                        // console.log('parse', JSON.parse(this.getValue()));
                         // this.$emit('input', JSON.parse(this.getValue()));
                     }
                 });

@@ -3,6 +3,7 @@
         treeNodeFilterProp="name"
         treeNodeLabelProp="remark" 
         :tree-data="variableList"
+        :treeExpandedKeys.sync="extendNodes"
         class="variable-picker"
         :allowClear="true"
         :searchValue.sync="searchTxt"
@@ -47,10 +48,19 @@ export default class VariablePicker extends Vue {
     searchTxt: string = '';
 
     /** 真实值 */
-    inputValue: string = '';
+    inputValue: Array<string> = [''];
+
+    extendNodes: Array<string> = [];
+
+    @Watch('variableList')
+    checkChange() {
+        this.extendNodes = this.variableList.map(i => i.key);
+    }
     
 	mounted(){
         this.init();
+
+        this.extendNodes = this.variableList.map(i => i.key);
     }
 
     search(inputValue: string, treeNode: any) {
@@ -59,13 +69,13 @@ export default class VariablePicker extends Vue {
 
     get variableList(): Array<Record<string, any>> {
         return recursive(this.formVariables, {
-            map: i => ({ label: i.remark + ': ' + i.name, value: i.name, children: i.children })
+            map: (i, keyChain) => ({ label: (i.remark ? (i.remark + ': ') : '') + i.name, key: i.name, value: keyChain.map(i => i.name), children: i?.children, disabled: !!i?.children?.length })
         });
     }
 
     /** 初始化 */
     init() {
-        this.inputValue = this.value;
+        this.inputValue = this.value.split('.');
     }
 
     destroy() {
@@ -73,7 +83,7 @@ export default class VariablePicker extends Vue {
 
     /** 改变值 */
     change() {
-        this.$emit('input', this.inputValue);
+        this.$emit('input', this.inputValue.join('.'));
     }
     
 }

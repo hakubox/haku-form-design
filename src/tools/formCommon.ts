@@ -21,6 +21,9 @@ export function fillPropertys(controls: Array<FormDesign.FormControl>, component
         case 'vant':
 
             break;
+        case 'uni':
+
+            break;
         default:
             throw new Error(`找不到${componentLibraryName}组件库。`);
     }
@@ -180,13 +183,13 @@ export function variableParse(strVariable: string): Array<FormDesign.FormVariabl
                         _var.type = 'number';
                         _var.default = JSON.parse(_var.default);
                     }
-                    if (typeof(_var.default) != 'object') {
-                        _var.default = JSON.parse(_var.default);
+                    if (typeof(Function('return ' + _var.default)()) != 'object') {
+                        _var.default = Function('return ' + _var.default)();
                         _var.type = typeof(_var.default);
                     } else {
                         _var.type = Object.prototype.toString.call(_var.default).slice(8, -1);
                         _var.default = Function('return ' + _var.default)();
-                        _parseChildren(_item.groups?.value.trim().slice(1, -1) as string, _var, _item);
+                        _parseChildren((_item.groups?.default?.trim().slice(1, -1) || '') as string, _var, _item);
                     }
                 } else {
                     _var.type = 'any';
@@ -194,7 +197,7 @@ export function variableParse(strVariable: string): Array<FormDesign.FormVariabl
             } else if (_var.type != 'string' && _var.default) {
                 if (_var.default.trim().startsWith('{') && _var.default.trim().endsWith('}')) {
                     _var.default = Function('return ' + _var.default)();
-                    _parseChildren(_item.groups?.default as string, _var, _item);
+                    _parseChildren((_item.groups?.default?.trim().slice(1, -1) || '') as string, _var, _item);
                 } else {
                     _var.default = Function('return ' + _var.default)();
                 }
@@ -205,4 +208,109 @@ export function variableParse(strVariable: string): Array<FormDesign.FormVariabl
 
     console.log(_list);
     return _list;
+}
+
+/** 解析函数并获取函数头 */
+export function functionHeaderParse(strFunction: string): { body: string, bodyRanges: Array<Array<number>> } {
+    let _regRange = /{|}/g;
+    let _item: RegExpExecArray | null = null;
+    let _rangeIndex = 0;
+    let _functionRanges: Array<Array<number>> = [];
+    let _strFunction = strFunction;
+
+    while(_item = _regRange.exec(_strFunction)) {
+        if (_item !== null) {
+            if (!_functionRanges[_rangeIndex]) {
+                _functionRanges[_rangeIndex] = [_item.index, 0];
+            }
+            switch (_strFunction[_item.index]) {
+                case '{':
+                    _functionRanges[_rangeIndex][1] = _functionRanges[_rangeIndex][1] + 1;
+                    break;
+                case '}':
+                    _functionRanges[_rangeIndex][1] = _functionRanges[_rangeIndex][1] - 1;
+                    break;
+                default:
+                    break;
+            }
+            if (_functionRanges[_rangeIndex][1] == 0) {
+                _functionRanges[_rangeIndex][1] = _item.index;
+                _rangeIndex++;
+            }
+        }
+    }
+
+    for (let index = _functionRanges.length - 1; index >= 0; index--) {
+        _strFunction = `${_strFunction.substr(0, _functionRanges[index][0])};${_strFunction.substr(_functionRanges[index][1] + 1)}`;
+    }
+    
+    return {
+        body: _strFunction,
+        bodyRanges: _functionRanges
+    };
+}
+
+/** 解析函数的函数 */
+export function functionParse(strFunction: string): Array<FormDesign.FormFunction> {
+    let _functionHeader = functionHeaderParse(strFunction);
+
+    const _reg = /(\/\*\*\s*(?<remark>\S+)\s*\*\/[\s\n\r\t]*)?function\s+(?<name>[a-zA-Z0-9_]+)\s*\((?<params>.*?)\)(:\s*(?<type>\S+)\s*)?\s*(;|$)/g;
+    const _list: Array<FormDesign.FormFunction> = [];
+    let _item: RegExpExecArray | null = null;
+    let _index = 0, _txtIndex = 0;
+    const _regParam = /:\s*[^,]+/g;
+    
+    while(_item = _reg.exec(_functionHeader.body)) {
+        if (_item !== null) {
+            _list.push({
+                name: _item.groups?.name || '',
+                remark: _item.groups?.remark,
+                params: _item.groups?.params,
+                declare: `${strFunction.substr(_txtIndex, _functionHeader.bodyRanges[_index][0])};${strFunction.substr(_functionHeader.bodyRanges[_index][1] + 1)}`,
+                body: `function ${_item.groups?.name}(${_item.groups?.params.replace(_regParam, '')}) ${strFunction.substring(_functionHeader.bodyRanges[_index][0], _functionHeader.bodyRanges[_index][1] + 1).replace(/\r|\n/g, '')}`,
+            });
+            if (_index < _functionHeader.bodyRanges.length - 1) {
+                _index++;
+                _txtIndex = _functionHeader.bodyRanges[_index][1] + 1;
+            }
+        }
+    }
+    
+    return _list;
+}
+
+/** 转换数组变量为对象 */
+function getVariables(variables: Array<any>) {
+    if (variables.length == 0) return {};
+    return Object.assign.apply({}, [{}].concat(variables.map(i => ({ [i.name]: i.default })) || [{}]) as [object, ...any[]]);
+};
+
+/** 转换数组函数为对象 */
+function getFunctions(functions: Array<any>) {
+    if (functions.length == 0) return {};
+    return Object.assign.apply({}, [{}].concat(functions.map(i => ({ [i.name]: Function('return ' + i.body)() })) || [{}]) as [object, ...any[]]);
+};
+
+/** 获取真实属性 */
+export function getRealProp(control: FormDesign.FormControl, propName: string, variables: Array<any>, functions: Array<any>) {
+    const props = control.control.attrs;
+
+    if (!props['__' + propName]) return props[propName];
+
+    const _variables = getVariables(variables);
+    const _functions = getFunctions(functions);
+
+    let _editor = control.propertyEditors?.[propName];
+    let _value = props['__' + propName];
+    switch (_editor) {
+        case 'expression':
+            _value = Function('__data', 'fns', ('let { ' + Object.keys(_variables).join(', ') + ' } = __data; const { ' + Object.keys(_functions).join(', ') + ' } = fns; ') + 'return ' + _value)(_variables, _functions);
+            break;
+    }
+
+    return _value;
+}
+
+export function getRealProps(control: FormDesign.FormControl, variables: Array<any>, functions: Array<any>) {
+    return Object.keys(control.control.attrs).map(i => getRealProp(control, i, variables, functions));
 }

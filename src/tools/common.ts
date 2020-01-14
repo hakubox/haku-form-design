@@ -425,8 +425,8 @@ export function registerComponent(templateName) {
 
 /** 递归函数 */
 export function recursive(formVariables: Array<Record<string, any>>, callback?: {
-    filter?: (variable: Record<string, any>) => boolean,
-    map?: (variable: Record<string, any>) => any
+    filter?: (variable: Record<string, any>, chain: Array<Record<string, any>>) => boolean,
+    map?: (variable: Record<string, any>, chain: Array<Record<string, any>>) => any
 }, childField: string = 'children'): Array<Record<string, any>> {
 
     if (!callback) {
@@ -436,20 +436,21 @@ export function recursive(formVariables: Array<Record<string, any>>, callback?: 
     let _list: Array<Record<string, any>> = [];
 
     // 递归
-    const _cb = (newParent: Record<string, any>, parent: Record<string, any>) => {
-        if (callback?.filter?.(newParent) === false) {
+    const _cb = (newParent: Record<string, any>, parent: Record<string, any>, chain: Array<Record<string, any>>) => {
+        if (callback?.filter?.(newParent, chain) === false) {
             return;
         }
         let _item = {
             ...parent,
             children: []
         };
+        chain.push(_item);
         if (parent?.children?.length) {
             for (let i = 0; i < parent.children.length; i++) {
-                _cb(_item, parent.children[i]);
+                _cb(_item, parent.children[i], chain);
             }
         }
-        newParent.children.push(callback.map?.(_item) || _item);
+        newParent.children.push(callback.map?.(_item, chain) || _item);
     };
 
     formVariables.forEach(item => {
@@ -457,20 +458,17 @@ export function recursive(formVariables: Array<Record<string, any>>, callback?: 
             ...item,
             children: []
         };
-        if (callback?.filter?.(_item) === false) {
+        if (callback?.filter?.(_item, []) === false) {
             return;
         }
 
         if (item?.children?.length) {
             for (let i = 0; i < item.children.length; i++) {
-                let _child = {
-                    ...item.children[i]
-                }
-                _cb(_item, item.children[i]);
+                _cb(_item, item.children[i], [_item]);
             }
         }
 
-        _list.push(callback.map?.(_item) || _item);
+        _list.push(callback.map?.(_item, [_item]) || _item);
     });
 
     return _list;

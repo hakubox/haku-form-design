@@ -72,7 +72,7 @@
                     </span>
                     
                     <a-menu-item @click="variableEditorVisible = true;"><a-icon type="profile" />变量配置</a-menu-item>
-                    <a-menu-item @click="eventEditorVisible = true;"><a-icon type="thunderbolt" />事件/函数配置</a-menu-item>
+                    <a-menu-item @click="functionEditorVisible = true;"><a-icon type="thunderbolt" />事件/函数配置</a-menu-item>
                     <a-menu-item @click="apiEditorVisible = true;"><a-icon type="api" />接口配置</a-menu-item>
                 </a-sub-menu>
 
@@ -85,14 +85,32 @@
         <!-- 主体区域 -->
         <div class="form-design-body">
 
-            <!-- 控件栏 -->
-            <div class="form-design-body-controlpanel" style="width: 300px;">
-                <dl v-for="group in controlGroups" :key="group.name">
-                    <dt><a-icon v-if="group.icon" :type="group.icon" :style="{ marginRight: '3px' }" /> {{group.title}}</dt>
-                    <dd v-for="control in group.controls" :key="control.name" @mousedown="dragStart($event, control)">
-                        <a-icon v-if="control.icon" :type="control.icon" />{{control.title}}
-                    </dd>
-                </dl>
+            <div class="form-design-body-left">
+                <!-- 控件栏 -->
+                <div class="form-design-body-controlpanel" style="width: 300px;">
+                    <dl v-for="group in controlGroups" :key="group.name">
+                        <dt><a-icon v-show="group.icon" :type="group.icon" :style="{ marginRight: '3px' }" /> {{group.title}}</dt>
+                        <dd v-for="control in group.controls" :key="control.name" @mousedown="dragStart($event, control)">
+                            <a-icon v-show="control.icon" :type="control.icon" />{{control.title}}
+                        </dd>
+                    </dl>
+                </div>
+
+                <!-- 大纲 -->
+                <!-- <div class="form-design-body-outline">
+                    <a-input-search style="margin-bottom: 8px" placeholder="Search" @change="onSearchOutline" />
+                    <a-tree @expand="onOutlineExpand" :expandedKeys="expandedKeys" :autoExpandParent="autoExpandParent" :treeData="gData">
+                        <template slot="title" slot-scope="{title}">
+                            <span v-if="title.indexOf(searchValue) > -1">
+                                {{title.substr(0, title.indexOf(searchValue))}}
+                                <span style="color: #f50">{{searchValue}}</span>
+                                {{title.substr(title.indexOf(searchValue) + searchValue.length)}}
+                            </span>
+                            <span v-else>{{title}}</span>
+                        </template>
+                    </a-tree>
+                </div> -->
+                
             </div>
 
             <!-- 画布 -->
@@ -155,7 +173,7 @@
                                         <component :is="prop.layout == 'block' || (prop.attach && prop.attach.length) ? 'div' : 'label'" class="form-design-body-property-item" :class="{ 'form-design-body-property-item-block': prop.layout == 'block' || (prop.attach && prop.attach.length) }" v-if="prop.visible !== false" :key="prop.name">
                                             <span class="form-design-body-property-item-label" :class="{ require: prop.require, leaf: prop.leaf }">
                                                 {{prop.title}}
-                                                <div style="float: right;" v-if="prop.attach">
+                                                <div style="float: right;" v-show="prop.attach">
                                                     <a-button-group size="small">
                                                         <a-button :type="currentPropertyEditors[prop.name] == prop.editor ? 'primary' : 'default'" value="default" @click="changePropAttach(prop, prop.editor)">常规</a-button>
                                                         <a-button :type="currentPropertyEditors[prop.name] == attach ? 'primary' : 'default'" v-for="attach in prop.attach" :key="attach" :value="attach" @click="changePropAttach(prop, attach);">{{ propertyEditors[attach].description }}</a-button>
@@ -163,13 +181,12 @@
                                                 </div>
                                             </span>
                                             <div class="form-design-body-property-item-value">
-                                               <div v-if="!prop.attach || !prop.attach.length || (prop.attach && currentPropertyEditors[prop.name] == prop.editor)">
-                                                     <template v-for="(control, index2) in propertyEditors[prop.editor].control">
+                                                <div v-show="!prop.attach || !prop.attach.length || (prop.attach && currentPropertyEditors[prop.name] == prop.editor)">
+                                                    <template v-for="(control, index2) in propertyEditors[prop.editor].control">
                                                         <component @focus="currentProp = prop"
                                                             :key="index2"
                                                             :ref="control.id"
                                                             :control="currentSelectedControl[0]"
-                                                            :variables="formVariables"
                                                             v-bind="Object.assign({}, prop.attrs, control.attrs)" 
                                                             v-model="currentSelectedControl[0].control.attrs[prop.name]" 
                                                             @change="propChangeListener($event, prop, currentSelectedControlPropertyMap, currentSelectedControl)"
@@ -203,44 +220,42 @@
                                                     </template>
                                                 </div>
 
-                                                <div v-else>
-                                                    <template v-show="currentPropertyEditors[prop.name] != prop.editor" v-for="(control, index2) in propertyEditors[currentPropertyEditors[prop.name]].control">
-                                                        <component @focus="currentProp = prop"
-                                                            :key="index2"
-                                                            :ref="control.id"
-                                                            :control="currentSelectedControl[0]"
-                                                            :variables="formVariables"
-                                                            v-bind="Object.assign({}, prop.attrs, control.attrs)" 
-                                                            v-model="currentSelectedControl[0].control.attrs['__' + prop.name]" 
-                                                            @change="propChangeListener($event, prop, currentSelectedControlPropertyMap, currentSelectedControl)"
-                                                            :is="control.control"
-                                                        >
-                                                            {{control.html}}
-                                                            <template v-for="slot in Object.keys(control.slot)" #[slot]>
-                                                                <component 
-                                                                    v-for="(detailControl, index3) in control.slot[slot]" 
-                                                                    :key="slot + detailControl.control + index3"
-                                                                    v-bind="detailControl.attrs" 
-                                                                    :is="detailControl.control" 
-                                                                >
-                                                                
-                                                                    {{detailControl.html}}
-                                                                    <template v-for="detailSlot in Object.keys(detailControl.slot)" #[detailSlot]>
-                                                                        <component 
-                                                                            v-for="(detail2Control, index4) in detailControl.slot[detailSlot]" 
-                                                                            :key="detailSlot + detail2Control.control + index4"
-                                                                            v-bind="detail2Control.attrs" 
-                                                                            :is="detail2Control.control" 
-                                                                        >
-                                                                        {{detail2Control.html}}
-                                                                        </component>
-                                                                    </template>
-                                                                
-                                                                </component>
-                                                            </template>
-                                                        </component>
-                                                        
-                                                    </template>
+                                                <div v-show="prop.attach && prop.attach.length && currentPropertyEditors[prop.name] != prop.editor">
+                                                    <component 
+                                                        v-for="(control, index2) in (propertyEditors[currentPropertyEditors[prop.name]] || {control:[]}).control"
+                                                        @focus="currentProp = prop"
+                                                        :key="index2"
+                                                        :ref="control.id"
+                                                        :control="currentSelectedControl[0]"
+                                                        v-bind="Object.assign({}, prop.attrs, control.attrs)" 
+                                                        v-model="currentSelectedControl[0].control.attrs['__' + prop.name]" 
+                                                        @change="propChangeListener($event, prop, currentSelectedControlPropertyMap, currentSelectedControl)"
+                                                        :is="control.control"
+                                                    >
+                                                        {{control.html}}
+                                                        <template v-for="slot in Object.keys(control.slot)" #[slot]>
+                                                            <component 
+                                                                v-for="(detailControl, index3) in control.slot[slot]" 
+                                                                :key="slot + detailControl.control + index3"
+                                                                v-bind="detailControl.attrs" 
+                                                                :is="detailControl.control" 
+                                                            >
+                                                            
+                                                                {{detailControl.html}}
+                                                                <template v-for="detailSlot in Object.keys(detailControl.slot)" #[detailSlot]>
+                                                                    <component 
+                                                                        v-for="(detail2Control, index4) in detailControl.slot[detailSlot]" 
+                                                                        :key="detailSlot + detail2Control.control + index4"
+                                                                        v-bind="detail2Control.attrs" 
+                                                                        :is="detail2Control.control" 
+                                                                    >
+                                                                    {{detail2Control.html}}
+                                                                    </component>
+                                                                </template>
+                                                            
+                                                            </component>
+                                                        </template>
+                                                    </component>
                                                 </div>
                                             </div>
                                         </component>
@@ -263,8 +278,8 @@
                                         </div> -->
                                     </span>
                                     <div class="form-design-body-property-item-value">
-                                        <a-select size="small" :allowClear="true" class="wfull">
-                                        </a-select>
+                                        <function-picker v-model="currentSelectedControl[0].control.events[event.name]" @change="changeEvent" size="small" class="wfull">
+                                        </function-picker>
                                     </div>
                                 </div>
                             </div>
@@ -381,11 +396,20 @@
 
         <!-- 编辑页面变量 -->
         <a-modal :width="1000" :centered="true" title="页面变量" wrap-class-name="form-json-editor-drawer" v-model="variableEditorVisible" @cancel="cancelFormVariable()">
-            <code-editor class="page-config-editor" language="typescript" style="height: 500px;" v-model="editorVariable">
+            <code-editor ref="formVariable" class="page-config-editor" language="typescript" style="height: 500px;" v-model="editorVariable">
             </code-editor>
             <div class="bottom-btn-list" slot="footer">
                 <a-button @click="generateFormVariable()" type="link">重新生成</a-button>
                 <a-button @click="saveFormVariable()" type="primary">保存</a-button>
+            </div>
+        </a-modal>
+
+        <!-- 编辑页面函数 -->
+        <a-modal :width="1000" :centered="true" title="页面函数" wrap-class-name="form-json-editor-drawer" v-model="functionEditorVisible" @cancel="cancelFormVariable()">
+            <code-editor class="page-config-editor" language="typescript" style="height: 500px;" v-model="editorFunction">
+            </code-editor>
+            <div class="bottom-btn-list" slot="footer">
+                <a-button @click="saveFormFunction()" type="primary">保存</a-button>
             </div>
         </a-modal>
 
@@ -451,6 +475,7 @@ import FormDesign from '@/@types/form-design';
 import { initPropertyEditors } from '@/propertyEditor';
 import { Enum } from '@/config/enum';
 import { initVantControls } from '@/formControls_vant';
+import { initUniControls } from '@/formControls_uni';
 import { initAntDesignControls, formItemProps, columnItemProps } from '@/formControls_antd';
 import { initFormControlGroups } from '@/formControlGroups';
 import { initRemoteDevices } from '@/formDevices';
@@ -458,7 +483,7 @@ import { cloneForce } from '@/lib/clone/index';
 import { base64 } from '@/lib/base64/base64';
 import { componentLibrarys } from '@/formLibrarys.ts';
 import formTemplate from '@/formTemplate';
-import { flatControls, fillPropertys, variableParse } from '@/tools/formCommon';
+import { flatControls, fillPropertys, variableParse, functionParse } from '@/tools/formCommon';
 
 import Icon from 'vant/lib/icon';
 import 'vant/lib/index.css';
@@ -471,6 +496,7 @@ let dragDom: any;
 /** 所有组件 */
 const _vantControls: Array<FormDesign.FormControl> = initVantControls();
 const _antdControls: Array<FormDesign.FormControl> = initAntDesignControls();
+const _uniControls: Array<FormDesign.FormControl> = initUniControls();
 
 const _controlGroups: Array<FormDesign.FormControlGroup> = initFormControlGroups();
 
@@ -489,13 +515,19 @@ export default class FormDesigner extends Vue {
 
     /** 变量编辑器弹出框是否显示 */
     variableEditorVisible: boolean = false;
-    /** 事件编辑器弹出框是否显示 */
-    eventEditorVisible: boolean = false;
+    /** 函数编辑器弹出框是否显示 */
+    functionEditorVisible: boolean = false;
     /** API编辑器弹出框是否显示 */
     apiEditorVisible: boolean = false;
     /** 模板选择弹出框是否显示 */
     templateSelectModalVisible: boolean = false;
 
+    /** 大纲展开节点列表 */
+    expandedKeys: Array<string> = [];
+    /** 大纲搜索文本 */
+    searchValue: string = '';
+    /** 是否自动展开大纲节点 */
+    autoExpandParent: boolean = true;
 
     /** 预览界面是否显示 */
     previewVisible: boolean = false;
@@ -505,8 +537,8 @@ export default class FormDesigner extends Vue {
     editorVariableHistory: string = '';
     /** 页面变量编辑器的值 */
     editorVariable: string = '';
-    /** 页面变量编辑器的值 */
-    editorEvents: string = '';
+    /** 页面函数编辑器的值 */
+    editorFunction: string = '';
 
     /** 画板 */
     canvasEl: any;
@@ -596,7 +628,10 @@ export default class FormDesigner extends Vue {
     @Getter('getFormVariables') formVariables!: Array<FormDesign.FormVariable>;
 
     /** 更新全部表单变量 */
-    @Mutation('setAllFormVariables') setAllFormVariables!: Function;
+    @Mutation('setAllFormVariables') setAllFormVariables!: (variables: Array<FormDesign.FormVariable>) => void;
+
+    /** 更新全部函数变量 */
+    @Mutation('setAllFormFunctions') setAllFormFunctions!: (functions: Array<FormDesign.FormFunction>) => void;
 
     /** 清空变量 */
     @Mutation('clearFormVariables') clearFormVariables!: Function;
@@ -618,7 +653,7 @@ export default class FormDesigner extends Vue {
     /** 当前选择控件所带来的控件属性组 */
     currentSelectedControlPropertyGroups: Array<FormDesign.PropertyGroup> = [];
     /** 当前选择控件所带来的控件事件列表 */
-    currentSelectedControlEventList: Array<FormDesign.FormControlEvent> = [];
+    currentSelectedControlEventList: Array<FormDesign.FormFunction> = [];
     /** 当前选择控件所带来的控件属性哈希表 */
     currentSelectedControlPropertyMap: Array<FormDesign.FormControlProperty> = [];
 
@@ -633,6 +668,7 @@ export default class FormDesigner extends Vue {
         switch (this.formConfig.formComponentLib) {
             case 'vant': return _vantControls;
             case 'ant-design': return _antdControls;
+            case 'uni': return _uniControls;
             default: return [];
         };
     }
@@ -643,6 +679,7 @@ export default class FormDesigner extends Vue {
             ...i,
             controls: ({
                 'vant': _vantControls.filter(o => o.type == i.name),
+                'uni': _uniControls.filter(o => o.type == i.name),
                 'ant-design': _antdControls.filter(o => o.type == i.name)
             })[this.formConfig.formComponentLib]
         }));
@@ -659,6 +696,21 @@ export default class FormDesigner extends Vue {
     /** 切换右侧主Tabs */
     changeMainPropertyPanel(e) {
         this.bus.$emit('prop_change');
+    }
+
+    /** 搜索组件大纲 */
+    onSearchOutline(e) {
+        Object.assign(this, {
+            expandedKeys: this.controlList.filter((item, i, self) => item.name.indexOf(e)),
+            searchValue: e.target.value,
+            autoExpandParent: true,
+        });
+    }
+
+    /** 大纲节点展开 */
+    onOutlineExpand(expandedKeys) {
+        this.expandedKeys = expandedKeys;
+        this.autoExpandParent = false;
     }
 
     /** 切换当前选择的控件 */
@@ -692,12 +744,13 @@ export default class FormDesigner extends Vue {
                 };
             }).filter(i => i.propertys.length);
 
-            this.currentSelectedControlEventList = formControlList?.length ? formControlList[0].events : [];
+            this.currentSelectedControlEventList = formControlList?.length ? formControlList[0]?.events : [];
         } else {
             this.currentProp = {};
             this.currentSelectedFirstControlId = undefined;
             this.currentSelectedControlPropertyMap = [];
             this.currentSelectedControlPropertyGroups = [];
+            this.currentSelectedControlEventList = [];
         }
     }
 
@@ -756,7 +809,7 @@ export default class FormDesigner extends Vue {
         if (prop) {
             let _value = e.target ? e.target.value : e;
             control[0].control.propAttrs[prop.name] = _value;
-            if (prop.change) {
+            if (prop?.change) {
                 return prop.change.call(this, prop, propMap, control, _value, (this.$refs.controlCanvas as Vue).$refs);
             }
         }
@@ -764,6 +817,11 @@ export default class FormDesigner extends Vue {
 
     /** 改变属性 */
     changeProperty(e, property) {
+    }
+
+    /** 改变事件 */
+    changeEvent(e, property) {
+
     }
 
     get controlCanvas(): any {
@@ -1225,7 +1283,9 @@ export default class FormDesigner extends Vue {
     }
 
     /** 保存页面变量 */
-    saveFormVariable(variables: Record<string, any> = {}) {
+    saveFormVariable() {
+        
+
         let _list: Array<any> = variableParse(this.editorVariable);
         // @ts-ignore
         this.setAllFormVariables(_list.map(i => Object.assign({}, i)));
@@ -1233,6 +1293,14 @@ export default class FormDesigner extends Vue {
         this.$message.success('页面变量已保存');
         this.variableEditorVisible = false;
         this.editorVariableHistory = this.editorVariable;
+    }
+
+    /** 保存页面函数 */
+    saveFormFunction() {
+        let _list: Array<FormDesign.FormFunction> = functionParse(this.editorFunction);
+        this.setAllFormFunctions(_list);
+        this.$message.success('页面函数已保存');
+        this.functionEditorVisible = false;
     }
 
     /** 关闭页面变量编辑框 */
@@ -1303,9 +1371,10 @@ export default class FormDesigner extends Vue {
         this.currentSelectedControlPropertyMap = [];
 
         this.editorVariable = template.variables || '';
-        this.editorEvents = template.events || '';
+        this.editorFunction = template.functions || '';
 
         this.saveFormVariable();
+        this.saveFormFunction();
 
         this.$nextTick(() => {
             this.toolsEl = document.querySelector('.form-control-tools');
