@@ -1,5 +1,13 @@
 <template lang="html">
-    <div class="form-control" :control-id="controlId" @mousedown.stop="mouseDownEvent($event, control)">
+    <div class="form-control" :control-id="controlId" @mousedown.stop="mouseDownEvent($event, control)" 
+        :style="{
+            order: control.control.attrs.order,
+            flexGrow: '' + control.control.attrs.flexGrow,
+            flexShrink: '' + control.control.attrs.flexShrink,
+            flexBasis: '' + control.control.attrs.flexBasis,
+            alignSelf: '' + control.control.attrs.alignSelf,
+        }"
+    >
         <div class="complex-child-form-item" v-if="isComplexFormChild">
             <span class="complex-child-form-item-label">{{control.control.attrs.title}}</span>
             <div class="complex-child-form-item-content">

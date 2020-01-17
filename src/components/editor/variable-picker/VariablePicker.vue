@@ -42,7 +42,9 @@ export default class VariablePicker extends Vue {
         default: 'default'
     }) size!: ('large' | 'default' | 'small');
     /** 表单变量 */
-    @Getter('getFormVariables') formVariables!: Array<FormDesign.FormVariable>;
+    @Getter('getFormScript') formScript!: FormDesign.FormScript;
+    /** 表单变量 */
+    @Getter('getFormScriptComment') formScriptComment!: Record<string, string>;
 
     /** 搜索文本 */
     searchTxt: string = '';
@@ -63,13 +65,68 @@ export default class VariablePicker extends Vue {
         this.extendNodes = this.variableList.map(i => i.key);
     }
 
+    /** 递归函数 */
+    recursiveObject(obj: Record<string, any>, callback: {
+        filter?: (variable: Record<string, any>, chain: Array<Record<string, any>>) => boolean,
+        map?: (variable: Record<string, any>, chain: Array<Record<string, any>>) => any
+    }, childField: string = 'children'): Array<Record<string, any>> {
+
+        let _list: Array<Record<string, any>> = [];
+
+        // 递归
+        const _cb = (newParent: Record<string, any>, [key, value]: [string, any], chain: Array<Record<string, any>>) => {
+            if (callback?.filter?.(newParent, chain) === false) {
+                return;
+            }
+            let _item = {
+                label: this.formScriptComment[key],
+                value: key,
+                children: []
+            };
+            chain.push(_item);
+            if (value instanceof Object) {
+                let children = Object.entries(value);
+                if (children.length) {
+                    for (let i = 0; i < children.length; i++) {
+                        _cb(_item, children[i], chain);
+                    }
+                }
+            }
+            newParent.children.push(callback.map?.(_item, chain) || _item);
+        };
+
+        Object.entries(obj).forEach(([key, value]) => {
+            let _item = {
+                label: this.formScriptComment[key],
+                value: key,
+                children: []
+            };
+            if (callback?.filter?.(_item, []) === false) {
+                return;
+            }
+
+            if (value instanceof Object) {
+                let children = Object.entries(value);
+                if (children.length) {
+                    for (let i = 0; i < children.length; i++) {
+                        _cb(_item, children[i], [_item]);
+                    }
+                }
+            }
+
+            _list.push(callback.map?.(_item, [_item]) || _item);
+        });
+
+        return _list;
+    }
+
     search(inputValue: string, treeNode: any) {
         return (''+treeNode.data.props.value).includes(inputValue) || treeNode.data.props.title.includes(inputValue);
     }
 
     get variableList(): Array<Record<string, any>> {
-        return recursive(this.formVariables, {
-            map: (i, keyChain) => ({ label: (i.remark ? (i.remark + ': ') : '') + i.name, key: i.name, value: keyChain.map(i => i.name), children: i?.children, disabled: !!i?.children?.length })
+        return this.recursiveObject(this.formScript.data, {
+            map: (i, keyChain) => ({ label: (i.label ? (i.label + ': ') : '') + i.value, key: i.value, value: keyChain.map(i => i.value), children: i?.children, disabled: !!i?.children?.length })
         });
     }
 

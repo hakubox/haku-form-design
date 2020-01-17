@@ -8,6 +8,7 @@ import '@/config/enum';
 // import lessLoader from '@/lib/less-loader';
 //公共函数库
 import * as common from '@/tools/common';
+
 //全局枚举
 require('moment').locale('zn-cn');
 
@@ -88,10 +89,7 @@ let __vue:Vue = new Vue({
         breadcrumbSource: []
     }),
     async created() {
-
-        Sass.compile('$-color-red: red; .a { .b { &.c { background: $-color-red; } } }', function(result) {
-            console.log(result.text);
-        });
+        
         //获取权限
         // if (localStorage.getItem('Authorization')) {
         //     let permissions = '';

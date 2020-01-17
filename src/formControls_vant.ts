@@ -1,6 +1,14 @@
 import FormDesign from '@/@types/form-design';
 import { Enum } from '@/config/enum';
 
+export let basicProps: Array<FormDesign.FormControlProperty> = [
+    {
+        name: 'visible', title: '是否显示', default: true,
+        group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean,
+        attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
+        remark: '是否在界面上显示。'
+    }
+];
 
 let formControls: Array<FormDesign.FormControl> = [
 
@@ -20,6 +28,7 @@ let formControls: Array<FormDesign.FormControl> = [
         name: 'row',
         icon: '',
         title: '栅格',
+        autoPrefix: 'row',
         type: Enum.FormControlType.layout,
         children: [ [], [] ],
         childrenSlot: '.van-col',
@@ -94,6 +103,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'tabs',
         title: '标签页',
+        autoPrefix: 'tabs',
         type: Enum.FormControlType.layout,
         children: [ [], [], [] ],
         childrenSlot: '.van-tab__pane',
@@ -142,8 +152,8 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'lazy-render', title: '延迟渲染', default: true,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'options', title: '子标签', default: [
                     { title: '标签1', icon: '' },
@@ -190,6 +200,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'collapse',
         title: '折叠面板',
+        autoPrefix: 'collapse',
         type: Enum.FormControlType.layout,
         children: [ [], [], [] ],
         childrenSlot: '.van-collapse-item__content',
@@ -205,8 +216,8 @@ let formControls: Array<FormDesign.FormControl> = [
                     }
                 }
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'options', title: '子面板', default: [
                     { title: '标题1', icon: '', rightIcon: 'arrow' },
@@ -262,6 +273,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'panel',
         title: '控件组',
+        autoPrefix: 'panel',
         type: Enum.FormControlType.layout,
         children: [ [] ],
         childrenSlot: '.van-cell-group',
@@ -295,6 +307,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'singer-line',
         title: '单行文本框',
+        autoPrefix: 'singerline',
         type: Enum.FormControlType.input,
         propertys: [
             {
@@ -332,8 +345,8 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'clearable', title: '是否启用清除', default: true,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -362,6 +375,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'mutil-line',
         title: '多行文本框',
+        autoPrefix: 'mutilline',
         type: Enum.FormControlType.input,
         propertys: [
             {
@@ -395,8 +409,8 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'clearable', title: '是否启用清除', default: true,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -436,6 +450,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'stepper',
         title: '步进器',
+        autoPrefix: 'stepper',
         type: Enum.FormControlType.input,
         propertys: [
             {
@@ -506,8 +521,8 @@ let formControls: Array<FormDesign.FormControl> = [
                     control[0].control.slot['default'][0].attrs['required'] = value;
                 }
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -549,6 +564,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'data-select',
         title: '值选择器',
+        autoPrefix: 'dataselect',
         type: Enum.FormControlType.select,
         propertys: [
             {
@@ -576,8 +592,8 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'clearable', title: '是否启用清除', default: true,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'dataSource', title: '数据源', require: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json,
@@ -613,6 +629,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'radio-group',
         title: '单选框组',
+        autoPrefix: 'radiogroup',
         type: Enum.FormControlType.select,
         propertys: [
             {
@@ -646,8 +663,8 @@ let formControls: Array<FormDesign.FormControl> = [
                     { name: 'label', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                 ] }
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -674,6 +691,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'checkbox-group',
         title: '复选框组',
+        autoPrefix: 'checkboxgroup',
         type: Enum.FormControlType.select,
         propertys: [
             {
@@ -707,8 +725,8 @@ let formControls: Array<FormDesign.FormControl> = [
                     { name: 'label', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                 ] }
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -735,6 +753,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'date-select',
         title: '日期框',
+        autoPrefix: 'dateselect',
         type: Enum.FormControlType.input,
         propertys: [
             {
@@ -759,8 +778,8 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'clearable', title: '是否启用清除', default: true,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -787,6 +806,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'switch',
         title: '开关',
+        autoPrefix: 'switch',
         type: Enum.FormControlType.select,
         propertys: [
             {
@@ -811,8 +831,8 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'inactive-value', title: '关闭的值', default: true,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.any
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -839,6 +859,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'image-uploader',
         title: '图片上传',
+        autoPrefix: 'imageuploader',
         type: Enum.FormControlType.upload,
         propertys: [
             {
@@ -893,8 +914,8 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'required', title: '是否必填', default: false,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'after-read', title: '读取完成回调函数', 
                 group: Enum.FormControlPropertyGroup.function, editor: Enum.FormControlPropertyEditor.function
@@ -956,6 +977,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'file-uploader',
         title: '文件上传',
+        autoPrefix: 'fileuploader',
         type: Enum.FormControlType.upload,
         propertys: [
             {
@@ -990,8 +1012,8 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'required', title: '是否必填', default: false,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'after-read', title: '读取完成回调函数', 
                 group: Enum.FormControlPropertyGroup.function, editor: Enum.FormControlPropertyEditor.function
@@ -1028,6 +1050,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'pagination',
         title: '分页',
+        autoPrefix: 'pagination',
         type: Enum.FormControlType.else,
         propertys: [
             {
@@ -1053,8 +1076,8 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'disabled', title: '是否禁用', default: false,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -1081,6 +1104,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'search',
         title: '搜索',
+        autoPrefix: 'search',
         type: Enum.FormControlType.else,
         propertys: [
             {
@@ -1119,8 +1143,8 @@ let formControls: Array<FormDesign.FormControl> = [
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
                 attrs: { options: [ { title: '方形', value: 'square' }, { title: '圆形', value: 'round' } ] }
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -1147,6 +1171,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'slider',
         title: '滑块',
+        autoPrefix: 'slider',
         type: Enum.FormControlType.else,
         propertys: [
             {
@@ -1168,8 +1193,8 @@ let formControls: Array<FormDesign.FormControl> = [
                 name: 'required', title: '是否必填', default: false,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'model', title: 'model', default: '', require: true,
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -1209,6 +1234,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'count-down',
         title: '倒计时',
+        autoPrefix: 'countdown',
         type: Enum.FormControlType.else,
         propertys: [
             {
@@ -1280,6 +1306,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'rate',
         title: '评分',
+        autoPrefix: 'rate',
         type: Enum.FormControlType.else,
         propertys: [
             {
@@ -1382,6 +1409,7 @@ let formControls: Array<FormDesign.FormControl> = [
         },
         name: 'grid',
         title: '宫格',
+        autoPrefix: 'grid',
         type: Enum.FormControlType.else,
         children: [ [] ],
         propertys: [
@@ -1435,6 +1463,15 @@ let formControls: Array<FormDesign.FormControl> = [
 export function initVantControls() {
     return formControls.map(i => ({
         ...i,
+        // @ts-ignore
+        propertyEditors: Object.assign.apply({}, basicProps
+            .concat(i.propertys)
+            .concat(i.isFormItem ? [] : [])
+            .filter(o => o.attach?.length)
+            .map(o => {
+                return {[o.name]: o.editor};
+            })
+        ),
         control: {
             ...i.control,
             propertys: i.propertys.concat([

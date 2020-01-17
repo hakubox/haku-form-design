@@ -1,6 +1,5 @@
 <template>
     <div class="form-design">
-
         <!-- 头部菜单 -->
         <div class="form-design-header">
             <h1>移动端表单设计器 v1.0.0 
@@ -71,8 +70,8 @@
                         <a-icon type="edit" />数据配置
                     </span>
                     
-                    <a-menu-item @click="variableEditorVisible = true;"><a-icon type="profile" />变量配置</a-menu-item>
-                    <a-menu-item @click="functionEditorVisible = true;"><a-icon type="thunderbolt" />事件/函数配置</a-menu-item>
+                    <a-menu-item @click="scriptEditorVisible = true;"><a-icon type="profile" />Vue对象配置</a-menu-item>
+                    <a-menu-item @click="styleEditorVisible = true;"><a-icon type="bg-colors" />样式配置</a-menu-item>
                     <a-menu-item @click="apiEditorVisible = true;"><a-icon type="api" />接口配置</a-menu-item>
                 </a-sub-menu>
 
@@ -134,18 +133,18 @@
                     />
                     <div class="form-control-tools" :class="{ 'form-control-tools-hidden': !currentSelectedControl.length }" @mousedown.stop>
                         <div class="form-control-tools-split-item">
-                            <a-tooltip placement="right" title="前移" arrowPointAtCenter @mousedown.stop="control_handle('controlMovePrev', $event)">
+                            <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="前移" arrowPointAtCenter @mousedown.stop="control_handle('controlMovePrev', $event)">
                                 <a-icon class="form-control-tools-item" type="arrow-up" />
                             </a-tooltip>
                             <hr class="form-control-tools-line" />
-                            <a-tooltip placement="right" title="后移" arrowPointAtCenter @mousedown.stop="control_handle('controlMoveNext', $event)">
+                            <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="后移" arrowPointAtCenter @mousedown.stop="control_handle('controlMoveNext', $event)">
                                 <a-icon class="form-control-tools-item" type="arrow-down" />
                             </a-tooltip>
                         </div>
-                        <a-tooltip placement="right" title="复制" arrowPointAtCenter @mousedown.stop="control_handle('controlCopy', $event)">
+                        <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="复制" arrowPointAtCenter @mousedown.stop="control_handle('controlCopy', $event)">
                             <a-icon class="form-control-tools-item form-control-tools-item-warning" type="copy" />
                         </a-tooltip>
-                        <a-tooltip placement="right" title="删除" arrowPointAtCenter @mousedown.stop="control_handle('controlRemove', $event)">
+                        <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="删除" arrowPointAtCenter @mousedown.stop="control_handle('controlRemove', $event)">
                             <a-icon class="form-control-tools-item form-control-tools-item-danger" type="delete" />
                         </a-tooltip>
                     </div>
@@ -167,7 +166,7 @@
                         <a-tab-pane key="prop">
                             <span slot="tab"><a-icon type="profile" />属性</span>
                             <a-empty v-show="!currentSelectedControlPropertyGroups.length" description="暂无属性" :style="{ marginTop: '100px' }"></a-empty>
-                            <a-collapse :activeKey="['p0','p1','p2','p3']" :bordered="false">
+                            <a-collapse :activeKey="['p0','p1','p2','p3','p4']" :bordered="false">
                                 <a-collapse-panel v-for="(propGroup, index) in currentSelectedControlPropertyGroups" :key="'p' + index" :header="propGroup.title">
                                     <template v-for="prop in propGroup.propertys">
                                         <component :is="prop.layout == 'block' || (prop.attach && prop.attach.length) ? 'div' : 'label'" class="form-design-body-property-item" :class="{ 'form-design-body-property-item-block': prop.layout == 'block' || (prop.attach && prop.attach.length) }" v-if="prop.visible !== false" :key="prop.name">
@@ -188,7 +187,7 @@
                                                             :ref="control.id"
                                                             :control="currentSelectedControl[0]"
                                                             v-bind="Object.assign({}, prop.attrs, control.attrs)" 
-                                                            v-model="currentSelectedControl[0].control.attrs[prop.name]" 
+                                                            v-model.lazy="currentSelectedControl[0].control.attrs[prop.name]" 
                                                             @change="propChangeListener($event, prop, currentSelectedControlPropertyMap, currentSelectedControl)"
                                                             :is="control.control"
                                                         >
@@ -228,7 +227,7 @@
                                                         :ref="control.id"
                                                         :control="currentSelectedControl[0]"
                                                         v-bind="Object.assign({}, prop.attrs, control.attrs)" 
-                                                        v-model="currentSelectedControl[0].control.attrs['__' + prop.name]" 
+                                                        v-model.lazy="currentSelectedControl[0].control.attrs['__' + prop.name]" 
                                                         @change="propChangeListener($event, prop, currentSelectedControlPropertyMap, currentSelectedControl)"
                                                         :is="control.control"
                                                     >
@@ -278,7 +277,7 @@
                                         </div> -->
                                     </span>
                                     <div class="form-design-body-property-item-value">
-                                        <function-picker v-model="currentSelectedControl[0].control.events[event.name]" @change="changeEvent" size="small" class="wfull">
+                                        <function-picker v-model.lazy="currentSelectedControl[0].control.events[event.name]" @change="changeEvent" size="small" class="wfull">
                                         </function-picker>
                                     </div>
                                 </div>
@@ -292,28 +291,28 @@
                                     <!-- <label class="form-design-body-property-item">
                                         <span class="form-design-body-property-item-label">面板标题</span>
                                         <div class="form-design-body-property-item-value">
-                                            <a-input size="small" placeholder="表单标题" allowClear v-model="formConfig.canvasTitle" />
+                                            <a-input size="small" placeholder="表单标题" allowClear v-model.lazy="formConfig.canvasTitle" />
                                         </div>
                                     </label> -->
                                     <!-- 表单标题 -->
                                     <label class="form-design-body-property-item">
                                         <span class="form-design-body-property-item-label">表单标题</span>
                                         <div class="form-design-body-property-item-value">
-                                            <a-input size="small" placeholder="表单标题" allowClear v-model="formConfig.formTitle" />
+                                            <a-input size="small" placeholder="表单标题" allowClear v-model.lazy="formConfig.formTitle" />
                                         </div>
                                     </label>
                                     <!-- 表单文件名 -->
                                     <label class="form-design-body-property-item">
                                         <span class="form-design-body-property-item-label require">表单名称</span>
                                         <div class="form-design-body-property-item-value">
-                                            <a-input size="small" placeholder="表单文件名" allowClear v-model="formConfig.formName" />
+                                            <a-input size="small" placeholder="表单文件名" allowClear v-model.lazy="formConfig.formName" />
                                         </div>
                                     </label>
                                     <!-- 设备型号 -->
                                     <label class="form-design-body-property-item">
                                         <span class="form-design-body-property-item-label">设备型号</span>
                                         <div class="form-design-body-property-item-value">
-                                            <a-select style="width: 100%;" size="small" v-model="formConfig.deviceId" @change="refresh()">
+                                            <a-select style="width: 100%;" size="small" v-model.lazy="formConfig.deviceId" @change="refresh()">
                                                 <div slot="dropdownRender" slot-scope="menu">
                                                     <v-nodes :vnodes="menu" />
                                                     <a-divider style="margin: 4px 0;" />
@@ -329,28 +328,28 @@
                                     <label class="form-design-body-property-item">
                                         <span class="form-design-body-property-item-label">显示底部区域</span>
                                         <div class="form-design-body-property-item-value">
-                                            <a-switch checkedChildren="开" unCheckedChildren="关" v-model="formConfig.footer.isShow" />
+                                            <a-switch checkedChildren="开" unCheckedChildren="关" v-model.lazy="formConfig.footer.isShow" />
                                         </div>
                                     </label>
                                     <!-- 提交按钮文本 -->
                                     <label v-show="formConfig.footer.isShow" class="form-design-body-property-item">
                                         <span class="form-design-body-property-item-label">提交按钮文本</span>
                                         <div class="form-design-body-property-item-value">
-                                            <a-input size="small" allowClear v-model="formConfig.footer.submitButtonText" />
+                                            <a-input size="small" allowClear v-model.lazy="formConfig.footer.submitButtonText" />
                                         </div>
                                     </label>
                                     <!-- 是否显示取消按钮 -->
                                     <label v-show="formConfig.footer.isShow" class="form-design-body-property-item">
                                         <span class="form-design-body-property-item-label">显示取消按钮</span>
                                         <div class="form-design-body-property-item-value">
-                                            <a-switch checkedChildren="开" unCheckedChildren="关" v-model="formConfig.footer.cancelButton" />
+                                            <a-switch checkedChildren="开" unCheckedChildren="关" v-model.lazy="formConfig.footer.cancelButton" />
                                         </div>
                                     </label>
                                     <!-- 取消按钮文本 -->
                                     <label v-show="formConfig.footer.isShow && formConfig.footer.cancelButton" class="form-design-body-property-item">
                                         <span class="form-design-body-property-item-label leaf">取消按钮文本</span>
                                         <div class="form-design-body-property-item-value">
-                                            <a-input size="small" allowClear v-model="formConfig.footer.cancelButtonText" />
+                                            <a-input size="small" allowClear v-model.lazy="formConfig.footer.cancelButtonText" />
                                         </div>
                                     </label>
                                 </a-collapse-panel>
@@ -394,22 +393,22 @@
             </template>
         </a-drawer>
 
-        <!-- 编辑页面变量 -->
-        <a-modal :width="1000" :centered="true" title="页面变量" wrap-class-name="form-json-editor-drawer" v-model="variableEditorVisible" @cancel="cancelFormVariable()">
-            <code-editor ref="formVariable" class="page-config-editor" language="typescript" style="height: 500px;" v-model="editorVariable">
+        <!-- 编辑Vue代码 -->
+        <a-modal :width="1000" :centered="true" title="Vue对象配置" wrap-class-name="form-json-editor-drawer" v-model="scriptEditorVisible" @cancel="cancelFormScript()">
+            <code-editor ref="formVariable" class="page-config-editor" language="javascript" style="height: 500px;" v-model="editorScript">
             </code-editor>
             <div class="bottom-btn-list" slot="footer">
-                <a-button @click="generateFormVariable()" type="link">重新生成</a-button>
-                <a-button @click="saveFormVariable()" type="primary">保存</a-button>
+                <a-button @click="generateFormScript()" type="link">重新生成</a-button>
+                <a-button @click="saveFormScript()" type="primary">保存</a-button>
             </div>
         </a-modal>
 
-        <!-- 编辑页面函数 -->
-        <a-modal :width="1000" :centered="true" title="页面函数" wrap-class-name="form-json-editor-drawer" v-model="functionEditorVisible" @cancel="cancelFormVariable()">
-            <code-editor class="page-config-editor" language="typescript" style="height: 500px;" v-model="editorFunction">
+        <!-- 编辑页面样式 -->
+        <a-modal :width="1000" :centered="true" title="页面样式（SCSS）" wrap-class-name="form-json-editor-drawer" v-model="styleEditorVisible" @cancel="cancelFormStyle()">
+            <code-editor class="page-config-editor" language="scss" style="height: 500px;" v-model="editorStyle">
             </code-editor>
             <div class="bottom-btn-list" slot="footer">
-                <a-button @click="saveFormFunction()" type="primary">保存</a-button>
+                <a-button @click="saveFormStyle()" type="primary">保存</a-button>
             </div>
         </a-modal>
 
@@ -447,7 +446,7 @@
         </a-modal>
 
         <!-- 预览界面 -->
-        <a-modal :wrap-class-name="`preview-modal ${currentComponentLibrary.type} ${currentComponentLibrary.code}`" :footer="null" :centered="true" :width="devices[formConfig.deviceId].width" :height="devices[formConfig.deviceId].height" title="预览界面" @cancel="previewVisible = false" :visible="previewVisible">
+        <a-modal :wrap-class-name="`preview-modal ${currentComponentLibrary.type} ${currentComponentLibrary.code}`" :footer="null" :centered="true" :width="devices[formConfig.deviceId].width + 40" :height="devices[formConfig.deviceId].height" title="预览界面" @cancel="previewVisible = false" :visible="previewVisible">
             <form-design-canvas 
                 ref="controlCanvas"
                 :preview="true"
@@ -476,14 +475,14 @@ import { initPropertyEditors } from '@/propertyEditor';
 import { Enum } from '@/config/enum';
 import { initVantControls } from '@/formControls_vant';
 import { initUniControls } from '@/formControls_uni';
-import { initAntDesignControls, formItemProps, columnItemProps } from '@/formControls_antd';
+import { initAntDesignControls, formItemProps, columnItemProps, flexItemProps } from '@/formControls_antd';
 import { initFormControlGroups } from '@/formControlGroups';
 import { initRemoteDevices } from '@/formDevices';
 import { cloneForce } from '@/lib/clone/index';
 import { base64 } from '@/lib/base64/base64';
 import { componentLibrarys } from '@/formLibrarys.ts';
 import formTemplate from '@/formTemplate';
-import { flatControls, fillPropertys, variableParse, functionParse } from '@/tools/formCommon';
+import { flatControls, fillPropertys, variableParse, functionParse, variableVueScript } from '@/tools/formCommon';
 
 import Icon from 'vant/lib/icon';
 import 'vant/lib/index.css';
@@ -514,9 +513,9 @@ export default class FormDesigner extends Vue {
     jsonEditorVisible: boolean = false;
 
     /** 变量编辑器弹出框是否显示 */
-    variableEditorVisible: boolean = false;
-    /** 函数编辑器弹出框是否显示 */
-    functionEditorVisible: boolean = false;
+    scriptEditorVisible: boolean = false;
+    /** 样式编辑器弹出框是否显示 */
+    styleEditorVisible: boolean = false;
     /** API编辑器弹出框是否显示 */
     apiEditorVisible: boolean = false;
     /** 模板选择弹出框是否显示 */
@@ -534,11 +533,11 @@ export default class FormDesigner extends Vue {
     /** JSON编辑器的值 */
     editorJson: string = '';
     /** 页面变量编辑器的历史值 */
-    editorVariableHistory: string = '';
+    editorScriptHistory: string = '';
     /** 页面变量编辑器的值 */
-    editorVariable: string = '';
-    /** 页面函数编辑器的值 */
-    editorFunction: string = '';
+    editorScript: string = '';
+    /** 页面样式编辑器的值 */
+    editorStyle: string = '';
 
     /** 画板 */
     canvasEl: any;
@@ -624,17 +623,18 @@ export default class FormDesigner extends Vue {
     /** 历史表单 */
     historyForm: Array<{ formConfig: FormDesign.FormConfig, controls: FormDesign.FormPanel }> = [];
 
-    /** 表单变量 */
-    @Getter('getFormVariables') formVariables!: Array<FormDesign.FormVariable>;
+    /** Vue对象 */
+    @Getter('getFormScript') formScript!: string;
 
-    /** 更新全部表单变量 */
-    @Mutation('setAllFormVariables') setAllFormVariables!: (variables: Array<FormDesign.FormVariable>) => void;
+    /** Vue对象代码 */
+    @Getter('getFormScriptCode') formScriptCode!: string;
 
-    /** 更新全部函数变量 */
-    @Mutation('setAllFormFunctions') setAllFormFunctions!: (functions: Array<FormDesign.FormFunction>) => void;
+    /** 更新Vue代码 */
+    @Mutation('setFormScript') setFormScript!: (script: FormDesign.FormScript) => void;
 
-    /** 清空变量 */
-    @Mutation('clearFormVariables') clearFormVariables!: Function;
+    /** 更新Vue代码注释 */
+    @Mutation('setFormScriptComment') setFormScriptComment!: (comment: Record<string, string>) => void;
+    
 
     /** 画布组件列表 */
     @Provide() controlList: Array<FormDesign.FormControl> = [];
@@ -724,18 +724,19 @@ export default class FormDesigner extends Vue {
 
             this.currentSelectedControlPropertyMap = Object.assign.apply({}, [{}].concat(formControlList[0].propertys.map(i => ({[i.name]: i}))) as [object, ...any[]]);
             this.currentSelectedControlPropertyGroups = Object.entries(Enum.FormControlPropertyGroup).map(([key, value]) => {
-                
-                let _props: Array<any> = [];
+
+                let _props: Array<FormDesign.FormControlProperty> = [];
                 let _isFormChild = this.isFormChild(this.currentSelectedFirstControlId);
-                
-                if (key == 'form' && formControlList[0].isFormItem && !_isFormChild) {
+                let _isFlexChild = this.isFlexChild(this.currentSelectedFirstControlId);
+
+                if (key == 'flex' && _isFlexChild) {
+                    _props = flexItemProps;
+                } else if (key == 'form' && formControlList[0].isFormItem && !_isFormChild) {
                     _props = formItemProps;
                 } else if (key == 'childform' && formControlList[0].isFormItem && _isFormChild) {
                     _props = columnItemProps;
                 } else {
-                    _props = formControlList[0].propertys.filter(i => 
-                        i.group == value
-                    )
+                    _props = formControlList[0].propertys.filter(i => i.group == value);
                 }
 
                 return {
@@ -791,6 +792,16 @@ export default class FormDesigner extends Vue {
     isFormChild(controlId) {
         return this.panel.children
             .filter(i => i.name == 'complex-childform')
+            .map(i => i.children)
+            .flat(2)
+            .map(i => i.id)
+            .includes(controlId);
+    }
+
+    /** 判断节点是否为Flex的子节点 */
+    isFlexChild(controlId) {
+        return this.panel.children
+            .filter(i => i.name == 'flex')
             .map(i => i.children)
             .flat(2)
             .map(i => i.id)
@@ -1098,6 +1109,8 @@ export default class FormDesigner extends Vue {
         document.body.addEventListener('mousemove', this.dragMove);
         document.body.addEventListener('mouseup', this.dragUp);
 
+        this.editorScript = this.formScriptCode;
+
         if (!localStorage.getItem('HistoryDesignForm')) localStorage.setItem('HistoryDesignForm', '[]');
         else {
             let _formNames = JSON.parse(localStorage.getItem('HistoryDesignForm') as string);
@@ -1251,7 +1264,7 @@ export default class FormDesigner extends Vue {
     }
 
     /** 点击按钮重新生成页面变量 */
-    generateFormVariable() {
+    generateFormScript() {
         if(this.controlList.filter(i => i.control.attrs.model).length) {
             this.$confirm({
                 title: '警告',
@@ -1259,7 +1272,7 @@ export default class FormDesigner extends Vue {
                 okType: 'danger',
                 icon: 'warning',
                 onOk: () => {
-                    this.resetFormVariable();
+                    this.resetFormScript();
                 },
                 onCancel: () => {
                 },
@@ -1270,48 +1283,52 @@ export default class FormDesigner extends Vue {
     }
 
     /** 重新生成页面变量 */
-    resetFormVariable() {
-        let _formVariables = this.controlList.filter(i => i.control.attrs.model).map(i => ({
-            keyword: 'let',
-            name: i.control.attrs.model,
-            type: (i.propertys.find(prop => prop.name == 'model') || { type: 'any' }).type,
-            remark: i.control.attrs.remark,
-        })) as Array<FormDesign.FormVariable>;
-        this.setAllFormVariables(_formVariables);
+    resetFormScript() {
+        // let _formScript = this.controlList.filter(i => i.control.attrs.model).map(i => ({
+        //     keyword: 'let',
+        //     name: i.control.attrs.model,
+        //     type: (i.propertys.find(prop => prop.name == 'model') || { type: 'any' }).type,
+        //     remark: i.control.attrs.remark,
+        // })) as Array<FormDesign.FormVariable>;
+        // this.setFormScript(_formScript);
 
-        this.editorVariable = _formVariables.map(i => `${i.remark ? '/** ' +  i.remark + ' */\n' : ''}${i.keyword} ${i.name}: ${i.type};`).join('\n\n');
+        // this.editorScript = _formScript.map(i => `${i.remark ? '/** ' +  i.remark + ' */\n' : ''}${i.keyword} ${i.name}: ${i.type};`).join('\n\n');
     }
 
-    /** 保存页面变量 */
-    saveFormVariable() {
-        
+    /** 保存Vue代码 */
+    saveFormScript() {
+        this.setFormScript(this.editorScript);
 
-        let _list: Array<any> = variableParse(this.editorVariable);
-        // @ts-ignore
-        this.setAllFormVariables(_list.map(i => Object.assign({}, i)));
-
-        this.$message.success('页面变量已保存');
-        this.variableEditorVisible = false;
-        this.editorVariableHistory = this.editorVariable;
+        this.$message.success('Vue配置已保存');
+        this.scriptEditorVisible = false;
+        this.editorScriptHistory = this.editorScript;
     }
 
-    /** 保存页面函数 */
-    saveFormFunction() {
-        let _list: Array<FormDesign.FormFunction> = functionParse(this.editorFunction);
-        this.setAllFormFunctions(_list);
-        this.$message.success('页面函数已保存');
-        this.functionEditorVisible = false;
+    /** 保存页面样式 */
+    saveFormStyle() {
+        Sass.compile(this.editorStyle, result => {
+            document.querySelector('[form-style]')?.remove();
+            let style = document.createElement('style');
+            style.setAttribute('form-style', '');
+            style.type = 'text/css';
+            //@ts-ignore
+            style.innerHTML = result.text;
+            //@ts-ignore
+            document.querySelector('head').appendChild(style);
+            this.$message.success('页面样式已保存');
+        });
+        this.styleEditorVisible = false;
     }
 
     /** 关闭页面变量编辑框 */
-    cancelFormVariable() {
-        if (this.editorVariableHistory != this.editorVariable) {
+    cancelFormScript() {
+        if (this.editorScriptHistory != this.editorScript) {
             this.$confirm({
                 title: '警告',
-                content: '是否放弃保存页面变量？',
+                content: '是否放弃保存代码？',
                 onOk: () => {
-                    this.editorVariable = this.editorVariableHistory;
-                    this.variableEditorVisible = false;
+                    this.editorScript = this.editorScriptHistory;
+                    this.scriptEditorVisible = false;
                 },
                 onCancel: () => {
                 }
@@ -1370,11 +1387,11 @@ export default class FormDesigner extends Vue {
         this.currentSelectedControlPropertyGroups = [];
         this.currentSelectedControlPropertyMap = [];
 
-        this.editorVariable = template.variables || '';
-        this.editorFunction = template.functions || '';
+        this.editorScript = template.script || '';
+        this.editorStyle = template.style || '';
 
-        this.saveFormVariable();
-        this.saveFormFunction();
+        this.saveFormScript();
+        this.saveFormStyle();
 
         this.$nextTick(() => {
             this.toolsEl = document.querySelector('.form-control-tools');

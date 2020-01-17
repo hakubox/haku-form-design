@@ -4,7 +4,7 @@
  
 <script>
     import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-    import { getDefaultStrForValue } from '@/tools/formCommon';
+    import { functionHeaderParse } from '@/tools/formCommon';
 
     export default {
         name: 'CodeEditor',
@@ -43,17 +43,15 @@
         inject: ['bus'],
         computed: {
             /** 表单变量 */
-            formVariables () {
-                return this.$store.getters.getFormVariables;
-            },
-            /** 表单函数 */
-            formFunctions () {
-                return this.$store.getters.getFormFunctions;
+            formScriptCode () {
+                return this.$store.getters.getFormScriptCode;
             }
         },
         data: () => ({
             editor: null,
             content: '',
+            /** TS转JS的数据 */
+            realJavascript: '',
             defaultOptions: {
                 wordWrap: 'off', //控制如何换行
                 automaticLayout: true,
@@ -90,25 +88,18 @@
                 });
 
                 // 引入变量
-                let _variables = this.formVariables.map(i => {
-                    let _variableStr = '';
-                    if (!i.children?.length) _variableStr += `\n\n${i.remark ? '/** ' +  i.remark + ' */' : ''}\n${i.keyword} ${i.name}: ${i.type};\n`;
-                    else {
-                        _variableStr += `${i.remark ? '\n/** ' +  i.remark + ' */' : ''}\n${i.keyword} ${i.name} = {`;
-                        i.children.map((child, index) => {
-                            _variableStr += `    ${child.remark ? '\n    /** ' +  child.remark + ' */' : ''}\n    ${child.name}: ${getDefaultStrForValue(child.default)} as ${child.type}`;
-                            if (index <= i.children.length - 2) _variableStr += `,`;
-                            else _variableStr += `\n`;
-                        });
-                        _variableStr += `};`;
-                    }
-                    return _variableStr;
-                });
+                // let _variables = this.formScriptCode.map(i => {
+                // });
 
-                /** 引入函数 */
-                let _functtions = this.formFunctions.map(i => i.declare);
+                console.log();
+                console.log();
+                let ranges = functionHeaderParse(['{', '}'], this.formScriptCode.trim().slice(8)).bodyRanges;
 
-                monaco.languages.typescript.javascriptDefaults.addExtraLib(`${_variables.join('\n')}\n\n${_functtions.join('\n')}`, 'vars.d.ts');
+                let str = `
+                    let __me = ${this.formScriptCode.trim().slice(8).substring(ranges[0][0], ranges[0][1] + 1)};
+                `;
+
+                monaco.languages.typescript.javascriptDefaults.addExtraLib(str, 'vars.d.ts');
             } else {
                 monaco.editor.defineTheme('gj-dark', {
                     base: 'vs-dark',
@@ -153,6 +144,15 @@
                     ..._options
                 });
 
+                if (this.language == 'typescript') {
+                    let tsProxy;
+                    monaco.languages.typescript.getTypeScriptWorker().then((worker) => {
+                        worker(this.editor.getModel().uri).then((proxy) => {
+                            tsProxy = proxy;
+                        });
+                    });
+                }
+
                 // this.editor.onDidChangeModelContent(event => {
                 //     if (!this.__preventTriggerChangeEvent) {
                 //         this.$emit('input', this.getValue());
@@ -166,6 +166,11 @@
                 this.$nextTick(() => {
                     this.editor.onDidBlurEditorText(e => {
                         if (!this.__preventTriggerChangeEvent) {
+                            if (this.language == 'typescript') {
+                                tsProxy?.getEmitOutput(this.editor.getModel().uri.toString()).then((r) => {
+                                    this.realJavascript = r.outputFiles?.[0]?.text;
+                                });
+                            }
                             this.$emit('input', this.getValue());
                         }
                     });

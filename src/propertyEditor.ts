@@ -180,7 +180,7 @@ const propertyEditors: Array<FormDesign.PropertyEditor> = [
                 control: 'a-select',
                 slot: {},
                 attrs: {
-                    allowClear: true,
+                    allowClear: false,
                     buttonStyle: 'solid',
                     style: { width: '100%' },
                     size: 'small'

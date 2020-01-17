@@ -30,11 +30,11 @@
                 >
                 </antd-form-design-control>
             </template>
-            <template v-for="slot in Object.keys(control.control.slot)" #[slot]>
-                <div :key="slot">
+            <template v-for="(slot, slotIndex) in Object.keys(control.control.slot)" #[slot]>
+                <div :key="slotIndex">
                     <component 
-                        v-for="detailControl in control.control.slot[slot]" 
-                        :key="slot + detailControl.control.name"
+                        v-for="detailControl in control.control.slot[slotIndex]" 
+                        :key="slotIndex + detailControl.control.name"
                         v-bind="getProps(detailControl.attrs)"
                         v-on="controlEvents(detailControl)" 
                         :is="detailControl.control" 
@@ -81,7 +81,7 @@ export default class AntdFormDesignChildControl extends Vue {
     @Prop({ }) dragConfig!: FormDesign.DragConfig;
     @Prop({ }) currentSelectedControl!: Array<FormDesign.FormControl>;
     /** 设计器事件总线 */
-    @Prop({}) bus!: Vue;
+    @Prop({ }) bus!: Vue;
 
     /** 是否为预览模式 */
     @Inject() readonly preview!: boolean;
@@ -92,21 +92,11 @@ export default class AntdFormDesignChildControl extends Vue {
     /** 画布组件树 */
     @Inject() readonly panel!: FormDesign.FormPanel;
     
-    /** 表单变量 */
-    @Getter('getFormVariables') formVariables!: Array<FormDesign.FormVariable>;
-    /** 表单函数 */
-    @Getter('getFormFunctions') formFunctions!: Array<FormDesign.FormFunction>;
+    /** Vue对象 */
+    @Getter('getFormScript') formScript!: FormDesign.FormScript;
 
     getProp(propName: string) {
-        return getRealProp(this.control, propName, this.formVariables, this.formFunctions);
-    }
-
-    get variables(): Record<string, any> {
-        return Object.assign.apply({}, [{}].concat(this.formVariables.map((i, index) => ({[i.name]: i.default}))) as [object, ...any[]]);
-    }
-
-    get functions(): Record<string, any> {
-        return Object.assign.apply({}, [{}].concat(this.formFunctions.map((i, index) => ({[i.name]: Function('data', 'const {' + this.formVariables.map(i => i.name).join(', ') + '} = data; return' + i.body)(this.variables) }))) as [object, ...any[]]);
+        return getRealProp(this.control, propName, this.formScript.data, this.formScript.methods);
     }
 
     mouseDownEvent(e, control) {
@@ -125,7 +115,10 @@ export default class AntdFormDesignChildControl extends Vue {
             let _value = props['__' + key];
             switch (_editor) {
                 case 'expression':
-                    _value = Function('__data', 'fns', ('let { ' + Object.keys(this.variables).join(', ') + ' } = __data; const { ' + Object.keys(this.functions).join(', ') + ' } = fns; ') + 'return ' + _value)(this.variables, this.functions);
+                    _value = Function('h', '__data__', ('let { ' + Object.keys(this.formScript.data).join(', ') + ' } = __data__; const { ' + Object.keys(this.formScript.methods).join(', ') + ' } = __data__; ') + 'return ' + _value)({
+                        ...this.formScript.data,
+                        ...this.formScript.methods
+                    })
                     break;
             }
 
@@ -137,8 +130,8 @@ export default class AntdFormDesignChildControl extends Vue {
     controlEvents(detailControl: FormDesign.BasicControl) {
         if (detailControl?.events) {
             let events = [{}].concat(Object.entries(detailControl.events).map(([eventName, event]) => {
-                let _event: FormDesign.FormFunction | undefined = this.formFunctions.find(i => i.name == detailControl.events?.[eventName]);
-                if (_event) return {[eventName]: Function('return ' + _event.body)().bind(this)};
+                let _event: Function = this.formScript.methods[detailControl.events?.[eventName]];
+                if (_event) return {[eventName]: _event.bind(this)};
                 else return {};
             })) as [object, ...any[]];
             return Object.assign.apply({}, events);

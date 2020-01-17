@@ -70,6 +70,7 @@ export { default as SkinOutline } from '@ant-design/icons/lib/outline/SkinOutlin
 export { default as CheckOutline } from '@ant-design/icons/lib/outline/CheckOutline';
 export { default as ApiOutline } from '@ant-design/icons/lib/outline/ApiOutline';
 export { default as FormOutline } from '@ant-design/icons/lib/outline/FormOutline';
+export { default as BgColorsOutline } from '@ant-design/icons/lib/outline/BgColorsOutline';
 
 
 export { default as CheckCircleFill } from '@ant-design/icons/lib/fill/CheckCircleFill';

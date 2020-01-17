@@ -15,8 +15,8 @@ export declare class FormTemplate {
     library: string;
     /** 控件列表 */
     controls: Array<FormControl>;
-    /** 初始变量 */
-    variables?: string;
-    /** 初始函数 */
-    functions?: string;
+    /** Vue初始化代码 */
+    script?: string;
+    /** 初始样式（SCSS） */
+    style?: string;
 }

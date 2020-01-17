@@ -41,6 +41,8 @@ export namespace Enum {
 
     /** 控件属性组 */
     export enum FormControlPropertyGroup {
+        /** Flex子项属性 */
+        flex = 'Flex子项属性',
         /** 表单分组 */
         childform = '子表单属性',
         /** 表单分组 */
@@ -77,6 +79,20 @@ export namespace Enum {
         basicData = 'basic-data',
         /** 远端请求 */
         request = 'request'
+    }
+
+    /** 表单类型 */
+    export enum FormControlRuleType {
+        /** 文本填写框 */
+        text = 'text',
+        /** 数字填写框 */
+        number = 'number',
+        /** 选择框 */
+        select = 'select',
+        /** 日期框 */
+        date = 'date',
+        /** 文件上传框 */
+        upload = 'upload'
     }
 
     /** 属性编辑器 */

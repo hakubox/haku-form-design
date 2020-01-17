@@ -401,28 +401,6 @@ export function downLoadFile(name: string, data: string) {
     fakeClick(save_link);
 }
 
-/** 动态加载组件 */
-export function registerComponent(templateName) {
-    // return import(`../component/plate/mainBoard/${templateName}.vue`).then(component => {
-    //     const constructor = Vue.extend(component.default);
-    //     const instance = new constructor();
-
-    //     // 传入数据 dataObj 为 props 
-    //     instance.dataObj = this.form;
-        
-    //     // 监听抛出的数据  this.$emit("emitStream", {  data: "data" });
-    //     instance.$on("emitStream", params => {
-    //         //  params 为组件内部抛出的数据
-            
-    //     });
-
-    //     // 挂载到 ID 为 plateContainer 的DOM元素
-    //     instance.$mount("#plateContainer");
-
-    //     // console.log(templateName + " 加载成功");
-    // });
-}
-
 /** 递归函数 */
 export function recursive(formVariables: Array<Record<string, any>>, callback?: {
     filter?: (variable: Record<string, any>, chain: Array<Record<string, any>>) => boolean,
@@ -485,6 +463,5 @@ export default {
     thousandNum,
     getParams,
     downLoadFile,
-    registerComponent,
     recursive
 };

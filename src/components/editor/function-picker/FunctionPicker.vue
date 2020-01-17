@@ -34,7 +34,9 @@ export default class FunctionPicker extends Vue {
         default: 'default'
     }) size!: ('large' | 'default' | 'small');
     /** 表单变量 */
-    @Getter('getFormFunctions') formFunctions!: Array<FormDesign.FormFunction>;
+    @Getter('getFormScript') formScript!: FormDesign.FormScript;
+    /** 表单变量 */
+    @Getter('getFormScriptComment') formScriptComment!: Record<string, string>;
 
     /** 真实值 */
     inputValue: string = '';
@@ -48,7 +50,8 @@ export default class FunctionPicker extends Vue {
     }
 
     get functionList(): Array<Record<string, any>> {
-        return this.formFunctions.map(i => ({ label: i.remark + ': ' + i.name, value: i.name }));
+        let _formScriptComment = this.formScriptComment;
+        return Object.entries(this.formScript.methods).map(([key, value]) => ({ label: _formScriptComment[key] ? (_formScriptComment[key] + ': ' + key) : key, value: key }));
     }
 
     /** 初始化 */

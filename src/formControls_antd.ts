@@ -10,6 +10,39 @@ export let basicProps: Array<FormDesign.FormControlProperty> = [
     }
 ];
 
+/** flex子项相关属性 */
+export let flexItemProps: Array<FormDesign.FormControlProperty> = [
+    {
+        name: 'order', title: '排序', default: 0, 
+        group: Enum.FormControlPropertyGroup.flex, editor: Enum.FormControlPropertyEditor.int,
+        remark: '子项的排列顺序，数值越小越靠前，默认为0。'
+    }, {
+        name: 'flexGrow', title: '放大比例', default: 0, 
+        group: Enum.FormControlPropertyGroup.flex, editor: Enum.FormControlPropertyEditor.int,
+        remark: '子项的放大比例，默认为0，即如果存在剩余空间，也不放大。'
+    }, {
+        name: 'flexShrink', title: '缩小比例', default: 1, 
+        group: Enum.FormControlPropertyGroup.flex, editor: Enum.FormControlPropertyEditor.int,
+        remark: '子项的的缩小比例，默认为1，即如果空间不足，该项目将缩小。'
+    }, {
+        name: 'flexBasis', title: '基础空间', default: 'auto', 
+        group: Enum.FormControlPropertyGroup.flex, editor: Enum.FormControlPropertyEditor.singerLine,
+        remark: '定义了在分配多余空间之前，项目占据的主轴空间。'
+    }, {
+        name: 'alignSelf', title: '独立对齐方式', default: 'auto', 
+        group: Enum.FormControlPropertyGroup.flex, editor: Enum.FormControlPropertyEditor.list,
+        attrs: { options: [ 
+            { title: '自动 Auto', value: 'auto' }, 
+            { title: '头部对齐 FlexStart', value: 'flex-start' }, 
+            { title: '尾部对齐 FlexEnd', value: 'flex-end' }, 
+            { title: '居中对齐 Center', value: 'center' }, 
+            { title: '占满高度 Stretch', value: 'stretch' }, 
+            { title: '基线对齐 Baseline', value: 'baseline' }, 
+        ] },
+        remark: '定义了在分配多余空间之前，项目占据的主轴空间。'
+    },
+];
+
 /** 表格列字段相关属性 */
 export let columnItemProps: Array<FormDesign.FormControlProperty> = [
     {
@@ -33,11 +66,6 @@ export let columnItemProps: Array<FormDesign.FormControlProperty> = [
         group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.boolean,
         attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
         remark: '组件内容是否展示为纯文本。'
-    }, {
-        name: 'rules', title: '校验规则', default: [],
-        group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
-        attach: [ Enum.FormControlPropertyEditor.expression ],
-        remark: '控件值校验规则。'
     }
 ];
 
@@ -152,6 +180,87 @@ export const formControls: Array<FormDesign.FormControl> = [
     }, 
 
     /**
+     * Flex布局
+     */
+    {
+        id: '',
+        control: {
+            control: 'antd-form-design-control-flex',
+            attrs: {},
+            events: {},
+            propAttrs: {},
+            slot: {},
+            defaultAttrs: {
+                type: 'flex'
+            }
+        },
+        name: 'flex',
+        icon: '',
+        title: 'Flex布局',
+        autoPrefix: 'flex',
+        type: Enum.FormControlType.layout,
+        children: [ [] ],
+        childrenSlot: '.form-flex',
+        propertys: [
+            {
+                name: 'flexDirection', title: '主轴方向', default: 'row',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
+                attrs: { options: [ 
+                    { title: '行 Row', value: 'row' }, 
+                    { title: '行逆序 RowReverse', value: 'row-reverse' }, 
+                    { title: '列 Column', value: 'column' },
+                    { title: '列逆序 ColumnReverse', value: 'column-reverse' }
+                ] }
+            }, {
+                name: 'flexWrap', title: '换行规则', default: 'nowrap',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
+                attrs: { options: [ 
+                    { title: '不换行 Nowrap', value: 'nowrap' }, 
+                    { title: '换行 Wrap', value: 'wrap' }, 
+                    { title: '换行逆序 WrapReverse', value: 'wrap-reverse' }
+                ] }
+            }, {
+                name: 'justifyContent', title: '主轴对齐方式', default: 'flex-start',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
+                attrs: { options: [ 
+                    { title: '头部对齐 FlexStart', value: 'flex-start' }, 
+                    { title: '尾部对齐 FlexEnd', value: 'flex-end' }, 
+                    { title: '居中对齐 Center', value: 'center' }, 
+                    { title: '两端对齐 SpaceBetween', value: 'space-between' }, 
+                    { title: '分布对齐 SpaceAround', value: 'space-around' }
+                ] }
+            }, {
+                name: 'alignItems', title: '交叉轴对齐方式', default: 'stretch',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
+                attrs: { options: [ 
+                    { title: '头部对齐 FlexStart', value: 'flex-start' }, 
+                    { title: '尾部对齐 FlexEnd', value: 'flex-end' }, 
+                    { title: '居中对齐 Center', value: 'center' }, 
+                    { title: '占满高度 Stretch', value: 'stretch' }, 
+                    { title: '基线对齐 Baseline', value: 'baseline' }, 
+                ] }
+            }, {
+                name: 'alignContent', title: '多轴线对齐方式', default: 'stretch',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
+                attrs: { options: [ 
+                    { title: '头部对齐 FlexStart', value: 'flex-start' }, 
+                    { title: '尾部对齐 FlexEnd', value: 'flex-end' }, 
+                    { title: '居中对齐 Center', value: 'center' }, 
+                    { title: '两端对齐 SpaceBetween', value: 'space-between' }, 
+                    { title: '分布对齐 SpaceAround', value: 'space-around' },
+                    { title: '占满高度 Stretch', value: 'stretch' }, 
+                ], allowClear: false }
+            }, {
+                name: 'remark', title: '备注名', default: '',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }
+        ],
+        events: [
+            
+        ]
+    }, 
+
+    /**
      * 栅格
      */
     {
@@ -169,6 +278,7 @@ export const formControls: Array<FormDesign.FormControl> = [
         name: 'row',
         icon: '',
         title: '栅格',
+        autoPrefix: 'row',
         type: Enum.FormControlType.layout,
         children: [ [], [] ],
         childrenSlot: '.ant-col',
@@ -406,6 +516,7 @@ export const formControls: Array<FormDesign.FormControl> = [
         },
         name: 'card',
         title: '卡片',
+        autoPrefix: 'card',
         type: Enum.FormControlType.layout,
         children: [ [] ],
         childrenSlot: '.ant-card-body',
@@ -457,6 +568,12 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.text }
+            }, {
                 name: 'type', title: '文本框类型', default: 'text',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
                 attrs: { options: [ 
@@ -500,8 +617,7 @@ export const formControls: Array<FormDesign.FormControl> = [
                 remark: '文本框控件默认值。'
             }, {
                 name: 'model', title: '绑定变量', type: 'string',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable,
-                attrs: { type: 'string' }
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
                 name: 'remark', title: '备注名', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
@@ -535,6 +651,12 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.text }
+            }, {
                 name: 'placeholder', title: '占位提示文字', default: '请输入',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
@@ -611,6 +733,12 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.number }
+            }, {
                 name: 'placeholder', title: '占位提示文字', default: '请选择',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
@@ -676,6 +804,12 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.date }
+            }, {
                 name: 'placeholder', title: '占位提示文字',
                 group: Enum.FormControlPropertyGroup.style, default: '请选择日期', editor: Enum.FormControlPropertyEditor.singerLine
             }, {
@@ -731,6 +865,12 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.select }
+            }, {
                 name: 'placeholder', title: '占位提示文字', default: '请选择',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
@@ -797,6 +937,12 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.select }
+            }, {
                 name: 'disabled', title: '是否禁用', default: false,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
@@ -851,6 +997,12 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.select }
+            }, {
                 name: 'disabled', title: '是否禁用', default: false,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
@@ -954,6 +1106,12 @@ export const formControls: Array<FormDesign.FormControl> = [
         type: Enum.FormControlType.upload,
         propertys: [
             {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.upload }
+            }, {
                 name: 'upload-text', title: '文字提示', 
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
@@ -1364,7 +1522,7 @@ export function initAntDesignControls(controlList?: Array<FormDesign.FormControl
         // @ts-ignore
         propertyEditors: Object.assign.apply({}, basicProps
             .concat(i.propertys)
-            .concat(i.isFormItem ? [...columnItemProps, ...formItemProps] : [])
+            .concat(i.isFormItem ? [...flexItemProps, ...columnItemProps, ...formItemProps] : [])
             .filter(o => o.attach?.length)
             .map(o => {
                 return {[o.name]: o.editor};
@@ -1382,7 +1540,7 @@ export function initAntDesignControls(controlList?: Array<FormDesign.FormControl
             attrs: Object.assign.apply({}, Object.entries(i.control.defaultAttrs)
                 .map(([key, value]) => ({[key]:value}))
                 .concat(
-                    basicProps.concat(i.propertys).concat(i.isFormItem ? [...columnItemProps, ...formItemProps] : [])
+                    basicProps.concat(i.propertys).concat(i.isFormItem ? [...flexItemProps, ...columnItemProps, ...formItemProps] : [])
                         .filter(o => o.default !== undefined)
                         .map(o => ({[o.name]: o.default}))
                 )

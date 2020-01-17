@@ -25,6 +25,20 @@ export default new Vuex.Store({
         },
         formVariables: [] as Array<FormDesign.FormVariable>,
         formFunctions: [] as Array<FormDesign.FormFunction>,
+        formScript: `return {
+    data: {
+
+    },
+    methods: {
+        test() {
+
+        }
+    },
+    created() {
+        
+    }
+}`,
+        formScriptComment: {} as Record<string, string>,
     },
     getters: {
         /** 获取用户信息 */
@@ -47,11 +61,23 @@ export default new Vuex.Store({
             }
             return re;
         },
-        getFormVariables(state): Array<FormDesign.FormVariable> {
-            return state.formVariables;
+        getFormScriptCode(state): string {
+            return state.formScript;
         },
-        getFormFunctions(state): Array<FormDesign.FormFunction> {
-            return state.formFunctions;
+        getFormScript(state): FormDesign.FormScript {
+            return Function(state.formScript)() as FormDesign.FormScript;
+        },
+        getFormScriptComment(state): Record<string, string> {
+            let _reg = /(\/\*\*\s*(?<remark>.*?)\s*\*\/)?\s*(?<name>[a-zA-Z0-9_]+)(:|\()/gs;
+            let _item: RegExpExecArray | null;
+            let _list: Record<string, string> = {};
+            while(_item = _reg.exec(state.formScript)) {
+                if (_item !== null) {
+                    _list[_item.groups?.name || ''] = _item.groups?.remark || '';
+                }
+            }
+            console.log(_list);
+            return _list;
         }
     },
     mutations: {
@@ -61,16 +87,9 @@ export default new Vuex.Store({
         setUserInfo(state, userInfo) {
             state.userInfo = userInfo;
         },
-        setAllFormVariables(state, variables) {
-            state.formVariables = variables;
-        },
-        /** 清空变量 */
-        clearFormVariables(state, variables) {
-            state.formVariables = [];
-        },
-        setAllFormFunctions(state, functions) {
-            state.formFunctions = functions;
-        },
+        setFormScript(state, script) {
+            state.formScript = script;
+        }
     },
     actions: {}
 });

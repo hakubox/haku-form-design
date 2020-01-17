@@ -116,6 +116,46 @@ export function getDefaultStrForValue(val: any): string {
     }
 }
 
+/** 解析函数并获取函数头 */
+export function functionHeaderParse(match: [string, string], content: string): { body: string, bodyRanges: Array<Array<number>> } {
+    let _regRange = new RegExp(`${match[0]}|${match[1]}`, 'g');
+    let _item: RegExpExecArray | null = null;
+    let _rangeIndex = 0;
+    let _functionRanges: Array<Array<number>> = [];
+    let _content = content;
+
+    while(_item = _regRange.exec(_content)) {
+        if (_item !== null) {
+            if (!_functionRanges[_rangeIndex]) {
+                _functionRanges[_rangeIndex] = [_item.index, 0];
+            }
+            switch (_content[_item.index]) {
+                case match[0]:
+                    _functionRanges[_rangeIndex][1] = _functionRanges[_rangeIndex][1] + 1;
+                    break;
+                case match[1]:
+                    _functionRanges[_rangeIndex][1] = _functionRanges[_rangeIndex][1] - 1;
+                    break;
+                default:
+                    break;
+            }
+            if (_functionRanges[_rangeIndex][1] == 0) {
+                _functionRanges[_rangeIndex][1] = _item.index;
+                _rangeIndex++;
+            }
+        }
+    }
+
+    for (let index = _functionRanges.length - 1; index >= 0; index--) {
+        _content = `${_content.substr(0, _functionRanges[index][0])};${_content.substr(_functionRanges[index][1] + 1)}`;
+    }
+    
+    return {
+        body: _content,
+        bodyRanges: _functionRanges
+    };
+}
+
 /** 解析变量 */
 export function variableParse(strVariable: string): Array<FormDesign.FormVariable> {
     const _strVariables = strVariable.trim().replace(/\r|\n/g, '');
@@ -210,49 +250,9 @@ export function variableParse(strVariable: string): Array<FormDesign.FormVariabl
     return _list;
 }
 
-/** 解析函数并获取函数头 */
-export function functionHeaderParse(strFunction: string): { body: string, bodyRanges: Array<Array<number>> } {
-    let _regRange = /{|}/g;
-    let _item: RegExpExecArray | null = null;
-    let _rangeIndex = 0;
-    let _functionRanges: Array<Array<number>> = [];
-    let _strFunction = strFunction;
-
-    while(_item = _regRange.exec(_strFunction)) {
-        if (_item !== null) {
-            if (!_functionRanges[_rangeIndex]) {
-                _functionRanges[_rangeIndex] = [_item.index, 0];
-            }
-            switch (_strFunction[_item.index]) {
-                case '{':
-                    _functionRanges[_rangeIndex][1] = _functionRanges[_rangeIndex][1] + 1;
-                    break;
-                case '}':
-                    _functionRanges[_rangeIndex][1] = _functionRanges[_rangeIndex][1] - 1;
-                    break;
-                default:
-                    break;
-            }
-            if (_functionRanges[_rangeIndex][1] == 0) {
-                _functionRanges[_rangeIndex][1] = _item.index;
-                _rangeIndex++;
-            }
-        }
-    }
-
-    for (let index = _functionRanges.length - 1; index >= 0; index--) {
-        _strFunction = `${_strFunction.substr(0, _functionRanges[index][0])};${_strFunction.substr(_functionRanges[index][1] + 1)}`;
-    }
-    
-    return {
-        body: _strFunction,
-        bodyRanges: _functionRanges
-    };
-}
-
 /** 解析函数的函数 */
 export function functionParse(strFunction: string): Array<FormDesign.FormFunction> {
-    let _functionHeader = functionHeaderParse(strFunction);
+    let _functionHeader = functionHeaderParse(['{', '}'], strFunction);
 
     const _reg = /(\/\*\*\s*(?<remark>\S+)\s*\*\/[\s\n\r\t]*)?function\s+(?<name>[a-zA-Z0-9_]+)\s*\((?<params>.*?)\)(:\s*(?<type>\S+)\s*)?\s*(;|$)/g;
     const _list: Array<FormDesign.FormFunction> = [];
@@ -279,38 +279,39 @@ export function functionParse(strFunction: string): Array<FormDesign.FormFunctio
     return _list;
 }
 
-/** 转换数组变量为对象 */
-function getVariables(variables: Array<any>) {
-    if (variables.length == 0) return {};
-    return Object.assign.apply({}, [{}].concat(variables.map(i => ({ [i.name]: i.default })) || [{}]) as [object, ...any[]]);
-};
-
-/** 转换数组函数为对象 */
-function getFunctions(functions: Array<any>) {
-    if (functions.length == 0) return {};
-    return Object.assign.apply({}, [{}].concat(functions.map(i => ({ [i.name]: Function('return ' + i.body)() })) || [{}]) as [object, ...any[]]);
-};
-
 /** 获取真实属性 */
-export function getRealProp(control: FormDesign.FormControl, propName: string, variables: Array<any>, functions: Array<any>) {
+export function getRealProp(control: FormDesign.FormControl, propName: string, variables: Record<string, any>, functions: Record<string, Function>) {
     const props = control.control.attrs;
 
     if (!props['__' + propName]) return props[propName];
-
-    const _variables = getVariables(variables);
-    const _functions = getFunctions(functions);
 
     let _editor = control.propertyEditors?.[propName];
     let _value = props['__' + propName];
     switch (_editor) {
         case 'expression':
-            _value = Function('__data', 'fns', ('let { ' + Object.keys(_variables).join(', ') + ' } = __data; const { ' + Object.keys(_functions).join(', ') + ' } = fns; ') + 'return ' + _value)(_variables, _functions);
+            _value = Function('__data', 'fns', ('let { ' + Object.keys(variables).join(', ') + ' } = __data; const { ' + Object.keys(functions).join(', ') + ' } = fns; ') + 'return ' + _value)(variables, functions);
             break;
     }
 
     return _value;
 }
 
-export function getRealProps(control: FormDesign.FormControl, variables: Array<any>, functions: Array<any>) {
+export function getRealProps(control: FormDesign.FormControl, variables: Record<string, any>, functions: Record<string, Function>) {
     return Object.keys(control.control.attrs).map(i => getRealProp(control, i, variables, functions));
+}
+
+/** 解析Vue代码 */
+export function variableVueScript(strVariable: string): { script: FormDesign.FormScript, comment: Record<string, string> } {
+    let _reg = /\/\*\*\s*(?<remark>.*?)\s*\*\/\s*(?<name>[a-zA-Z0-9_]+)(:|\()/g;
+    let _item: RegExpExecArray | null;
+    let _list: Record<string, string> = {};
+    while(_item = _reg.exec(strVariable)) {
+        if (_item !== null) {
+            _list[_item.groups?.name || ''] = _item.groups?.remark || '';
+        }
+    }
+    return {
+        script: Function(strVariable)() as FormDesign.FormScript,
+        comment: _list
+    };
 }

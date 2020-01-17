@@ -8,8 +8,20 @@ const _formTemplates: Array<FormTemplate> = [
         deviceType: 'pc',
         library: 'ant-design',
         controls: [],
-        variables: ``,
-        functions: ``
+        script: `return {
+    data: {
+
+    },
+    methods: {
+        test() {
+
+        }
+    },
+    created() {
+        
+    }
+}`,
+        style: ``
     }, {
         code: 'pc_01',
         title: '标准流程模板',
@@ -70,104 +82,98 @@ const _formTemplates: Array<FormTemplate> = [
                 control: { control: "a-divider", slot: {}, propAttrs: {}, events: {}, attrs: { text: "详细信息", remark: "详细信息" } }
             }
         ],
-        variables: `/** 流程数据 */
-const taskData: Record<string, any> = {
-    /** 流程编号 */
-    nodeCode: '',
-    /** 草稿id */
-    draftId: '',
-    /** 任务创建时间 */
-    createTime: '',
-    /** 审批id */
-    procId: '',
-    /** 下一步审批id */
-    nextProcId: '',
-    /** 审批状态 */
-    procStatus: '',
-    /** 任务id */
-    taskId: '',
-    /** 按钮id */
-    actionId: '',
-    /** 按钮描述 */
-    action: '',
-    /** 审批备注 */
-    comments: '',
-    /** 是否为开始节点 */
-    isStartStep: false,
-    /** 是否为自动测试 */
-    isAutoTest: false,
-    /** 企业id */
-    enterpriseId: '',
-    /** 任务状态 */
-    taskStatus: '',
-    /** 表单是否为只读 */
-    isReadOnly: false,
-    /** 是否结束 */
-    isEnd: false,
-    /** 转发/询问/加签时选中的账号 */
-    assignToUserAccount: ''
-};
+        script: `return {
+    data: {
+        /** 流程数据 */
+        taskData: {
+            /** 流程编号 */
+            nodeCode: '',
+            /** 草稿id */
+            draftId: '',
+            /** 任务创建时间 */
+            createTime: '',
+            /** 审批id */
+            procId: '',
+            /** 下一步审批id */
+            nextProcId: '',
+            /** 审批状态 */
+            procStatus: '',
+            /** 任务id */
+            taskId: '',
+            /** 按钮id */
+            actionId: '',
+            /** 按钮描述 */
+            action: '',
+            /** 审批备注 */
+            comments: '',
+            /** 是否为开始节点 */
+            isStartStep: false,
+            /** 是否为自动测试 */
+            isAutoTest: false,
+            /** 企业id */
+            enterpriseId: '',
+            /** 任务状态 */
+            taskStatus: '',
+            /** 表单是否为只读 */
+            isReadOnly: false,
+            /** 是否结束 */
+            isEnd: false,
+            /** 转发/询问/加签时选中的账号 */
+            assignToUserAccount: ''
+        },
+        /** 全局数据 */
+        applicationData: {
+            /** 表单发起时间 */
+            requestTime: '',
+            /** 业务流水号 */
+            snNumber: '',
+            /** 表单打开时的登录账号 */
+            openFormUserAccount: '',
+            /** 审批人账号 */
+            procUserAccount: '',
+            /** 当前用户姓名 */
+            currentUserName: '',
+            /** 当前用户账号 */
+            currentUserAccount: '',
+            /** 申请人账号 */
+            applicantUserAccount: '',
+            /** 申请人是否有效 */
+            applicantActive: '',
+            /** 申请人姓名 */
+            applicantUserName: '',
+            /** 申请人邮箱 */
+            applicantEMail: '',
+            /** 申请人部门 */
+            applicantDepartment: '',
+            /** 发起人账号 */
+            initiatorUserAccount: '',
+            /** 发起人姓名 */
+            initiatorUserName: '',
+            /** 发起人邮箱 */
+            initiatorEMail: '',
+            /** 发起人部门 */
+            initiatorDepartment: '',
+        },
+        /** 表单数据 */
+        formData: {
 
-/** 全局数据 */
-const applicationData: Record<string, any> = {
-    /** 表单发起时间 */
-    requestTime: '',
-    /** 业务流水号 */
-    snNumber: '',
-    /** 表单打开时的登录账号 */
-    openFormUserAccount: '',
-    /** 审批人账号 */
-    procUserAccount: '',
-    /** 当前用户姓名 */
-    currentUserName: '',
-    /** 当前用户账号 */
-    currentUserAccount: '',
-    /** 申请人账号 */
-    applicantUserAccount: '',
-    /** 申请人是否有效 */
-    applicantActive: '',
-    /** 申请人姓名 */
-    applicantUserName: '',
-    /** 申请人邮箱 */
-    applicantEMail: '',
-    /** 申请人部门 */
-    applicantDepartment: '',
-    /** 发起人账号 */
-    initiatorUserAccount: '',
-    /** 发起人姓名 */
-    initiatorUserName: '',
-    /** 发起人邮箱 */
-    initiatorEMail: '',
-    /** 发起人部门 */
-    initiatorDepartment: '',
-
-    testABC: {
-
-        testABCD: ''
+        }
     },
-};
-
-/** 表单数据 */
-const formData: Record<string, any> = {
-
+    methods: {
+        /** 测试函数 */
+        fn(numA, numB) {
+            if (numA && numB) {
+                return numA + numB;
+            } else {
+                return 0;
+            }
+        }
+    },
+    created() {
+        
+    }
 }`,
-    functions: `/** 测试函数 */
-function fn(numA: number, numB: number): number {
-    if (numA && numB) {
-        return numA + numB;
-    } else {
-        return 0;
-    }
-}
-
-/** 测试函数2 */
-function fn2(numA: number, numB: number): number {
-    if (numA && numB) {
-        return numA * numB;
-    } else {
-        return 0;
-    }
-}`
+    style: ``
     }, {
         code: 'mobile_00',
         title: 'Vant空模板',
@@ -175,8 +181,20 @@ function fn2(numA: number, numB: number): number {
         deviceType: 'mobile',
         library: 'vant',
         controls: [],
-        variables: ``,
-        functions: ``
+        script: `return {
+    data: {
+
+    },
+    methods: {
+        test() {
+
+        }
+    },
+    created() {
+        
+    }
+}`,
+        style: ``
     }, 
     
     // {

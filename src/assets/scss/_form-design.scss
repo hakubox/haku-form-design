@@ -705,15 +705,27 @@
         }
     
         .ant-modal-content {
-            background-color: transparent;
-            border-radius: 0px;
-            background-image: url(/img/devices/iphonex.png);
-            background-size: 100% 100%;
+            position: relative;
+            background-color: white;
+            border-radius: 60px;
             padding-top: 24px;
             box-shadow: none;
+
+            &:before {
+                content: '';
+                position: absolute;
+                width: calc(100% + 20px);
+                height: calc(100% + 12px);
+                top: -10px;
+                left: -10px;
+                background-image: url(/img/devices/iphonex.png);
+                background-size: 100% 100%;
+            }
     
             > .ant-modal-body {
                 padding-bottom: 22px;
+                padding: 20px;
+                border-radius: 60px;
             }
     
             .form-design-canvas {
@@ -727,6 +739,11 @@
                     &:after {
                         display: none;
                     }
+                }
+
+                .fixed-bottom {
+                    border-bottom-left-radius: 35px;
+                    border-bottom-right-radius: 35px;
                 }
             }
         }

@@ -15,6 +15,7 @@ import { FormControl } from "./form-control";
 import { FormVariable } from "./form-variable";
 import { FormTheme } from "./form-theme";
 import { FormTemplate } from "./form-template";
+import { FormScript } from './form-script';
 
 
 export {
@@ -51,5 +52,7 @@ export {
     /** 表单主题 */
     FormTheme,
     /** 表单模板 */
-    FormTemplate
+    FormTemplate,
+    /** Vue Script */
+    FormScript
 };
