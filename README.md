@@ -12,8 +12,6 @@
 <img src="https://raw.githubusercontent.com/hakubox/haku-form-design/master/public/printscreen.png" >
 </div>
 
-### [示例DEMO](http://hakubox.gejinet.com)
-
 ## 说明
 
 :smiley: 使用VueCLI4.0+及TypeScript1.7+开发，目前仅对chrome浏览器提供完整支持。
