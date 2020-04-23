@@ -91,12 +91,10 @@
                 // let _variables = this.formScriptCode.map(i => {
                 // });
 
-                console.log();
-                console.log();
                 let ranges = functionHeaderParse(['{', '}'], this.formScriptCode.trim().slice(8)).bodyRanges;
 
                 let str = `
-                    let __me = ${this.formScriptCode.trim().slice(8).substring(ranges[0][0], ranges[0][1] + 1)};
+                    let me = ${this.formScriptCode.trim().slice(8).substring(ranges[0][0], ranges[0][1] + 1)};
                 `;
 
                 monaco.languages.typescript.javascriptDefaults.addExtraLib(str, 'vars.d.ts');
@@ -131,6 +129,8 @@
             initialize() {
                 // onDidChangeOptions 配置改变事件
                 // onDidChangeLanguage 语言改变事件
+
+                console.log('code-editor', this.value);
 
                 let _options = {
                     ...this.defaultOptions,

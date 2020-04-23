@@ -36,4 +36,12 @@ export declare class FormControl {
     isFormItem?: boolean;
     /** 控件事件 */
     events: Array<FormFunction>;
+    /** 构建Template */
+    render?: (control: FormControl) => string;
+    /** 控件Ref */
+    ref?: string;
+    /** 是否为隐藏控件 */
+    isHide?: boolean;
+    /** 是否为原始控件（不需要form-control包装） */
+    isOriginal?: boolean;
 }

@@ -1,0 +1,138 @@
+@import 'variables.scss';
+
+.task-list {
+    background: #EEEEEE;
+
+    > .task-list-tools {
+        padding: 6px;
+    }
+}
+
+.ant-table-wrapper {
+
+    .ant-pagination {
+        display: block;
+        clear: both;
+        float: initial;
+        text-align: right;
+        padding: 4px 10px;
+        margin: 4px 0px;
+        background: white;
+
+        > .ant-pagination-options {
+            float: left;
+        }
+
+        .ant-pagination-item,
+        .ant-pagination-prev,
+        .ant-pagination-next {
+            border: 1px solid #EEE !important;
+            margin-right: 6px;
+            line-height: 24px;
+            border-radius: 0px;
+
+            &:not(.ant-pagination-disabled):hover {
+                background-color: #EEE;
+            }
+
+            > a {
+                margin: 0 10px;
+            }
+
+            &.ant-pagination-item-active {
+                border: none !important;
+                background-color: $-primary-color;
+
+                &:hover {
+                    background-color: $-primary-color;
+                }
+                
+                > a {
+                    color: white !important;
+                }
+            }
+        }
+    }
+}
+
+.ant-table {
+    background-color: white;
+
+    .task-table-header {
+
+        > th {
+            background: #FAFAFA;
+            line-height: 12px;
+            font-size: 12px;
+            text-align: center;
+            padding: 7px !important;
+        }
+    }
+
+    .task-table-row {
+        
+        > td {
+            line-height: 12px;
+            font-size: 12px;
+            padding: 5px !important;
+        }
+
+        &:nth-child(2n) {
+            
+            > td {
+                background-color: #fbfcfd;
+            }
+        }
+    }
+
+    /** 整个单元格的选中效果 */
+    .ant-table-selection-column {
+        position: relative;
+        
+        .ant-radio-wrapper,
+        .ant-checkbox-wrapper {
+            
+            &:before {
+                content: '';
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 100%;
+                height: 100%;
+            }
+        }
+    }
+}
+
+.task-btn {
+    cursor: pointer;
+    user-select: none;
+    display: inline-block;
+    color: white;
+    background: linear-gradient(#426C9B, #5E89B5) !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.18);
+    margin-bottom: 0;
+    font-weight: 400;
+    line-height: 1.44;
+    touch-action: manipulation;
+    text-align: center;
+    vertical-align: middle;
+    transition: 0.15s box-shadow;
+    font-size: 12px;
+    border: none;
+    border-radius: 0px;
+
+    > span {
+        font-weight: 400;
+        line-height: 1.44;
+        font-size: 12px;
+    }
+
+    &:hover {
+        box-shadow: 0 3px 6px rgba(0,0,0,.2), 0 3px 6px rgba(0,0,0,.26);
+    }
+
+    + .task-btn {
+        margin-left: 6px;
+    }
+}

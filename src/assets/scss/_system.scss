@@ -17,6 +17,7 @@ html {
 
 
 .ant-form-item {
+    margin-bottom: 10px !important;
 
     /** 较小下边距表单 */
     &.ant-form-item-mini {
@@ -62,7 +63,7 @@ html {
         font-size: 20px;
         background: white;
         padding: 10px;
-        color: #1D87EA;
+        color: $-primary-color;
     }
 }
 
@@ -139,4 +140,8 @@ html {
     background: rgba(0, 0, 0, .05);
     box-shadow: inset 1px 0 0 rgba(0, 0, 0, .14), inset -1px -1px 0 rgba(0, 0, 0, .07);
     -webkit-box-shadow: inset 1px 0 0 rgba(0, 0, 0, .14), inset -1px -1px 0 rgba(0, 0, 0, .07);
+}
+
+.ant-input-group-wrapper {
+    vertical-align: middle;
 }

@@ -71,6 +71,12 @@ export { default as CheckOutline } from '@ant-design/icons/lib/outline/CheckOutl
 export { default as ApiOutline } from '@ant-design/icons/lib/outline/ApiOutline';
 export { default as FormOutline } from '@ant-design/icons/lib/outline/FormOutline';
 export { default as BgColorsOutline } from '@ant-design/icons/lib/outline/BgColorsOutline';
+export { default as QuestionCircleOutline } from '@ant-design/icons/lib/outline/QuestionCircleOutline';
+export { default as SnippetsOutline } from '@ant-design/icons/lib/outline/SnippetsOutline';
+export { default as EyeInvisibleOutline } from '@ant-design/icons/lib/outline/EyeInvisibleOutline';
+export { default as ExportOutline } from '@ant-design/icons/lib/outline/ExportOutline';
+export { default as StarOutline } from '@ant-design/icons/lib/outline/StarOutline';
+export { default as UndoOutline } from '@ant-design/icons/lib/outline/UndoOutline';
 
 
 export { default as CheckCircleFill } from '@ant-design/icons/lib/fill/CheckCircleFill';
@@ -82,3 +88,5 @@ export { default as CaretUpFill } from '@ant-design/icons/lib/fill/CaretUpFill';
 export { default as CaretDownFill } from '@ant-design/icons/lib/fill/CaretDownFill';
 export { default as ExclamationCircleFill } from '@ant-design/icons/lib/fill/ExclamationCircleFill';
 export { default as CloseCircleFill } from '@ant-design/icons/lib/fill/CloseCircleFill';
+export { default as QuestionCircleFill } from '@ant-design/icons/lib/fill/QuestionCircleFill';
+export { default as StarFill } from '@ant-design/icons/lib/fill/StarFill';

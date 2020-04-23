@@ -19,6 +19,8 @@ export declare class FormControlProperty {
     visible?: boolean;
     /** 是否子级 */
     leaf?: boolean;
+    /** 是否为可变属性 */
+    isSync?: boolean;
     /** 属性分组 */
     group: Enum.FormControlPropertyGroup;
     /** 属性描述 */

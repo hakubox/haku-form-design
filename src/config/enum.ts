@@ -35,6 +35,8 @@ export namespace Enum {
         select = 'select',
         /** 上传控件 */
         upload = 'upload',
+        /** 隐藏控件 */
+        hidden = 'hidden',
         /** 其他控件 */
         else = 'else'
     }
@@ -119,8 +121,10 @@ export namespace Enum {
         json = 'json',
         /** Javascript类型 */
         javascript = 'javascript',
-        /** 图标类型 */
+        /** 图标类型(vant) */
         icon = 'icon',
+        /** 图标类型(antd) */
+        icon_antd = 'icon_antd',
         /** 列表型 */
         list = 'list',
         /** 函数类型 */
@@ -129,6 +133,10 @@ export namespace Enum {
         modelList = 'model-list',
         /** 校验规则 */
         rules = 'rules',
+        /** 盒模型类型 */
+        box = 'box',
+        /** API类型 */
+        api = 'api',
         
         /** 计算表达式 */
         expression = 'expression',

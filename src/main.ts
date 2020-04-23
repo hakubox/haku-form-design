@@ -4,16 +4,25 @@ import App from "./App.vue";
 import router from "@/config/router";
 import store from "@/config/store";
 import axios from 'axios';
+import vueCookie from 'vue-cookies';
+import moment, { Moment } from 'moment';
+import { Base64 } from 'js-base64';
 import '@/config/enum';
 // import lessLoader from '@/lib/less-loader';
 //公共函数库
 import * as common from '@/tools/common';
 
 //全局枚举
-require('moment').locale('zn-cn');
+moment.locale('zn-cn');
+
+window['moment'] = moment;
+
+const packageInfo = require('../package.json');
 
 //自定义指令
 import "@/tools/directives";
+//筛选器
+import "@/tools/filters";
 //ant-design-vue
 import "@/config/components";
 // import '@/assets/less/variables.less';
@@ -34,15 +43,20 @@ import { Breadcrumb, PagePagination } from '@/@types/basic';
 
 //let hakuDebug = require('./lib/haku-debug/index').default;
 
-console.log(process.env.VUE_APP_INTERFACE);
 axios.defaults.baseURL = process.env.VUE_APP_INTERFACE;
 
 Vue.use(components);
 
 
 Vue.config.productionTip = false;
+Vue.prototype.$cookie = vueCookie;
 Vue.prototype.$common = common;
 Vue.prototype.$axios = axios;
+Vue.prototype.dateFormat = common.dateFormat;
+Vue.prototype.$api = axios.create({
+    baseURL: process.env.VUE_APP_DESIGNER_INTERFACE,
+    timeout: 3000
+});
 Vue.prototype.$store = store;
 Vue.prototype.$config = {};
 Object.defineProperties(Vue.prototype.$config, Object.assign({}, ...Object.entries(process.env).map(([key, value]) => ({ [key.replace('VUE_APP_', '')]: { get() { return process.env[key] } } }))));
@@ -85,6 +99,7 @@ let __vue:Vue = new Vue({
     i18n,
     render: h => h(App),
     data: () => ({
+        packageInfo: packageInfo,
         /** 面包屑 */
         breadcrumbSource: []
     }),
@@ -113,6 +128,17 @@ let __vue:Vue = new Vue({
         isPageInit = true;
     },
     methods: {
+        login() {
+            try {
+                let authorization = this.$cookie.get('Authorization').split('.')[1];
+                authorization = Base64.decode(authorization);
+                const jwtInfo = new Function('return ' + authorization)();
+                store.commit('setUserInfo', jwtInfo);
+            } catch (error) {
+                console.error(error);
+                this.$message.error('获取用户信息失败。');
+            }
+        },
         /**
          * @method setBreadcrumb 设置面包屑
          * @param {Array} arr 面包屑路径
@@ -178,8 +204,17 @@ Vue.mixin({
     }
 });
 
+router.afterEach((to, from) => {
+    if (to?.meta?.title) {
+        document.title = to.meta.title;
+    }
+})
+
 //页面跳转校验
 router.beforeEach((to, from, next) => {
+
+    
+
     if(!to.meta || !to.meta.permission || store.getters.checkPermissions(to.meta.permission)) {
         if(isPageInit) {
             bus.$emit("routerchange", to);

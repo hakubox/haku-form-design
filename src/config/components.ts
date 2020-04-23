@@ -39,7 +39,9 @@ import {
     TreeSelect,
     Checkbox,
     Rate,
-    AutoComplete
+    AutoComplete,
+    Popover,
+    Anchor,
 } from 'ant-design-vue';
 
 import InputSearch from 'ant-design-vue/lib/input';
@@ -93,6 +95,8 @@ Vue.use(TreeSelect);
 Vue.use(Checkbox);
 Vue.use(Rate);
 Vue.use(AutoComplete);
+Vue.use(Popover);
+Vue.use(Anchor);
 
 Vue.component(InputSearch.name, InputSearch);
 Vue.component(Empty.name, Empty);

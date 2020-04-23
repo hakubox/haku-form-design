@@ -1,6 +1,6 @@
 <template lang="html">
-    <div class="form-flex" :style="control.control.attrs">
-        <slot :name="'child0'" class="form-flex-item">
+    <div class="form-flex" :style="$attrs">
+        <slot :name="'child0'">
             <form-design-blank-control />
         </slot>
     </div>
@@ -22,11 +22,21 @@ export default class AntdFormDesignControlRow extends Vue {
 </script>
 
 <style lang="scss" scoped>
+    .form-design-canvas-mainpanel {
+
+        .form-flex {
+            outline: 1px solid #EEE;
+        }
+    }
+
     .form-flex {
         display: flex;
         min-height: 44px;
         background-color: white;
-        outline: 1px solid #EEE;
         padding-bottom: 10px;
+
+        > div {
+            flex-grow: 1;
+        }
     }
 </style>

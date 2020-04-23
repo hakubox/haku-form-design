@@ -4,6 +4,9 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 // const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
+    devServer: {
+        disableHostCheck: true
+    },
     runtimeCompiler: true,
     chainWebpack(config) {
         // 换肤loader[scss]

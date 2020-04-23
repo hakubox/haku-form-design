@@ -6,6 +6,8 @@ declare module 'model' {
     interface User {
         /** Id */
         id: string,
+        /** 账号 */
+        account: string,
         /** 姓名 */
         name?: string,
         /** 创建日期 */

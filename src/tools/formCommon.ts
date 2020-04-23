@@ -1,7 +1,99 @@
 import FormDesign from '@/@types/form-design';
-import { formControls, initAntDesignControls } from "@/formControls_antd";
+import { formControls, initAntDesignControls, formItemProps, columnItemProps, basicProps } from "@/formControls_antd.tsx";
 import { cloneForce } from "@/lib/clone";
-import { createModelId } from './common';
+import axios from 'axios';
+import common, { createModelId } from './common';
+import store from '@/config/store';
+
+/** 获取数据源
+ * @param {any} dataSource 数据源
+ * @param {any} type 类型
+ * @param {object} [options={}] 配置项
+ */
+export function getDataSource(dataSource: any, type: any, options: { map?: (arr: any) => any, filter?: (arr: any) => boolean } = {}): Promise<Record<string, any>[]> {
+    if (!type) throw new Error('类型参数不能为空。');
+    
+    let re: Promise<Record<string, any>[]> = new Promise((resolve, reject) => resolve([]));
+
+    const _exec = (_re) => {
+        if (options.map && _re?.map) {
+            _re = _re.map(options.map);
+        }
+        if (options.filter && _re?.filter) {
+            _re = _re.filter(options.filter);
+        }
+        return _re;
+    }
+    
+    switch (type) {
+        case 'model-list':
+            re = new Promise((resolve, reject) => resolve(_exec(dataSource)));
+            break;
+        case 'json':
+            re = new Promise((resolve, reject) => resolve(_exec(dataSource)));
+            break;
+        case 'variable':
+            if (typeof(dataSource) == 'string') {
+                re = new Promise((resolve, reject) => {
+                    try {
+                        console.log(store.getters);
+                        let _re = Function('__data__', 'return __data__.' + dataSource)(store.getters?.getFormScript?.data);
+                        
+                        resolve(_exec(_re));
+                    } catch (error) {
+                        reject(error);
+                    }
+                });
+            } else {
+                re = new Promise((resolve, reject) => resolve(_exec(dataSource)));
+            }
+            break;
+        case 'expression':
+            re = new Promise((resolve, reject) => resolve(_exec(Function('__data__', 'let me = __data__; return ' + dataSource)({
+                ...store.getters?.getFormScript?.data,
+                ...store.getters?.getformScript?.methods
+            }))));
+            break;
+        case 'basic-data':
+            re = common.post('ExtenalApi/GetBasicDataById', {
+                enterpriseId: store.getters.getEnterpriseId, 
+                languageCulture: "zh-CN",
+                code: dataSource,
+                filters: {}
+            }).then(d => new Promise((resolve, reject) => resolve(_exec(d))));
+            break;
+        case 'view-data':
+            re = common.post('ExtenalApi/GetViewTable', {
+                enterpriseId: store.getters.getEnterpriseId, 
+                languageCulture: "zh-CN",
+                code: dataSource,
+                filters: {}
+            }).then(d => new Promise((resolve, reject) => {
+                if (d.viewTable) {
+                    resolve(_exec(d.viewTable));
+                } else {
+                    reject();
+                }
+            }));
+            break;
+        default:
+            if (type?.type === 'api') {
+                let api: FormDesign.Api | undefined = store.getters?.getApiList?.find(i => i.address == dataSource?.address);
+                if (api) {
+                    re = axios.request({
+                        method: api.type,
+                        url: api.address,
+                        [{ get:'params', post: 'data' }[api.type]]: dataSource?.params ? Function(dataSource.params)() : {}
+                    }).then(d => new Promise((resolve, reject) => resolve(_exec(dataSource?.formatter ? (Function(dataSource.formatter)()(d)) : d))));
+                } else {
+                    throw new Error('API不存在。');
+                }
+            }
+            break;
+    }
+
+    return re;
+}
 
 /** 填充控件属性 */
 export function fillPropertys(controls: Array<FormDesign.FormControl>, componentLibraryName: string): Array<FormDesign.FormControl> {
@@ -41,8 +133,10 @@ export function fillPropertys(controls: Array<FormDesign.FormControl>, component
                     list[i].title = _control.title;
                     list[i].type = _control.type;
                     list[i].isFormItem = _control.isFormItem;
-                    list[i].propertyEditors = cloneForce(_control.propertyEditors);
                     list[i].propertys = cloneForce(_control.propertys);
+                    list[i].render = _control.render;
+                    list[i].isHide = _control.isHide;
+                    list[i].isOriginal = _control.isOriginal;
                 }
 
                 if (_children?.length) {
@@ -53,7 +147,10 @@ export function fillPropertys(controls: Array<FormDesign.FormControl>, component
             }
             let _list = _initControls(list);
             for (let index = 0; index < list.length; index++) {
-                list[index] = _list[index];
+                list[index] = {
+                    ..._list[index],
+                    // propertyEditors: list[index].propertyEditors
+                };
             }
         }
     };
@@ -156,131 +253,8 @@ export function functionHeaderParse(match: [string, string], content: string): {
     };
 }
 
-/** 解析变量 */
-export function variableParse(strVariable: string): Array<FormDesign.FormVariable> {
-    const _strVariables = strVariable.trim().replace(/\r|\n/g, '');
-
-    /** 解析子节点变量 */
-    const _parseChildren = (value: string, parent: FormDesign.FormVariable, regExp: RegExpExecArray) => {
-        const _value = value.replace(/\r|\n/g, '').trim();
-        const _reg = /(\/\*\*\s*(?<remark>\S+)\s*?\*\/[\s\n\r\t]*)?(?<name>[a-zA-Z0-9_]+)\s*:\s*(?<default>'\S+?'|"\S+?"|\[.*?\]|\{.*?\}|[^\s,{}]+?)(,|\s*$)/g;
-        const _list: Array<FormDesign.FormVariable> = [];
-        let _item: RegExpExecArray | null = null;
-        if (regExp.groups) {
-            parent.children = _list;
-
-            while(_item = _reg.exec(_value)) {
-                if (_item !== null) {
-                    let _var: FormDesign.FormVariable = {
-                        ..._item.groups,
-                        keyword: (_item.groups?.keyword as ('let' | 'var' | 'const')) || 'let',
-                        name: _item.groups?.name || '',
-                        type: _item.groups?.type || undefined,
-                        default: _item.groups?.default || undefined
-                    };
-                    if (!_var.type) {
-                        if (_var.default) {
-                            if (!isNaN(+_var.default)) {
-                                _var.type = 'number';
-                                _var.default = JSON.parse(_var.default);
-                            }
-                            if (typeof(_var.default) != 'object') {
-                                _var.default = Function('return ' + _var.default)();
-                                _var.type = typeof(_var.default);
-                            } else {
-                                _var.type = Object.prototype.toString.call(_var.default).slice(8, -1);
-                                // _var.default = JSON.parse(_var.default);
-                                _parseChildren(_var.default.trim().slice(1, -1), _var, _item);
-                            }
-                        } else {
-                            _var.type = 'any';
-                        }
-                    } else if (_var.type != 'string' && _var.default) {
-                        _var.default = Function('return ' + _var.default)();
-                    }
-                    _list.push(_var);
-                }
-            }
-        }
-    };
-
-    const _reg = /(\/\*\*\s*(?<remark>\S+)\s*\*\/[\s\n\r\t]*)?(?<keyword>var|let|const)\s(?<name>[a-zA-Z0-9_]+)\s*(:\s*(?<type>[^=]+)\s*)?(\s*=\s*)?(?<default>'\S+?'|"\S+?"|\[.*?\]|\{.*?\}|[^\s,{}]+?)?(;|$)/g;
-    const _list: Array<FormDesign.FormVariable> = [];
-    let _item: RegExpExecArray | null = null;
-    /** 最外层变量识别 */
-    while(_item = _reg.exec(_strVariables)) {
-        if (_item !== null) {
-            let _var: FormDesign.FormVariable = {
-                ..._item.groups,
-                keyword: (_item.groups?.keyword as ('let' | 'var' | 'const')) || 'let',
-                name: _item.groups?.name || '',
-                type: _item.groups?.type || undefined,
-                default: _item.groups?.default || undefined
-            };
-            if (!_var.type) {
-                if (_var.default) {
-                    if (!isNaN(+_var.default)) {
-                        _var.type = 'number';
-                        _var.default = JSON.parse(_var.default);
-                    }
-                    if (typeof(Function('return ' + _var.default)()) != 'object') {
-                        _var.default = Function('return ' + _var.default)();
-                        _var.type = typeof(_var.default);
-                    } else {
-                        _var.type = Object.prototype.toString.call(_var.default).slice(8, -1);
-                        _var.default = Function('return ' + _var.default)();
-                        _parseChildren((_item.groups?.default?.trim().slice(1, -1) || '') as string, _var, _item);
-                    }
-                } else {
-                    _var.type = 'any';
-                }
-            } else if (_var.type != 'string' && _var.default) {
-                if (_var.default.trim().startsWith('{') && _var.default.trim().endsWith('}')) {
-                    _var.default = Function('return ' + _var.default)();
-                    _parseChildren((_item.groups?.default?.trim().slice(1, -1) || '') as string, _var, _item);
-                } else {
-                    _var.default = Function('return ' + _var.default)();
-                }
-            }
-            _list.push(_var);
-        }
-    }
-
-    console.log(_list);
-    return _list;
-}
-
-/** 解析函数的函数 */
-export function functionParse(strFunction: string): Array<FormDesign.FormFunction> {
-    let _functionHeader = functionHeaderParse(['{', '}'], strFunction);
-
-    const _reg = /(\/\*\*\s*(?<remark>\S+)\s*\*\/[\s\n\r\t]*)?function\s+(?<name>[a-zA-Z0-9_]+)\s*\((?<params>.*?)\)(:\s*(?<type>\S+)\s*)?\s*(;|$)/g;
-    const _list: Array<FormDesign.FormFunction> = [];
-    let _item: RegExpExecArray | null = null;
-    let _index = 0, _txtIndex = 0;
-    const _regParam = /:\s*[^,]+/g;
-    
-    while(_item = _reg.exec(_functionHeader.body)) {
-        if (_item !== null) {
-            _list.push({
-                name: _item.groups?.name || '',
-                remark: _item.groups?.remark,
-                params: _item.groups?.params,
-                declare: `${strFunction.substr(_txtIndex, _functionHeader.bodyRanges[_index][0])};${strFunction.substr(_functionHeader.bodyRanges[_index][1] + 1)}`,
-                body: `function ${_item.groups?.name}(${_item.groups?.params.replace(_regParam, '')}) ${strFunction.substring(_functionHeader.bodyRanges[_index][0], _functionHeader.bodyRanges[_index][1] + 1).replace(/\r|\n/g, '')}`,
-            });
-            if (_index < _functionHeader.bodyRanges.length - 1) {
-                _index++;
-                _txtIndex = _functionHeader.bodyRanges[_index][1] + 1;
-            }
-        }
-    }
-    
-    return _list;
-}
-
 /** 获取真实属性 */
-export function getRealProp(control: FormDesign.FormControl, propName: string, variables: Record<string, any>, functions: Record<string, Function>) {
+export function getRealProp(control: FormDesign.FormControl, propName: string, script: FormDesign.FormScript) {
     const props = control.control.attrs;
 
     if (!props['__' + propName]) return props[propName];
@@ -289,15 +263,18 @@ export function getRealProp(control: FormDesign.FormControl, propName: string, v
     let _value = props['__' + propName];
     switch (_editor) {
         case 'expression':
-            _value = Function('__data', 'fns', ('let { ' + Object.keys(variables).join(', ') + ' } = __data; const { ' + Object.keys(functions).join(', ') + ' } = fns; ') + 'return ' + _value)(variables, functions);
+            _value = Function('__data__', 'let me = __data__; return ' + _value)({
+                ...script.data instanceof Function ? script.data() : script.data,
+                ...script.methods
+            });
             break;
     }
 
     return _value;
 }
 
-export function getRealProps(control: FormDesign.FormControl, variables: Record<string, any>, functions: Record<string, Function>) {
-    return Object.keys(control.control.attrs).map(i => getRealProp(control, i, variables, functions));
+export function getRealProps(control: FormDesign.FormControl, script: FormDesign.FormScript) {
+    return Object.keys(control.control.attrs).map(i => getRealProp(control, i, script));
 }
 
 /** 解析Vue代码 */
@@ -314,4 +291,296 @@ export function variableVueScript(strVariable: string): { script: FormDesign.For
         script: Function(strVariable)() as FormDesign.FormScript,
         comment: _list
     };
+}
+
+/** 判断节点是否为高级子表单的子节点 */
+export function isFormChild(controlId, controls: FormDesign.FormControl[]) {
+    return controls
+        .filter(i => i.name == 'complex-childform')
+        .map(i => i.children)
+        .flat(2)
+        .map(i => i.id)
+        .includes(controlId);
+}
+
+/** 判断节点是否为Flex的子节点 */
+export function isFlexChild(controlId, controls: FormDesign.FormControl[]) {
+    return controls
+        .filter(i => i.name == 'flex')
+        .map(i => i.children)
+        .flat(2)
+        .map(i => i.id)
+        .includes(controlId);
+}
+
+/** 导出Vue模板代码 */
+export function exportTemplate({ formConfig, panel }: { formConfig: FormDesign.FormConfig, panel: FormDesign.FormPanel }) {
+    
+    let _control: FormDesign.FormControl;
+
+    /** 构造控件的属性 */
+    const _generateAttrs = (control: FormDesign.BasicControl, config?: { in?: string[], out?: string[] }, isTableChild: boolean = false) => {
+        let _re = '';
+        _re += Object.entries(control.attrs || {}).filter(([key, value]) => value).map(([key, value]) => {
+            if (config?.in?.includes(key) === false) return '';
+            if (config?.out?.includes(key) === true) return '';
+
+            const _isSync = _control.propertys.find(i => i.name == key)?.isSync === true;
+
+            if (key.startsWith('__')) return '';
+
+            // TODO: 需要在这加上关于其他通用属性的校验！
+            const _propertys = _control.propertys;
+            
+            if (formConfig.formComponentLib == 'ant-design') {
+                _propertys.concat(basicProps);
+                
+                if (isFormChild(_control.id, panel.children)) {
+                    _propertys.concat(columnItemProps);
+                } else if (isFlexChild(_control.id, panel.children)) {
+                    _propertys.concat(formItemProps);
+                } else if (_control.isFormItem) {
+                    _propertys.concat(formItemProps);
+                }
+            }
+            
+            /** 是否为原始 */
+            const _isOriginalType = _control?.propertyEditors?.[key] === undefined || _propertys?.find?.(i => i?.name == key)?.editor === _control?.propertyEditors?.[key];
+
+            let _reStr = '';
+
+            if (_isOriginalType === false) {
+                _reStr += `${key}_type='${_control?.propertyEditors?.[key]}' `;
+                value = control.attrs['__' + key];
+            } else {
+                const _propType = _propertys.find(i => i.name == key)?.editor || _control?.propertyEditors?.[key];
+                _reStr += `${key}_type='${_propType}' `;
+            }
+
+            // 如果是明细表下面的组件
+            if (isTableChild) {
+                switch (key) {
+                    case 'remark': return '';
+                    case 'dataIndex': return `:model='"detail_" + index + "_${value}"' v-model='record.${value}'`;
+                    case 'visible': return `v-show='${value}'`;
+                    case 'model': 
+                    case 'label':
+                        return '';
+                    default:
+                        break;
+                }
+            } else {
+                switch (key) {
+                    case 'remark': return '';
+                    case 'model': return `model='${value}' v-model='${value}'`;
+                    case 'visible': return `v-show='${value}'`;
+                    default:
+                        break;
+                }
+            }
+            
+            if (_control?.propertyEditors?.[key]) {
+                switch (_control?.propertyEditors?.[key]) {
+                    case 'boolean':
+                    case 'pixel':
+                    case 'int':
+                    case 'float':
+                    case 'byte':
+                    case 'list':
+                    case 'javascript':
+                    case 'function':
+                        _reStr += `:${key}${_isSync?'.sync':''}='${value}'`;
+                        break;
+                    case 'expression':
+                    case 'variable':
+                        _reStr += `:${key}${_isSync?'.sync':''}='${value}'`;
+                        break;
+                    case 'singer-line':
+                    case 'multi-line':
+                    case 'color':
+                    case 'icon':
+                        _reStr += `${key}='${value}'`;
+                        break;
+                    case 'json':
+                    case 'model-list':
+                        _reStr += ` :${key}${_isSync?'.sync':''}='${JSON.stringify(value)}'`;
+                        break;
+                    case 'rules':
+                        if (value.length) {
+                            let _ruleTxt = '';
+                            _ruleTxt += `:${key}='[`;
+                            _ruleTxt += value.map(i => {
+                                let _ruleItem = Object.entries(i).map(([ruleKey, ruleValue]) => {
+                                    let _ruleValue = ruleValue;
+                                    if (typeof(_ruleValue) === 'string') return `${ruleKey}: "${ruleValue}"`;
+                                    else return `${ruleKey}: ${ruleValue}`;
+                                }).join(', ');
+                                return `{ ${_ruleItem} }`.replace(/\{\{value\}\}/g, i[i.category]);
+                            }).join(', ').replace(/\{\{label\}\}/g, control.attrs.label);
+                            _ruleTxt += ']\'';
+                            return `${_ruleTxt}`;
+                        } else {
+                            return '';
+                        }
+                        break;
+                    case 'view-data':
+                    case 'basic-data':
+                    case 'api':
+                        _reStr += ` ${key}='${control.attrs['__' + key]}'`;
+                        break;
+                    case 'box':
+                        break;
+                    default:
+                        break;
+                }
+                return _reStr;
+            }
+            let _value = value;
+            if (value instanceof Object || value instanceof Array) {
+                _value = JSON.stringify(value);
+            }
+            // if (control.attrs['__' + key]) return '';
+            
+            if (typeof(_value) === 'string') return `${key}='${_value.replace(/me\./g, 'this.').replace(/'/g, '\\\'')}'`;
+            else return `:${key}${_isSync?'.sync':''}='${_value}'`;
+        }).filter(i => i).join(' ');
+
+        let _events = Object.entries(control.events || {});
+        if (_events.length) {
+            _re += ' ';
+            _re += _events.map(([key, value]) => {
+                let _value = value;
+                if (value instanceof Object || value instanceof Array) {
+                    _value = JSON.stringify(value);
+                }
+                return `@${key}='${_value}'`;
+            }).filter(i => i).join(' ');
+        }
+        return _re;
+    };
+
+    /** 构造单个基础控件 */
+    const _generateSingerBasicControl = (control: FormDesign.BasicControl, level, mainIndex?: number) => {
+        let _re = '';
+        _re += `<${control.control} `;
+        _re += _generateAttrs(control);
+        if (control.control == 'a-divider') {
+            debugger;
+            _re += ` name="d${mainIndex}" `;
+        }
+        let _slots = Object.entries(control.slot);
+        if (_slots.length) {
+            _re += '\n';
+            _slots.map(([key, value]) => {
+                _re += `${'    '.repeat(level + 1)}<template #${key}>\n`;
+                _re += value.map(item => _generateSingerBasicControl(item, level + 2));
+                _re += `${'    '.repeat(level + 1)}</template>\n`;
+            }).join('\n\n');
+            _re += `${'    '.repeat(level)}`;
+        }
+        _re += `</${control.control}>\n`;
+        return _re;
+    };
+
+    /** 构造单个控件 */
+    const _generateSingerControl = (control: FormDesign.FormControl, level, pControl?: FormDesign.FormControl, mainIndex?: number) => {
+        _control = control;
+        let _re = '';
+        let _reControl = '';
+//         if (control.isFormItem) {
+//             let _attrs = control.control.attrs;
+//             _re += `<a-form-item class="" :colon="false" :label-col="{ span: ${_attrs.labelSpan}, offset: ${_attrs.labelOffset} }" :wrapper-col="{ span: ${_attrs.wrapperSpan}, offset: ${_attrs.wrapperOffset} }" ${_generateAttrs(control.control, { in: ['label', 'labelCol'] })}>
+// {{control}}
+// </a-form-item>`.split('\n').map(i => (i.startsWith('{{') ? '' : '    '.repeat(level)) + i).join('\n');
+//             level++;
+//         } else {
+//             _re += '{{control}}';
+//         }
+        _re += '{{control}}';
+        if (control.render) {
+            let _renderTemplete = control.render(control).split('\n').map(i => (i.startsWith('{{') ? '' : '    '.repeat(level)) + i).join('\n');
+            _renderTemplete = _renderTemplete.replace('{{attrs}}', _generateAttrs(control.control, {}, pControl?.name === 'complex-childform'));
+            let _children: FormDesign.FormControl[] = control.children?.flat(2) || [];
+            _renderTemplete = _renderTemplete.replace(/\{\{children_(\d+)\}\}/g, (txt, index) => {
+                if (_children[Number(index)]) {
+                    return _generateSingerControl(_children[Number(index)], level + 2, control, mainIndex);
+                } else {
+                    return '';
+                }
+            });
+            _reControl += _renderTemplete;
+        } else {
+            if (pControl?.name === 'complex-childform') {
+
+                if (control.control.attrs.onlyText) {
+                    return _re.replace('{{control}}', `{{text}}`);
+                }
+            }
+            if (control.isOriginal === true) {
+                _reControl += `${'    '.repeat(level)}<${control.control.control} `;
+            } else {
+                _reControl += `${'    '.repeat(level)}<form-control :form="form" :onlyText="isOnlyText" control='${control.control.control}' `;
+            }
+            if (control.ref) {
+                _reControl += `ref='${control.ref}' `;
+            }
+            _reControl += _generateAttrs(control.control, {}, pControl?.name === 'complex-childform');
+            _reControl += `>`;
+            if (control.control.attrs.text) {
+                _reControl += control.control.attrs.text;
+            }
+            if (control.children) {
+                control.children.forEach((child, childIndex) => {
+                    if (child) {
+                        _reControl += `<template #child${childIndex}>`;
+                        _reControl += child.flat(1).map(child => _generateSingerControl(child, level + 1, control, mainIndex));
+                        _reControl += '</template>';
+                    }
+                });
+            }
+            
+            let _slots = Object.entries(control.control.slot);
+            if (_slots.length) {
+                _reControl += '\n';
+                _slots.map(([key, value]) => {
+                    _reControl += `${'    '.repeat(level + 1)}<template #${key}>\n`;
+                    _reControl += value.map(item => _generateSingerBasicControl(item, level + 2));
+                    _reControl += `${'    '.repeat(level + 1)}</template>\n`;
+                }).join('\n\n');
+                _reControl += `${'    '.repeat(level)}`;
+            }
+            if (control.isOriginal === true) {
+                _reControl += `</${control.control.control}>`;
+            } else {
+                _reControl += `</form-control>`;
+            }
+            
+        }
+        return _re.replace('{{control}}', _reControl);
+    };
+    
+    /** 递归构造控件 */
+    const _generateControlStr = (controls: FormDesign.FormControl[]) => {
+        let _re = '';
+        _re += controls.map((i, index) => _generateSingerControl(i, 2, undefined, index)).join('\n');
+        return _re;
+    };
+
+    /** 构造Vue页面文件 */
+    let _vueTxt = `<div>
+    <!-- FormTitle  : ${formConfig.formTitle} -->
+    <!-- FormName   : ${formConfig.formName} -->
+    <!-- CreateDate : ${new Date().format('yyyy-MM-dd HH:mm')} -->
+
+    <div class="page-${formConfig.formName}">
+
+        <h1 class="form-title">${formConfig.formTitle}</h1>
+
+${_generateControlStr(panel.children)}
+        
+    </div>
+</div>`;
+
+    console.log(_vueTxt);
+    return _vueTxt;
 }

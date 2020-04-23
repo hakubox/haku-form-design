@@ -1,0 +1,223 @@
+.task-form {
+    position: relative;
+    background-color: white;
+    margin: 0px 250px 0px 250px;
+    box-sizing: border-box;
+    min-height: 100%;
+    box-shadow: 0 1px 5px #ddd, 0px 0px 0px 1000px #F7F7F7;
+
+    > .task-form-body {
+        position: relative;
+        background-color: white;
+        min-height: 100%;
+        // border-radius: 4px;
+        
+    }
+
+    .form-title {
+        width: 100%;
+        text-align: center;
+        color: #333;
+        font-size: 30px;
+        margin-bottom: 30px;
+        letter-spacing: 2px;
+    }
+}
+
+.task-form-title {
+    width: 100%;
+    text-align: center;
+    color: #333;
+    font-size: 30px;
+    margin-bottom: 20px;
+    // font-weight: normal;
+    letter-spacing: 2px;
+}
+
+.control-custom {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.ant-form-text {
+    display: inline-block;
+    padding-right: 8px;
+}
+
+.ant-form-item {
+
+    /** 较小下边距表单 */
+    &.ant-form-item-mini {
+        margin-bottom: 10px !important;
+        
+        > .ant-form-item-label {
+            line-height: 30px;
+        }
+
+        .ant-form-item-control {
+            line-height: 30px;
+        }
+    }
+}
+
+.form-control {
+    position: relative;
+
+    &.form-control-loading{
+
+        .ant-form-item-children {
+
+            &:after {
+                content: '';
+                position: absolute;
+                cursor: wait;
+                top: 0px;
+                left: 0px;
+                width: 100%;
+                height: 100%;
+                transition: 0.2s;
+                border-radius: 6px;
+                background-color: rgba(0, 0, 0, 0.04);
+                z-index: 998;
+            }
+
+            > .ant-spin {
+
+                > .ant-spin-dot {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    left: 0;
+                    bottom: 0;
+                    z-index: 999;
+                }
+            }
+        }
+    }
+
+    
+
+}
+
+// 表单动作按钮列表
+.action-btns {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+
+    > button + button {
+        margin-left: 20px;
+    }
+}
+
+.ant-table-thead {
+    > tr {
+
+        > th {
+
+            > div {
+                text-align: center;
+            }
+        }
+    }
+}
+
+.ant-form-item-children {
+    position: static;
+}
+
+.ant-anchor-wrapper {
+    position: fixed;
+    top: 50px;
+    right: 120px;
+    background-color: transparent;
+}
+
+.ant-form-item-label {
+    user-select: none;
+}
+
+.selection-block-remark {
+    position: absolute;
+    display: block;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    line-height: 1.5;
+    color: transparent;
+    border: 1px solid transparent;
+    border-color: transparent;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+
+    .remark-selection {
+        background-color: coral;
+    }
+
+    > span {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        padding: inherit;
+        line-height: inherit;
+    }
+
+    &.ant-input-sm {
+        height: 24px;
+        padding: 1px 7px;
+        line-height: 24px;
+    }
+
+    &.remark-ant-input {
+        padding: 0px 11px;
+        height: 32px;
+        margin-top: 4px;
+        line-height: 32px;
+    }
+
+    &.ant-textarea {
+        margin-top: 4px;
+        margin-bottom: 4px;
+        padding: 4px 11px;
+    }
+}
+
+.control-custom,
+.form-label {
+    position: relative;
+    display: inline-block;
+    line-height: 25px;
+    user-select: text;
+    z-index: 0;
+
+    .selection-block-remark {
+        border-width: 0px;
+        line-height: 25px;
+        z-index: -1;
+    }
+}
+
+.ant-table {
+
+    table {
+
+        > .ant-table-tbody {
+
+            > .ant-table-row {
+
+                > td {
+                    vertical-align: top;
+                }
+            }
+        }
+    }
+}
+
+button.wfull {
+    width: auto !important;
+}

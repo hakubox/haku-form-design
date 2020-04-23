@@ -1,10 +1,13 @@
 <template lang="html">
     <div>
+        <span v-if="control.control.attrs.onlyText === true" class="control-custom ant-form-text">{{control.control.attrs.text || getValue}}</span>
         <component 
+            v-else
             v-bind="getProps(control.control.attrs)" 
             v-on="controlEvents(control.control)" 
             :control="control" 
             :is="control.control.control" 
+            v-model="getValue"
             :class="{
                 'form-control-hidden': !getProp('visible')
             }"
@@ -85,6 +88,9 @@ export default class AntdFormDesignChildControl extends Vue {
 
     /** 是否为预览模式 */
     @Inject() readonly preview!: boolean;
+
+    /** 预览模式数据 */
+    @Inject() readonly previewFormData!: (key?: string, value?: any) => any;
     
     /** 画布组件列表 */
     @Inject() readonly controlList!: Array<FormDesign.FormControl>;
@@ -96,29 +102,62 @@ export default class AntdFormDesignChildControl extends Vue {
     @Getter('getFormScript') formScript!: FormDesign.FormScript;
 
     getProp(propName: string) {
-        return getRealProp(this.control, propName, this.formScript.data, this.formScript.methods);
+        return getRealProp(this.control, propName, this.formScript);
     }
 
     mouseDownEvent(e, control) {
         this.$emit('mouseDownEvent', e, control);
     }
 
+    created() {
+    }
+
     mounted() {
+    }
+
+    get getValue() {
+        if (this.control.control.attrs.model) {
+            let _re = '';
+            if (this.preview) {
+                _re = Function('__data__', 'return __data__.' + this.control.control.attrs.model.replace(/\bme\b\./, ''))(this.previewFormData());
+            } else {
+                _re = Function('__data__', 'return __data__.' + this.control.control.attrs.model.replace(/\bme\b\./, ''))(this.formScript.data);
+            }
+            return _re;
+        } else {
+            return '';
+        }
+    }
+
+    set getValue(val) {
+        if (this.preview) {
+            if (this.control.control?.attrs?.model) {
+                this.previewFormData(this.control.control.attrs.model, val);
+            } else {
+                this.$message.warning('当前控件未绑定变量。');
+            }
+        }
+        
+        
+        // if () {
+
+        // }
     }
 
     /** 获取真实属性 */
     getProps(props: Record<string, any>) {
-        let re = [{}].concat(Object.entries(props).map(([key, value]) => {
+        let re = [{}].concat(Object.entries(props).filter(([key, value]) => key != 'id').map(([key, value]) => {
             if (!props['__' + key]) return {[key]: value};
 
             let _editor = this.control.propertyEditors?.[key];
             let _value = props['__' + key];
             switch (_editor) {
                 case 'expression':
-                    _value = Function('h', '__data__', ('let { ' + Object.keys(this.formScript.data).join(', ') + ' } = __data__; const { ' + Object.keys(this.formScript.methods).join(', ') + ' } = __data__; ') + 'return ' + _value)({
-                        ...this.formScript.data,
-                        ...this.formScript.methods
-                    })
+                    let _script = this.formScript;
+                    _value = Function('__data__', 'let me = __data__; return ' + _value)({
+                        ..._script.data instanceof Function ? _script.data() : _script.data,
+                        ..._script.methods
+                    });
                     break;
             }
 
@@ -129,9 +168,13 @@ export default class AntdFormDesignChildControl extends Vue {
 
     controlEvents(detailControl: FormDesign.BasicControl) {
         if (detailControl?.events) {
+            let _vue: any = this._self;
+            while (_vue = _vue.$parent) {
+                if (_vue?.$vnode?.tag?.endsWith?.('FormDesignCanvas')) break;
+            }
             let events = [{}].concat(Object.entries(detailControl.events).map(([eventName, event]) => {
                 let _event: Function = this.formScript.methods[detailControl.events?.[eventName]];
-                if (_event) return {[eventName]: _event.bind(this)};
+                if (_event) return {[eventName]: _event.bind(_vue)};
                 else return {};
             })) as [object, ...any[]];
             return Object.assign.apply({}, events);

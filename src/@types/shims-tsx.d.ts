@@ -1,7 +1,11 @@
 import Vue, { VNode } from 'vue';
 import lodash from 'lodash';
+import { VueCookies } from 'vue-cookies';
 
 declare global {
+
+    /** cookie操作类 */
+    const $cookies: VueCookies;
 
     interface Sass {
         /** 编译 */

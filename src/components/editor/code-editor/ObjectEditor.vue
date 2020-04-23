@@ -120,13 +120,29 @@
                 this.$nextTick(() => {
                     this.editor.onDidBlurEditorText(e => {
                         if (!this.__preventTriggerChangeEvent) {
-                            this.$emit('input', JSON.parse(this.getValue()));
+                            try {
+                                let _val = this.getValue();
+                                if (_val) {
+                                    _val && this.$emit('input', Function('return ' + _val)());
+                                }
+                            } catch (e) {
+                                this.$message.error(e.message);
+                                console.error(e);
+                            }
                         }
                     });
                 });
 
                 this.bus.$on('prop_change', () => {
-                    this.getValue() && this.$emit('input', JSON.parse(this.getValue()));
+                    try {
+                        let _val = this.getValue();
+                        if (_val) {
+                            _val && this.$emit('input', Function('return ' + _val)());
+                        }
+                    } catch (e) {
+                        this.$message.error(e.message);
+                        console.error(e);
+                    }
                 });
             },
             refresh() {

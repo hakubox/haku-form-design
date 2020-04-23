@@ -1,0 +1,351 @@
+.task-form-shadow {
+    background-color: #F7F7F7;
+}
+
+.task-form {
+    position: relative;
+    box-shadow: 0 1px 5px #ddd;
+
+    .form-title {
+        width: 100%;
+        text-align: center;
+        color: #333;
+        font-size: 30px;
+        margin-bottom: 30px;
+        letter-spacing: 2px;
+    }
+
+    .add-remark {
+        cursor: pointer;
+        position: fixed;
+        top: 500px;
+        right: 210px;
+        padding: 8px;
+        border-radius: 50%;
+        background-color: white;
+        box-shadow: 0 1px 5px #ddd;
+        transition: 0.15s;
+
+        &:hover {
+            background-color: #1D87EA;
+            color: white;
+        }
+    }
+
+    &.task-form-theme-new {
+        margin: 0px 200px 0px 300px;
+        min-height: calc(100vh - 60px);
+        padding: 30px 50px 80px 50px;
+
+        .task-form-footer {
+            position: fixed;
+            bottom: 0px;
+            height: 60px;
+            overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+            margin-left: -350px;
+            padding: 0px 200px 0px 300px;
+            background-color: white;
+            box-shadow: 0 1px 5px #ddd;
+            z-index: 999;
+
+            > .task-form-footer-tools {
+                display: inline-block;
+                white-space: nowrap;
+                width: auto;
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            > .action-btns {
+                float: right;
+                white-space: nowrap;
+                margin-top: 10px;
+                margin-bottom: 10px;
+        
+                > button {
+                    float: right;
+                    margin-left: 10px;
+
+                    &.action-primary-btn {
+                        padding: 0px 30px;
+                    }
+
+                    + button {
+                        margin-left: 10px;
+                    }
+                }
+            }
+        }
+    
+        .task-form-body {
+            padding-top: 50px;
+            padding-bottom: 100px;
+            min-height: calc(100% - 54px);
+        }
+        
+        .ant-anchor-wrapper {
+            position: fixed;
+            top: 60px;
+            left: calc(100vw - 190px);
+            width: 180px;
+            background-color: transparent;
+        }
+
+        .task-form-actions {
+            position: fixed;
+            width: 160px;
+            right: 20px;
+            bottom: 30px;
+            margin: 0px;
+
+            > button + button {
+                margin-left: 0px;
+                margin-top: 10px;
+            }
+        }
+
+        td {
+
+            .ant-form-item {
+                margin-bottom: 0px;
+
+                .ant-form-item-control {
+                    line-height: 24px;
+
+                    > .ant-form-item-children {
+                        display: block;
+
+                        > span {
+                            display: block;
+                        }
+                    }
+                }
+            }
+        }
+
+        .svg-wave {
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 4'%3E%3Cpath fill='none' stroke='%23333' d='M0 3.5c5 0 5-3 10-3s5 3 10 3 5-3 10-3 5 3 10 3'/%3E%3C/svg%3E") repeat-x 0 100%; 
+            background-size: 20px auto;
+        }
+
+        // 左侧审批记录
+        .approval-record {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            width: 280px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-top: 20px;
+            max-height: calc(100vh - 80px);
+
+            > .approval-record-list {
+                width: 260px;
+
+                > .approval-record-item {
+                    position: relative;
+                    display: block;
+                    background-color: white;
+                    padding: 5px 10px;
+                    margin-bottom: 10px;
+                    box-shadow: 0px 6px 6px #DDD;
+                    overflow: hidden;
+                    border-radius: 4px;
+
+                    > .approval-record-item-header {
+                        font-size: 14px;
+                        padding-bottom: 5px;
+                        border-bottom: 1px solid #F5F5F5;
+                        margin-left: 4px;
+                        width: calc(100% - 8px);
+                        margin-bottom: 10px;
+
+                        > .approval-record-item-state {
+                            user-select: none;
+                            display: inline-block;
+                            padding-left: 5px;
+                            color: #888;
+                            font-size: 12px;
+                            // font-weight: bold;
+
+                            &.complete {
+                                color: #1D87EA;
+                            }
+
+                            &.success {
+                                color: #52C41A;
+                            }
+
+                            &.danger {
+                                color: #F5222D;
+                            }
+                        }
+                    }
+
+                    > .approval-record-item-content {
+                        display: flex;
+                        flex-direction: row;
+
+                        > .approval-record-item-user {
+                            display: block;
+                            width: 50px;
+                            text-align: center;
+    
+                            // 用户头像
+                            > .approval-record-item-userimg {
+                                user-select: none;
+                                display: inline-block;
+                                width: 32px;
+                                height: 32px;
+                                background-color: #CCC;
+                                margin-bottom: 2px;
+                                border-radius: 50%;
+                            }
+    
+                            // 用户姓名
+                            > .approval-record-item-username {
+                                display: block;
+                                width: 100%;
+                                font-size: 12px;
+                                text-align: center;
+                                word-break: break-all;
+                            }
+                        }
+
+                        > .approval-record-item-remark {
+                            position: relative;
+                            display: block;
+                            width: 100%;
+                            padding-left: 10px;
+
+                            > .approval-record-item-remark-content {
+                                display: block;
+                                min-height: 40px;
+                                color: #666;
+                            }
+
+                            > .approval-record-item-date {
+                                display: block;
+                                width: 100%;
+                                text-align: right;
+                                color: #AAA;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // 印章
+        .form-seal {
+            user-select: none;
+            position: absolute;
+            top: -8px;
+            right: -5px;
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            line-height: 21px;
+            border-radius: 50%;
+            font-size: 18px;
+            padding: 9px;
+            -webkit-transform: rotate(-20deg) scale(1);
+            transform: rotate(-20deg) scale(1);
+            font-weight: bold;
+            letter-spacing: 2px;
+            -webkit-box-shadow: 0px 0px 0px 0.5px #CCCCCC;
+            box-shadow: 0px 0px 0px 0.5px #CCCCCC;
+            color: #CCCCCC;
+
+            &:after {
+                content: "";
+                position: absolute;
+                top: -4px;
+                left: -4px;
+                width: calc(100% + 8px);
+                height: calc(100% + 8px);
+                // border: 1px solid #CCCCCC;
+                box-shadow: 0px 0px 0px 0.5px #CCCCCC;
+                border-radius: 50%;
+            }
+
+            &.success {
+                box-shadow: 0px 0px 0px 0.5px #95de64;
+                color: #95de64;
+
+                &:before {
+                }
+
+                &:after {
+                    box-shadow: 0px 0px 0px 0.5px #95de64;
+                }
+            }
+
+            &.danger {
+                box-shadow: 0px 0px 0px 0.5px #ff7875;
+                color: #ff7875;
+
+                &:before {
+                }
+
+                &:after {
+                    box-shadow: 0px 0px 0px 0.5px #ff7875;
+                }
+            }
+
+            > .form-seal-line {
+                content: "";
+                position: absolute;
+                width: calc(100% + 40px);
+                height: 10px;
+                top: 45px;
+                left: -20px;
+                background: radial-gradient(circle at 10px -7px, transparent 8px, currentColor 8px, currentColor 9px, transparent 9px) repeat-x,
+        radial-gradient(circle at 10px 27px, transparent 8px, currentColor 8px, currentColor 9px, transparent 9px) repeat-x;
+                background-size: 20px 20px;
+                background-position: -10px calc(100% + 16px), 0 calc(100% - 4px);
+                opacity: 0.4;
+
+                &:nth-child(1) {
+                    top: 15px;
+                }
+                &:nth-child(2) {
+                    top: 22px;
+                }
+                &:nth-child(3) {
+                    top: 29px;
+                }
+                &:nth-child(4) {
+                    top: 36px;
+                }
+            }
+        }
+    }
+}
+
+
+@media screen and (max-width: 1400px) {
+    
+    .task-form {
+
+        &.task-form-theme-new {
+            margin: 0px 200px 0px 240px;
+            
+            .task-form-footer {
+                margin-left: -290px;
+            }
+
+            .approval-record {
+                width: 220px;
+
+                > .approval-record-list {
+                    width: 200px;
+                }
+            }
+        }
+
+    }
+
+}

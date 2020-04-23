@@ -19,4 +19,6 @@ export declare class FormTemplate {
     script?: string;
     /** 初始样式（SCSS） */
     style?: string;
+    /** 初始API */
+    api?: Record<string, any>[];
 }

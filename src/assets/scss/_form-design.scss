@@ -111,286 +111,355 @@
 
         }
 
-        // 画布
-        > .form-design-body-canvas {
+        > .form-design-body-content {
             position: relative;
+            display: flex;
+            flex-direction: column;
             flex-grow: 1;
             flex-shrink: 1;
-            border-left: 1px solid #EEE;
-            border-right: 1px solid #EEE;
-            background-color: #F0F2F5;
-            overflow: auto;
+    
+            > .form-design-body-canvas-hidden-controls {
+                bottom: 0px;
+                left: 0px;
+                width: 100%;
+                background-color: white;
+                border-top: 1px solid #DDD;
+                flex-shrink: 0;
+                padding: 10px 20px 20px 20px;
+                border-right: 1px solid #F2F2F2;
 
-            &.form-design-body-canvas-mobile {
-                text-align: center;
+                > .form-design-body-canvas-hidden-controls-label {
+                    display: inline-block;
+                    margin: 10px 0px 0px 10px;
+                    user-select: none;
+                    line-height: 30px;
+                }
 
-                > .form-design-body-canvas-page {
+                > .form-hidden-control {
+                    user-select: none;
+                    cursor: pointer;
                     position: relative;
                     display: inline-block;
-                    margin-top: 40px;
-                    text-align: initial;
+                    -webkit-box-sizing: border-box;
+                    box-sizing: border-box;
+                    background-color: #F4F6FC;
+                    border-radius: 4px;
+                    line-height: 30px;
+                    margin: 10px 0px 0px 10px;
+                    padding-left: 10px;
+                    padding-right: 10px;
+                    min-width: 80px;
 
-                    > h3 {
-                        cursor: default;
-                        user-select: none;
-                        font-size: 20px;
-                        color: #666;
+                    &:hover {
+                        background-color: transparentize($-primary-color, 0.8);
                     }
 
-                    > .form-design-canvas {
-                        position: relative;
-                        background-color: #F7F7F7;
-                        box-shadow: 0 2px 2px 0 rgba(40, 120, 255, 0.1), 0 0 2px 0 rgba(0, 0, 0, 0.12);
-                        border-radius: 6px;
-                    }
+                    &.active {
+                        background-color: transparentize($-primary-color, 0.8);
+                        box-shadow: 0px 0px 0px 1px $-primary-color;
+                        color: inherit;
 
-                    > .form-control-tools {
-                        user-select: none;
-                        position: absolute;
-                        display: inline-block;
-                        cursor: default;
-                        visibility: visible;
-                        top: 90px;
-                        right: -52px;
-                        opacity: 1.0;
-                        transition: 0.2s;
-                        z-index: 9;
-
-                        &.form-control-tools-hidden {
-                            opacity: 0;
-                            visibility: hidden;
+                        &:after {
+                            content: '';
+                            position: absolute;
+                            right: 0px;
+                            bottom: 0px;
+                            border-top: 6px solid transparent;
+                            border-right: 6px solid $-primary-color;
+                            border-bottom: 6px solid $-primary-color;
+                            border-left: 6px solid transparent;
+                            border-bottom-right-radius: 4px;
                         }
+                    }
+                }
+            }
 
-                        > .form-control-tools-split-item {
-                            display: block;
-                            color: #888;
-                            font-weight: normal;
-                            background-color: #FFFFFF;
-                            line-height: 46px;
-                            border-radius: 20px;
-                            width: 40px;
-                            font-size: 18px;
-                            margin-left: 10px;
-                            margin-bottom: 10px;
+            // 画布
+            > .form-design-body-canvas {
+                position: relative;
+                border-left: 1px solid #EEE;
+                border-right: 1px solid #EEE;
+                background-color: #F0F2F5;
+                overflow: auto;
+                flex-shrink: 2;
+                flex-grow: 1;
+    
+                > .form-design-body-canvas-page {
+                    
+                }
+    
+                &.form-design-body-canvas-mobile {
+                    text-align: center;
+    
+                    > .form-design-body-canvas-page {
+                        position: relative;
+                        display: inline-block;
+                        margin-top: 40px;
+                        text-align: initial;
+    
+                        > h3 {
+                            cursor: default;
+                            user-select: none;
+                            font-size: 20px;
+                            color: #666;
+                        }
+    
+                        > .form-design-canvas {
+                            position: relative;
+                            background-color: #F7F7F7;
+                            box-shadow: 0 2px 2px 0 rgba(40, 120, 255, 0.1), 0 0 2px 0 rgba(0, 0, 0, 0.12);
+                            border-radius: 6px;
+                        }
+    
+                        > .form-control-tools {
+                            user-select: none;
+                            position: absolute;
+                            display: inline-block;
+                            cursor: default;
+                            visibility: visible;
+                            top: 90px;
+                            right: -52px;
+                            opacity: 1.0;
                             transition: 0.2s;
-                            box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
-                    
-                            > .form-control-tools-line {
-                                left: 8px;
-                                height: 1px;
-                                width: calc(100% - 16px);
-                                border-top: 1px solid #EEE;
-                                margin-top: 2px;
-                                margin-bottom: 2px;
+                            z-index: 9;
+    
+                            &.form-control-tools-hidden {
+                                opacity: 0;
+                                visibility: hidden;
                             }
-                    
+    
+                            > .form-control-tools-split-item {
+                                display: block;
+                                color: #888;
+                                font-weight: normal;
+                                background-color: #FFFFFF;
+                                line-height: 46px;
+                                border-radius: 20px;
+                                width: 40px;
+                                font-size: 18px;
+                                margin-left: 10px;
+                                margin-bottom: 10px;
+                                transition: 0.2s;
+                                box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
+                        
+                                > .form-control-tools-line {
+                                    left: 8px;
+                                    height: 1px;
+                                    width: calc(100% - 16px);
+                                    border-top: 1px solid #EEE;
+                                    margin-top: 2px;
+                                    margin-bottom: 2px;
+                                }
+                        
+                                > .form-control-tools-item {
+                                    cursor: pointer;
+                                    display: block;
+                                    height: 40px;
+                                    width: 40px;
+                                    line-height: 46px;
+                                    border-radius: 50%;
+                        
+                                    &:first-child {
+                                        border-bottom-left-radius: 0px;
+                                        border-bottom-right-radius: 0px;
+                                    }
+                        
+                                    &:last-child {
+                                        border-top-left-radius: 0px;
+                                        border-top-right-radius: 0px;
+                                    }
+                                    
+                                    &:hover {
+                                        color: $-primary-color;
+                                        background-color: transparentize($-primary-color, 0.8);
+                                    }
+                                }
+                            }
+                        
                             > .form-control-tools-item {
                                 cursor: pointer;
                                 display: block;
-                                height: 40px;
-                                width: 40px;
+                                color: #888;
+                                font-weight: normal;
+                                background-color: #FFFFFF;
                                 line-height: 46px;
                                 border-radius: 50%;
-                    
-                                &:first-child {
-                                    border-bottom-left-radius: 0px;
-                                    border-bottom-right-radius: 0px;
-                                }
-                    
-                                &:last-child {
-                                    border-top-left-radius: 0px;
-                                    border-top-right-radius: 0px;
-                                }
-                                
+                                height: 40px;
+                                width: 40px;
+                                font-size: 18px;
+                                margin-left: 10px;
+                                margin-bottom: 10px;
+                                transition: 0.2s;
+                                box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
+                                // border: 2px solid rgba(48, 166, 121, 1);
+                        
                                 &:hover {
-                                    color: #1D87EA;
-                                    background-color: rgba(137, 217, 255, 0.2);
+                                    color: $-primary-color;
+                                    background-color: transparentize($-primary-color, 0.8);
                                 }
-                            }
-                        }
-                    
-                        > .form-control-tools-item {
-                            cursor: pointer;
-                            display: block;
-                            color: #888;
-                            font-weight: normal;
-                            background-color: #FFFFFF;
-                            line-height: 46px;
-                            border-radius: 50%;
-                            height: 40px;
-                            width: 40px;
-                            font-size: 18px;
-                            margin-left: 10px;
-                            margin-bottom: 10px;
-                            transition: 0.2s;
-                            box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
-                            // border: 2px solid rgba(48, 166, 121, 1);
-                    
-                            &:hover {
-                                color: #1D87EA;
-                                background-color: rgba(137, 217, 255, 0.2);
-                            }
-                    
-                            &.form-control-tools-item-danger {
-                                color: #f5222d;
-                                // background-color: rgba(252, 193, 196, 0.8);
-                                // border: 2px solid #f5222d;
-                    
-                                &:hover {
-                                    color: white;
-                                    background-color: #f5222d;
+                        
+                                &.form-control-tools-item-danger {
+                                    color: #f5222d;
+                                    // background-color: rgba(252, 193, 196, 0.8);
+                                    // border: 2px solid #f5222d;
+                        
+                                    &:hover {
+                                        color: white;
+                                        background-color: #f5222d;
+                                    }
                                 }
-                            }
-                    
-                            &.form-control-tools-item-warning {
-                                color: #FAAD14;
-                                // background-color: rgba(255, 229, 179, 0.8);
-                                // border: 2px solid #f5222d;
-                    
-                                &:hover {
-                                    color: white;
-                                    background-color: #FAAD14;
+                        
+                                &.form-control-tools-item-warning {
+                                    color: #FAAD14;
+                                    // background-color: rgba(255, 229, 179, 0.8);
+                                    // border: 2px solid #f5222d;
+                        
+                                    &:hover {
+                                        color: white;
+                                        background-color: #FAAD14;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-
-            &.form-design-body-canvas-pc {
-                text-align: center;
     
-                > .form-design-body-canvas-page {
-                    position: relative;
-                    display: inline-block;
-                    height: 100%;
-
-                    > .form-design-canvas {
+                &.form-design-body-canvas-pc {
+                    text-align: center;
+        
+                    > .form-design-body-canvas-page {
                         position: relative;
-                        background-color: #FFFFFF;
-                        height: 100% !important;
-                    }
-
-                    > .form-control-tools {
-                        user-select: none;
-                        position: absolute;
                         display: inline-block;
-                        cursor: default;
-                        visibility: visible;
-                        top: 0px;
-                        right: 0px;
-                        opacity: 1.0;
-                        transition: 0.2s;
-                        white-space: nowrap;
-                        z-index: 9;
-
-                        &.form-control-tools-hidden {
-                            opacity: 0;
-                            visibility: hidden;
-                        }
-
-                        > .form-control-tools-split-item {
+                        height: 100%;
+    
+                        > .form-design-canvas {
                             position: relative;
-                            display: inline-block;
-                            color: #888;
-                            font-weight: normal;
                             background-color: #FFFFFF;
-                            line-height: 46px;
-                            border-radius: 20px;
-                            height: 40px;
-                            font-size: 18px;
-                            margin-right: 10px;
+                            height: 100%;
+                        }
+    
+                        > .form-control-tools {
+                            user-select: none;
+                            position: absolute;
+                            display: inline-block;
+                            cursor: default;
+                            visibility: visible;
+                            top: 0px;
+                            right: 0px;
+                            opacity: 1.0;
                             transition: 0.2s;
                             white-space: nowrap;
-                            box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
-                            vertical-align: top;
-                    
-                            > .form-control-tools-line {
-                                display: inline-block;
-                                top: 8px;
-                                width: 1px;
-                                height: calc(100% - 21px);
-                                border-left: 1px solid #EEE;
-                                margin-left: 2px;
-                                margin-right: 2px;
-                                vertical-align: top;
+                            z-index: 9;
+    
+                            &.form-control-tools-hidden {
+                                opacity: 0;
+                                visibility: hidden;
                             }
-                    
+    
+                            > .form-control-tools-split-item {
+                                position: relative;
+                                display: inline-block;
+                                color: #888;
+                                font-weight: normal;
+                                background-color: #FFFFFF;
+                                line-height: 46px;
+                                border-radius: 20px;
+                                height: 40px;
+                                font-size: 18px;
+                                margin-right: 10px;
+                                transition: 0.2s;
+                                white-space: nowrap;
+                                box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
+                                vertical-align: top;
+                        
+                                > .form-control-tools-line {
+                                    display: inline-block;
+                                    top: 8px;
+                                    width: 1px;
+                                    height: calc(100% - 21px);
+                                    border-left: 1px solid #EEE;
+                                    margin-left: 2px;
+                                    margin-right: 2px;
+                                    vertical-align: top;
+                                }
+                        
+                                > .form-control-tools-item {
+                                    cursor: pointer;
+                                    display: inline-block;
+                                    height: 40px;
+                                    width: 40px;
+                                    line-height: 46px;
+                                    border-radius: 50%;
+                                    vertical-align: top;
+                        
+                                    &:first-child {
+                                        border-top-right-radius: 0px;
+                                        border-bottom-right-radius: 0px;
+                                    }
+                        
+                                    &:last-child {
+                                        border-top-left-radius: 0px;
+                                        border-bottom-left-radius: 0px;
+                                    }
+                                    
+                                    &:hover {
+                                        color: $-primary-color;
+                                        background-color: transparentize($-primary-color, 0.8);
+                                    }
+                                }
+                            }
+                        
                             > .form-control-tools-item {
                                 cursor: pointer;
                                 display: inline-block;
-                                height: 40px;
-                                width: 40px;
+                                color: #888;
+                                font-weight: normal;
+                                background-color: #FFFFFF;
                                 line-height: 46px;
                                 border-radius: 50%;
+                                height: 40px;
+                                width: 40px;
+                                font-size: 18px;
+                                margin-right: 10px;
+                                transition: 0.2s;
+                                box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
                                 vertical-align: top;
-                    
-                                &:first-child {
-                                    border-top-right-radius: 0px;
-                                    border-bottom-right-radius: 0px;
-                                }
-                    
-                                &:last-child {
-                                    border-top-left-radius: 0px;
-                                    border-bottom-left-radius: 0px;
-                                }
-                                
+                                // border: 2px solid rgba(48, 166, 121, 1);
+                        
                                 &:hover {
-                                    color: #1D87EA;
-                                    background-color: rgba(137, 217, 255, 0.2);
+                                    color: $-primary-color;
+                                    background-color: transparentize($-primary-color, 0.8);
                                 }
-                            }
-                        }
-                    
-                        > .form-control-tools-item {
-                            cursor: pointer;
-                            display: inline-block;
-                            color: #888;
-                            font-weight: normal;
-                            background-color: #FFFFFF;
-                            line-height: 46px;
-                            border-radius: 50%;
-                            height: 40px;
-                            width: 40px;
-                            font-size: 18px;
-                            margin-right: 10px;
-                            transition: 0.2s;
-                            box-shadow: 0 3px 16px 0 rgba(0,0,0,.04);
-                            vertical-align: top;
-                            // border: 2px solid rgba(48, 166, 121, 1);
-                    
-                            &:hover {
-                                color: #1D87EA;
-                                background-color: rgba(137, 217, 255, 0.2);
-                            }
-                    
-                            &.form-control-tools-item-danger {
-                                color: #f5222d;
-                                // background-color: rgba(252, 193, 196, 0.8);
-                                // border: 2px solid #f5222d;
-                    
-                                &:hover {
-                                    color: white;
-                                    background-color: #f5222d;
+                        
+                                &.form-control-tools-item-danger {
+                                    color: #f5222d;
+                                    // background-color: rgba(252, 193, 196, 0.8);
+                                    // border: 2px solid #f5222d;
+                        
+                                    &:hover {
+                                        color: white;
+                                        background-color: #f5222d;
+                                    }
                                 }
-                            }
-                    
-                            &.form-control-tools-item-warning {
-                                color: #FAAD14;
-                                // background-color: rgba(255, 229, 179, 0.8);
-                                // border: 2px solid #f5222d;
-                    
-                                &:hover {
-                                    color: white;
-                                    background-color: #FAAD14;
+                        
+                                &.form-control-tools-item-warning {
+                                    color: #FAAD14;
+                                    // background-color: rgba(255, 229, 179, 0.8);
+                                    // border: 2px solid #f5222d;
+                        
+                                    &:hover {
+                                        color: white;
+                                        background-color: #FAAD14;
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                
             }
-            
         }
+
 
         // 属性栏
         > .form-design-body-propertypanel {
@@ -481,6 +550,158 @@
             }
         }
     }
+
+    
+    // 表单控件
+    .form-control {
+        position: relative;
+        box-sizing: border-box;
+        display: inline-block;
+        width: 100%;
+        transition: 0.2s;
+        user-select: none;
+        padding-left: 1px;
+        padding-right: 1px;
+
+        &:hover,
+        &.active {
+            
+            &:after {
+                background-color: transparentize($-primary-color, 0.8);
+            }
+        }
+
+        &:active {
+            &:after {
+                cursor: grabbing;
+                background-color: transparentize($-primary-color, 0.8);
+            }
+        }
+
+        &:not(.form-control-layout):after {
+            content: '';
+            cursor: grab;
+            user-select: none;
+            position: absolute;
+            display: block;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            transition: 0.2s;
+        }
+
+        > .form-control-border-top {
+            position: absolute;
+            transition: 0.2s;
+            opacity: 0.0;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 1px;
+            background-color: $-primary-color;
+        }
+
+        > .form-control-border-right {
+            position: absolute;
+            transition: 0.2s;
+            opacity: 0.0;
+            top: 0px;
+            right: 0px;
+            width: 1px;
+            height: 100%;
+            background-color: $-primary-color;
+        }
+
+        > .form-control-border-bottom {
+            position: absolute;
+            transition: 0.2s;
+            opacity: 0.0;
+            bottom: 1px;
+            left: 0px;
+            width: 100%;
+            height: 1px;
+            background-color: $-primary-color;
+        }
+        &:last-child {
+            > .form-control-border-bottom {
+                bottom: 0px;
+            }
+        }
+
+        > .form-control-border-left {
+            position: absolute;
+            transition: 0.2s;
+            opacity: 0.0;
+            top: 0px;
+            left: 0px;
+            width: 1px;
+            height: 100%;
+            background-color: $-primary-color;
+        }
+
+        &.active {
+            cursor: grab;
+            box-shadow: 0px 0px 1px 0px rgba(48, 166, 121, 0.80),
+                0 3px 14px 3px rgba(40, 120, 255, 0.08), 
+                0 8px 10px 1px rgba(0, 0, 0, 0.05);
+            z-index: 1;
+
+            &:after {
+                // box-shadow: 0px 0px 0px 1px $-primary-color inset;
+            }
+
+            > .form-control-border-top {
+                opacity: 1.0;
+            }
+            > .form-control-border-right {
+                opacity: 1.0;
+            }
+            > .form-control-border-bottom {
+                opacity: 1.0;
+            }
+            > .form-control-border-left {
+                opacity: 1.0;
+            }
+        }
+
+        &.is-drag {
+            filter: blur(2px);
+        }
+
+        .form-control-hidden {
+            opacity: 0.4;
+        }
+
+        > .van-cell {
+            // align-items: baseline;
+        }
+
+        > .van-uploader {
+            width: 100%;
+            background-color: white;
+
+            .van-uploader__upload {
+                margin: 8px;
+            }
+        }
+
+        > .form-control-label {
+            position: absolute;
+            display: inline-block;
+            cursor: default;
+            top: -28px;
+            left: 5px;
+            color: white;
+            background-color: $-primary-color;
+            padding: 0px 8px;
+            border-radius: 3px;
+        }
+
+        .van-cell-group {
+            min-height: 50px;
+        }
+    }
 }
 
 // 属性栏-属性列表
@@ -550,6 +771,11 @@
         flex-grow: 1;
         margin-left: 20px;
 
+        .ant-input[readonly] {
+            border: none;
+            box-shadow: none;
+        }
+
         > .ant-input-group-wrapper {
             position: relative;
             height: 24px;
@@ -565,7 +791,14 @@
     }
 }
 
-/** JSON编辑器样式 */
+// 右键菜单
+.form-design-context-menu {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+// JSON编辑器样式
 .page-config-editor.json-editor {
     position: relative;
     height: calc(100vh - 150px);
@@ -605,7 +838,7 @@
                 overflow: hidden;
         
                 &:hover {
-                    background-color: rgba(137, 217, 255, 0.2);
+                    background-color: transparentize($-primary-color, 0.8);
                     border: 1px solid #EEE;
                     color: #333;
                 }
@@ -764,7 +997,7 @@
         }
 
         .CodeMirror-selected {
-            background-color: rgba(137, 217, 255, 0.2);
+            background-color: transparentize($-primary-color, 0.8);
         }
     }
 
@@ -946,156 +1179,6 @@
     }
 }
 
-// 表单控件
-.form-control {
-    position: relative;
-    display: inline-block;
-    width: 100%;
-    transition: 0.2s;
-    user-select: none;
-    padding-left: 1px;
-    padding-right: 1px;
-
-    &:hover,
-    &.active {
-        
-        &:after {
-            background-color: rgba(137, 217, 255, 0.2);
-        }
-    }
-
-    &:active {
-        &:after {
-            cursor: grabbing;
-            background-color: rgba(137, 217, 255, 0.2);
-        }
-    }
-
-    &:not(.form-control-layout):after {
-        content: '';
-        cursor: grab;
-        user-select: none;
-        position: absolute;
-        display: block;
-        top: 0px;
-        left: 0px;
-        width: 100%;
-        height: 100%;
-        transition: 0.2s;
-    }
-
-    > .form-control-border-top {
-        position: absolute;
-        transition: 0.2s;
-        opacity: 0.0;
-        top: 0px;
-        left: 0px;
-        width: 100%;
-        height: 1px;
-        background-color: $-primary-color;
-    }
-
-    > .form-control-border-right {
-        position: absolute;
-        transition: 0.2s;
-        opacity: 0.0;
-        top: 0px;
-        right: 0px;
-        width: 1px;
-        height: 100%;
-        background-color: $-primary-color;
-    }
-
-    > .form-control-border-bottom {
-        position: absolute;
-        transition: 0.2s;
-        opacity: 0.0;
-        bottom: 1px;
-        left: 0px;
-        width: 100%;
-        height: 1px;
-        background-color: $-primary-color;
-    }
-    &:last-child {
-        > .form-control-border-bottom {
-            bottom: 0px;
-        }
-    }
-
-    > .form-control-border-left {
-        position: absolute;
-        transition: 0.2s;
-        opacity: 0.0;
-        top: 0px;
-        left: 0px;
-        width: 1px;
-        height: 100%;
-        background-color: $-primary-color;
-    }
-
-    &.active {
-        cursor: grab;
-        box-shadow: 0px 0px 1px 0px rgba(48, 166, 121, 0.80),
-            0 3px 14px 3px rgba(40, 120, 255, 0.08), 
-            0 8px 10px 1px rgba(0, 0, 0, 0.05);
-        z-index: 1;
-
-        &:after {
-            // box-shadow: 0px 0px 0px 1px $-primary-color inset;
-        }
-
-        > .form-control-border-top {
-            opacity: 1.0;
-        }
-        > .form-control-border-right {
-            opacity: 1.0;
-        }
-        > .form-control-border-bottom {
-            opacity: 1.0;
-        }
-        > .form-control-border-left {
-            opacity: 1.0;
-        }
-    }
-
-    &.is-drag {
-        filter: blur(2px);
-    }
-
-    .form-control-hidden {
-        opacity: 0.4;
-    }
-
-    > .van-cell {
-        // align-items: baseline;
-    }
-
-    > .van-uploader {
-        width: 100%;
-        background-color: white;
-
-        .van-uploader__upload {
-            margin: 8px;
-        }
-    }
-
-    > .form-control-label {
-        position: absolute;
-        display: inline-block;
-        cursor: default;
-        top: -28px;
-        left: 5px;
-        color: white;
-        background-color: $-primary-color;
-        padding: 0px 8px;
-        border-radius: 3px;
-    }
-
-    .van-cell-group {
-        min-height: 50px;
-    }
-}
-
 .fade-enter-active, .fade-leave-active {
     transition: opacity .5s;
 }
@@ -1155,6 +1238,22 @@ textarea.van-field__control {
     }
 }
 
+
+
+/** 整个单元格的选中效果 */
+.ant-table-selection-column {
+    position: relative;
+    
+    &:before {
+        content: '';
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+    }
+}
 
 /** 预览模式 */
 .form-design-canvas.preview {

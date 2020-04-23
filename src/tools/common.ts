@@ -1,7 +1,8 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { notification, message } from 'ant-design-vue';
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosInstance } from "axios";
+import { notification, message, Modal } from 'ant-design-vue';
 import { cloneLoop } from "@/lib/clone";
-import Vue from 'vue';
+import cookies from 'vue-cookies';
+import qs from 'qs';
 
 /** 全局Assembly */
 export const enum AssemblyResources {
@@ -9,8 +10,14 @@ export const enum AssemblyResources {
     md5 = 'md5'
 }
 
-export function getToken(): string {
-    return 'Bearer ' + localStorage.getItem('Authorization');
+export function getToken(key): string {
+    let cookie = document.cookie.split(";").map(i => i ? i.trim() : '').find(str => str.startsWith(key + '='));
+    if (cookie) {
+        const val = cookie?.split('=')?.[1];
+        return val || '';
+    } else {
+        return '';
+    }
 };
 
 /** 生成随机组件Id */
@@ -43,8 +50,11 @@ export function createNumberId(len = 36) {
  * @param {string} [fmt='yyyy-MM-dd'] 格式化参数
  * @return {string} 格式化后的日期
  */
-export function dateFormat(date: Date = new Date(), fmt: string = "yyyy-MM-dd"):string {
+export function dateFormat(date: string | Date = new Date(), fmt: string = "yyyy-MM-dd"):string {
     if (!date) return "";
+    if (typeof(date) === 'string') date = new Date(date);
+    // @ts-ignore
+    if (date == 'Invalid Date') return "";
     let o:object = {
         "M+" : date.getMonth()+1,                 //月份
         "d+" : date.getDate(),                    //日
@@ -210,7 +220,7 @@ export function initAPI(api: object) {
 
 let loginExpired = false;
 const default_config = {
-
+    timeout: 30000
 };
 
 /**
@@ -219,33 +229,33 @@ const default_config = {
  * @param {object} params 参数
  * @param {AxiosRequestConfig} config 
  */
-export function get(url: string, params?: object, config: AxiosRequestConfig = {}):Promise<any> {
+export function get(url: string, params?: object, config: AxiosRequestConfig = {}, _axios: AxiosInstance = axios):Promise<any> {
     loginExpired = false;
     return new Promise((resolve, reject) => {
-        axios.get(url, {
+        _axios.get(url, {
             cancelToken: new axios.CancelToken(cancel => config.cancel = cancel),
             params: {
-                ...params,
-                ...default_config
+                ...params
             },
             ...config,
+            ...default_config,
             headers: {
-                Authorization: localStorage.getItem('Authorization') || '',
+                Authorization: getToken('Authorization') || '',
                 ...config.headers
             },
         }).then(d => {
-            if(d.data.isSuccess){
-                resolve(d.data.result);
-            }
-            else{
-                notification.error({
-                    message: '[Post Error]' + url,
-                    description: d.data.exception
+            if (d.data.isSuccess !== false) {
+                resolve(d.data.result || d.data);
+            } else {
+                Modal.error({
+                    title: '警告',
+                    content: d.data.errors.message,
                 });
+                console.error(d.data.exception);
             }
         }).catch(err => {
-            if(err.response && err.response.status == 401) {
-                if(!loginExpired) {
+            if (err.response && err.response.status == 401) {
+                if (!loginExpired) {
                     localStorage.removeItem('Authorization');
                     // message.info('登录超时，请重新登陆。');
                     notification.warning({ message: '系统提示', description: '登录超时，请重新登陆。', });
@@ -256,10 +266,10 @@ export function get(url: string, params?: object, config: AxiosRequestConfig = {
                 reject(err);
                 return;
             }
-            if(err.response && err.response.data) {
+            if (err.response && err.response.data) {
                 notification.error({ message: '[Get Error]' + url, description: err.response.data.errMsg, });
                 console.error(err.response.data.errMsg);
-            } else if(err.message) {
+            } else if (err.message) {
                 notification.error({ message: '[Get Error]' + url, description: err.message, });
                 console.error(err.message);
             }
@@ -274,29 +284,31 @@ export function get(url: string, params?: object, config: AxiosRequestConfig = {
  * @param {object} params 参数
  * @param {AxiosRequestConfig} config 
  */
-export function post(url: string, params: object = {}, config: AxiosRequestConfig = {}):Promise<any> {
-    console.log('axios.defaults.baseURL', axios.defaults.baseURL);
+export function post(url: string, params: object = {}, config: AxiosRequestConfig = {}, _axios: AxiosInstance = axios):Promise<any> {
     return new Promise((resolve, reject) => {
-        axios.post(url, {
-            ...params,
-            ...default_config
+        let _headers = {
+            'Content-Type': 'application/json',
+            Authorization: getToken('Authorization') || '',
+            ...config.headers
+        };
+        _axios.post(url, _headers['Content-Type'] == 'application/x-www-form-urlencoded' ? qs.stringify({
+            ...params
+        }) : {
+            ...params
         }, {
             cancelToken: new axios.CancelToken(cancel => config.cancel = cancel),
+            ...default_config,
             ...config,
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: localStorage.getItem('Authorization') || '',
-                ...config.headers
-            },
+            headers: _headers
         }).then(d => {
-            if(d.data.isSuccess){
-                resolve(d.data.result);
-            }
-            else{
-                notification.error({
-                    message: '[Post Error]' + url,
-                    description: d.data.exception
+            if (d.data.isSuccess !== false) {
+                resolve(d.data.result || d.data);
+            } else {
+                Modal.error({
+                    title: '警告',
+                    content: d.data.errors.message,
                 });
+                console.error(d.data.exception);
             }
         }).catch(err => {
             if(err.response && err.response.data) {
@@ -323,17 +335,17 @@ export function post(url: string, params: object = {}, config: AxiosRequestConfi
  * @param {object} params 参数
  * @param {AxiosRequestConfig} config 
  */
-export function upload(url: string, params: object, config: AxiosRequestConfig = {}):Promise<any> {
+export function upload(url: string, params: object, config: AxiosRequestConfig = {}, _axios: AxiosInstance = axios):Promise<any> {
     return new Promise((resolve, reject) => {
         let _params = new FormData();
         Object.entries(params).forEach(([key, value]) => {
             _params.append(key, value);
         });
-        axios.post(url, _params, {
+        _axios.post(url, _params, {
             cancelToken: new axios.CancelToken(cancel => config.cancel = cancel),
             ...config,
             headers: {
-                Authorization: localStorage.getItem('Authorization') || '',
+                Authorization: getToken('Authorization') || '',
                 "Content-Type": "multipart/form-data",
                 ...config.headers
             },
@@ -378,6 +390,19 @@ export function thousandNum(money: number | string): string {
     } else {
         throw new TypeError('添加千分位符失败，当前参数为：' + money);
     }
+}
+
+/** 筛选对象的属性 */
+export function filterObj(obj: Record<string, any>, outKeys: string[] = [], inKeys: string[] = []): Record<string, any> {
+    let keys = Object.keys(obj);
+    if (outKeys.length) {
+        keys = keys.filter(i => !outKeys.includes(i));
+    }
+    if (inKeys.length) {
+        keys = keys.filter(i => inKeys.includes(i));
+    }
+    // @ts-ignore
+    return Object.assign.apply({}, [{}].concat(keys.map(i => ({ [i]: obj[i] }))));
 }
 
 /** 获取Url参数 */
@@ -463,5 +488,6 @@ export default {
     thousandNum,
     getParams,
     downLoadFile,
-    recursive
+    recursive,
+    filterObj
 };

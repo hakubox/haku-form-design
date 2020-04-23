@@ -6,6 +6,8 @@
             flexShrink: '' + control.control.attrs.flexShrink,
             flexBasis: '' + control.control.attrs.flexBasis,
             alignSelf: '' + control.control.attrs.alignSelf,
+            margin: getBoxAttr(control.control.attrs.margin, 'margin'),
+            padding: getBoxAttr(control.control.attrs.padding, 'padding')
         }"
     >
         <div class="complex-child-form-item" v-if="isComplexFormChild">
@@ -113,6 +115,11 @@ export default class AntdFormDesignControl extends Vue {
             .flat(2)
             .map(i => i.id)
             .includes(this.control.id);
+    }
+
+    getBoxAttr(attr: number[], propName: string) {
+        let _propName = propName[0].toUpperCase() + propName.slice(1);
+        return (attr || []).map((i, index) => `${i}px`).join(' ');
     }
 }
 </script>

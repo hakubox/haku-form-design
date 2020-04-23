@@ -23,6 +23,11 @@ let _controlGroups: Array<FormDesign.FormControlGroup> = [
         icon: 'cloud-upload',
         controls: []
     }, {
+        name: 'hidden',
+        title: '隐藏控件',
+        icon: 'eye-invisible',
+        controls: []
+    }, {
         name: 'else',
         title: '其他控件',
         icon: 'inbox',

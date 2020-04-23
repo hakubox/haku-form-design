@@ -2,7 +2,7 @@
     <div class="form-design">
         <!-- 头部菜单 -->
         <div class="form-design-header">
-            <h1>移动端表单设计器 v1.0.0 
+            <h1>{{$config.TITLE}} v{{$root.packageInfo.version}} 
                 <span class="form-design-header-subtitle">
                     
                 </span>
@@ -13,7 +13,7 @@
                     <span slot="title" class="submenu-title-wrapper">
                         <a-icon type="file" />文件
                     </span>
-                    
+
                     <a-menu-item @click="templateSelectModalVisible = true"><a-icon type="file-add" />新建</a-menu-item>
                     <a-menu-item @click="onSaveForm()"><a-icon type="save" />保存</a-menu-item>
                     <a-menu-divider></a-menu-divider>
@@ -70,7 +70,7 @@
                         <a-icon type="edit" />数据配置
                     </span>
                     
-                    <a-menu-item @click="scriptEditorVisible = true;"><a-icon type="profile" />Vue对象配置</a-menu-item>
+                    <a-menu-item @click="scriptEditorVisible = true;"><a-icon type="profile" />Vue数据配置</a-menu-item>
                     <a-menu-item @click="styleEditorVisible = true;"><a-icon type="bg-colors" />样式配置</a-menu-item>
                     <a-menu-item @click="apiEditorVisible = true;"><a-icon type="api" />接口配置</a-menu-item>
                 </a-sub-menu>
@@ -112,41 +112,56 @@
                 
             </div>
 
-            <!-- 画布 -->
-            <div class="form-design-body-canvas" @mousedown="changeSelectedFormControl([])" :class="currentComponentLibrary.type == 'mobile' ? 'form-design-body-canvas-mobile' : 'form-design-body-canvas-pc'" >
-                <div class="form-design-body-canvas-page">
-                    <!-- <h3 v-if="currentComponentLibrary.type == 'mobile'">{{formConfig.canvasTitle}}</h3> -->
-                    <form-design-canvas 
-                        ref="controlCanvas"
-                        :preview="false"
-                        :componentLibraryList="componentLibraryList"
-                        :formConfig="formConfig"
-                        :devices="devices"
-                        :currentSelectedControl="currentSelectedControl" 
-                        :dragConfig="dragConfig"
-                        :location="canvasLocation"
-                        :dragFormControlId="dragFormControlId"
-                        :bus="bus"
-                        @refresh="refresh"
-                        @changeSelectedFormControl="changeSelectedFormControl" 
-                        @startDragFormControl="startDragFormControl"
-                    />
-                    <div class="form-control-tools" :class="{ 'form-control-tools-hidden': !currentSelectedControl.length }" @mousedown.stop>
-                        <div class="form-control-tools-split-item">
-                            <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="前移" arrowPointAtCenter @mousedown.stop="control_handle('controlMovePrev', $event)">
-                                <a-icon class="form-control-tools-item" type="arrow-up" />
+            <div class="form-design-body-content">
+                <!-- 画布 -->
+                <div class="form-design-body-canvas" @mousedown="changeSelectedFormControl([])" :class="currentComponentLibrary.type == 'mobile' ? 'form-design-body-canvas-mobile' : 'form-design-body-canvas-pc'" >
+                    <div class="form-design-body-canvas-page">
+                        <!-- <h3 v-if="currentComponentLibrary.type == 'mobile'">{{formConfig.canvasTitle}}</h3> -->
+                        <form-design-canvas 
+                            ref="controlCanvas"
+                            :preview="false"
+                            :componentLibraryList="componentLibraryList"
+                            :formConfig="formConfig"
+                            :devices="devices"
+                            :currentSelectedControl="currentSelectedControl" 
+                            :dragConfig="dragConfig"
+                            :location="canvasLocation"
+                            :dragFormControlId="dragFormControlId"
+                            :bus="bus"
+                            @refresh="refresh"
+                            @changeSelectedFormControl="changeSelectedFormControl" 
+                            @startDragFormControl="startDragFormControl"
+                        />
+                        <div class="form-control-tools" :class="{ 'form-control-tools-hidden': !currentSelectedControl.length }" @mousedown.stop>
+                            <div class="form-control-tools-split-item">
+                                <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="前移" arrowPointAtCenter @mousedown.stop="control_handle('controlMovePrev', $event)">
+                                    <a-icon class="form-control-tools-item" type="arrow-up" />
+                                </a-tooltip>
+                                <hr class="form-control-tools-line" />
+                                <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="后移" arrowPointAtCenter @mousedown.stop="control_handle('controlMoveNext', $event)">
+                                    <a-icon class="form-control-tools-item" type="arrow-down" />
+                                </a-tooltip>
+                            </div>
+                            <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="复制" arrowPointAtCenter @mousedown.stop="control_handle('controlCopy', $event)">
+                                <a-icon class="form-control-tools-item form-control-tools-item-warning" type="copy" />
                             </a-tooltip>
-                            <hr class="form-control-tools-line" />
-                            <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="后移" arrowPointAtCenter @mousedown.stop="control_handle('controlMoveNext', $event)">
-                                <a-icon class="form-control-tools-item" type="arrow-down" />
+                            <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="删除" arrowPointAtCenter @mousedown.stop="control_handle('controlRemove', $event)">
+                                <a-icon class="form-control-tools-item form-control-tools-item-danger" type="delete" />
                             </a-tooltip>
                         </div>
-                        <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="复制" arrowPointAtCenter @mousedown.stop="control_handle('controlCopy', $event)">
-                            <a-icon class="form-control-tools-item form-control-tools-item-warning" type="copy" />
-                        </a-tooltip>
-                        <a-tooltip :placement="currentComponentLibrary.type == 'mobile' ? 'right' : 'bottom'" title="删除" arrowPointAtCenter @mousedown.stop="control_handle('controlRemove', $event)">
-                            <a-icon class="form-control-tools-item form-control-tools-item-danger" type="delete" />
-                        </a-tooltip>
+                    </div>
+                </div>
+                <!-- 隐藏控件区域 -->
+                <div class="form-design-body-canvas-hidden-controls" v-show="panel.children.filter(i => i.type == 'hidden').length">
+                    <label class="form-design-body-canvas-hidden-controls-label">隐藏控件：</label>
+                    <div class="form-hidden-control" 
+                        :class="{ active: currentSelectedControl.find(i => i.id == control.id) }"
+                        v-for="control in panel.children.filter(i => i.type == 'hidden')" 
+                        :control-id="control.id" 
+                        :key="control.id"
+                        @click="changeSelectedFormControl([control])"
+                        @contextmenu.prevent="contextMenuOpen">
+                        {{control.title}}
                     </div>
                 </div>
             </div>
@@ -169,9 +184,18 @@
                             <a-collapse :activeKey="['p0','p1','p2','p3','p4']" :bordered="false">
                                 <a-collapse-panel v-for="(propGroup, index) in currentSelectedControlPropertyGroups" :key="'p' + index" :header="propGroup.title">
                                     <template v-for="prop in propGroup.propertys">
-                                        <component :is="prop.layout == 'block' || (prop.attach && prop.attach.length) ? 'div' : 'label'" class="form-design-body-property-item" :class="{ 'form-design-body-property-item-block': prop.layout == 'block' || (prop.attach && prop.attach.length) }" v-if="prop.visible !== false" :key="prop.name">
+                                        <div class="form-design-body-property-item" :class="{ 'form-design-body-property-item-block': prop.layout == 'block' || (prop.attach && prop.attach.length) }" v-if="prop.visible !== false" :key="prop.name">
                                             <span class="form-design-body-property-item-label" :class="{ require: prop.require, leaf: prop.leaf }">
-                                                {{prop.title}}
+                                                {{prop.title}}&nbsp;
+                                                <a-popover v-show="prop.remark" placement="topRight" trigger="hover" arrowPointAtCenter>
+                                                    <template slot="content">
+                                                        {{prop.remark}}
+                                                    </template>
+                                                    <template slot="title">
+                                                        <span>{{prop.title}} {{prop.name}}</span>
+                                                    </template>
+                                                    <a-icon type="question-circle" style="font-size:12px;color: #AAA;" />
+                                                </a-popover>
                                                 <div style="float: right;" v-show="prop.attach">
                                                     <a-button-group size="small">
                                                         <a-button :type="currentPropertyEditors[prop.name] == prop.editor ? 'primary' : 'default'" value="default" @click="changePropAttach(prop, prop.editor)">常规</a-button>
@@ -257,7 +281,7 @@
                                                     </component>
                                                 </div>
                                             </div>
-                                        </component>
+                                        </div>
                                     </template>
                                 </a-collapse-panel>
                             </a-collapse>
@@ -359,10 +383,10 @@
                 </li>
 
                 <!-- 属性说明 -->
-                <li class="form-design-body-propertypanel-prop-remark">
+                <!-- <li class="form-design-body-propertypanel-prop-remark">
                     <strong>{{currentProp && currentProp.name}}</strong>
                     <p>{{currentProp ? (currentProp.remark || currentProp.title) : ''}}</p>
-                </li>
+                </li> -->
 
             </ul>
 
@@ -383,6 +407,24 @@
             </ul>
         </div>
 
+        <!-- 右键菜单 -->
+        <a-menu 
+            v-show="contextMenuConfig.visible" 
+            class="form-design-context-menu" 
+            :style="{
+                top: contextMenuConfig.x,
+                left: contextMenuConfig.y
+            }" 
+            mode="vertical" 
+            @click="handleClick">
+            <a-menu-item key="1">
+                <a-icon type="mail" />菜单A
+            </a-menu-item>
+            <a-menu-item key="2">
+                <a-icon type="calendar" />菜单B
+            </a-menu-item>
+        </a-menu>
+
         <!-- JSON -->
         <a-drawer :width="800" title="导出JSON" wrap-class-name="form-json-editor-drawer" @close="jsonEditorVisible = false" :visible="jsonEditorVisible">
             <code-editor style="height: calc(100vh - 110px);" class="json-editor page-config-editor" language="json" v-model="editorJson">
@@ -393,8 +435,13 @@
             </template>
         </a-drawer>
 
+        <!-- 接口配置 -->
+        <a-modal :footer="null" :width="1200" title="接口配置" :maskClosable="false" :centered="true" wrap-class-name="form-json-editor-drawer" v-model="apiEditorVisible">
+            <api-design />
+        </a-modal>
+
         <!-- 编辑Vue代码 -->
-        <a-modal :width="1000" :centered="true" title="Vue对象配置" wrap-class-name="form-json-editor-drawer" v-model="scriptEditorVisible" @cancel="cancelFormScript()">
+        <a-modal :width="1000" :maskClosable="false" :centered="true" title="Vue数据配置" wrap-class-name="form-json-editor-drawer" v-model="scriptEditorVisible">
             <code-editor ref="formVariable" class="page-config-editor" language="javascript" style="height: 500px;" v-model="editorScript">
             </code-editor>
             <div class="bottom-btn-list" slot="footer">
@@ -404,12 +451,49 @@
         </a-modal>
 
         <!-- 编辑页面样式 -->
-        <a-modal :width="1000" :centered="true" title="页面样式（SCSS）" wrap-class-name="form-json-editor-drawer" v-model="styleEditorVisible" @cancel="cancelFormStyle()">
+        <a-modal :width="1000" :maskClosable="false" :centered="true" title="页面样式（SCSS）" wrap-class-name="form-json-editor-drawer" v-model="styleEditorVisible">
             <code-editor class="page-config-editor" language="scss" style="height: 500px;" v-model="editorStyle">
             </code-editor>
             <div class="bottom-btn-list" slot="footer">
                 <a-button @click="saveFormStyle()" type="primary">保存</a-button>
             </div>
+        </a-modal>
+
+        <!-- 选择历史表单 -->
+        <a-modal :width="1000" :bodyStyle="{ 'padding-top': '0px' }" title="选择表单" :footer="null" wrap-class-name="form-json-editor-drawer" v-model="formSelectModalVisible" @cancel="formSelectModalVisible = false;">
+            
+            <a-tabs>
+                <a-tab-pane :key="category.id" v-for="category in categoryList">
+                    <span slot="tab">
+                        <a-icon type="file" />
+                        {{ category.name }}
+                    </span>
+
+                    <a-list :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }" :dataSource="formList.filter(item => item.categoryId == category.id)">
+                        <a-list-item slot="renderItem" slot-scope="item">
+                            <a-card hoverable style="width: 300px">
+                                <img alt="预览图" @click="selectForm(item)" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" slot="cover" />
+                                <template class="ant-card-actions" slot="actions">
+                                    <!-- <a-icon type="setting" /> -->
+                                    <a-tooltip placement="bottom" @click="selectForm(item)">
+                                        <template slot="title">编辑表单</template>
+                                        <a-icon type="form" />
+                                    </a-tooltip>
+                                    <a-tooltip placement="bottom" @click="removeForm(item)">
+                                        <template slot="title">删除表单</template>
+                                        <a-icon type="delete" />
+                                    </a-tooltip>
+                                    <a-icon type="ellipsis" />
+                                </template>
+                                <a-card-meta :title="item.name" :description="item.description" @click="selectForm(item)">
+                                    <a-avatar slot="avatar" src="/img/avatar/geji.png" />
+                                </a-card-meta>
+                            </a-card>
+                        </a-list-item>
+                    </a-list>
+                
+                </a-tab-pane>
+            </a-tabs>
         </a-modal>
 
         <!-- 选择模板 -->
@@ -423,7 +507,7 @@
                     </span>
 
                     <a-list :grid="{ gutter: 16, xs: 1, sm: 2, md: 4, lg: 4, xl: 6, xxl: 3 }" :dataSource="formTemplates.filter(i => i.deviceType == tab.code)">
-                        <a-list-item slot="renderItem" slot-scope="item, index">
+                        <a-list-item slot="renderItem" slot-scope="item">
                             <a-card hoverable style="width: 300px">
                                 <img alt="预览图" @click="selectTemplate(item)" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" slot="cover" />
                                 <template class="ant-card-actions" slot="actions">
@@ -446,7 +530,17 @@
         </a-modal>
 
         <!-- 预览界面 -->
-        <a-modal :wrap-class-name="`preview-modal ${currentComponentLibrary.type} ${currentComponentLibrary.code}`" :footer="null" :centered="true" :width="devices[formConfig.deviceId].width + 40" :height="devices[formConfig.deviceId].height" title="预览界面" @cancel="previewVisible = false" :visible="previewVisible">
+        <a-modal :wrap-class-name="`preview-modal ${currentComponentLibrary.type} ${currentComponentLibrary.code}`" 
+            :footer="null" 
+            :centered="true" 
+            :width="devices[formConfig.deviceId].width + 40" 
+            :height="devices[formConfig.deviceId].height" 
+            title="预览界面" 
+            @cancel="previewVisible = false" 
+            :visible="previewVisible" 
+            :destroyOnClose="true"
+            :style="{ marginLeft: '-330px' }"
+        >
             <form-design-canvas 
                 ref="controlCanvas"
                 :preview="true"
@@ -475,14 +569,14 @@ import { initPropertyEditors } from '@/propertyEditor';
 import { Enum } from '@/config/enum';
 import { initVantControls } from '@/formControls_vant';
 import { initUniControls } from '@/formControls_uni';
-import { initAntDesignControls, formItemProps, columnItemProps, flexItemProps } from '@/formControls_antd';
+import { initAntDesignControls, formItemProps, columnItemProps, flexItemProps } from '@/formControls_antd.tsx';
 import { initFormControlGroups } from '@/formControlGroups';
 import { initRemoteDevices } from '@/formDevices';
 import { cloneForce } from '@/lib/clone/index';
-import { base64 } from '@/lib/base64/base64';
+import { Base64 } from 'js-base64';
 import { componentLibrarys } from '@/formLibrarys.ts';
 import formTemplate from '@/formTemplate';
-import { flatControls, fillPropertys, variableParse, functionParse, variableVueScript } from '@/tools/formCommon';
+import { flatControls, fillPropertys, variableVueScript, exportTemplate, isFormChild, isFlexChild } from '@/tools/formCommon';
 
 import Icon from 'vant/lib/icon';
 import 'vant/lib/index.css';
@@ -520,6 +614,8 @@ export default class FormDesigner extends Vue {
     apiEditorVisible: boolean = false;
     /** 模板选择弹出框是否显示 */
     templateSelectModalVisible: boolean = false;
+    /** 表单选择弹出框是否显示 */
+    formSelectModalVisible: boolean = false;
 
     /** 大纲展开节点列表 */
     expandedKeys: Array<string> = [];
@@ -527,6 +623,11 @@ export default class FormDesigner extends Vue {
     searchValue: string = '';
     /** 是否自动展开大纲节点 */
     autoExpandParent: boolean = true;
+
+    /** 分类列表 */
+    categoryList: any[] = [];
+    /** 表单列表 */
+    formList: any[] = [];
 
     /** 预览界面是否显示 */
     previewVisible: boolean = false;
@@ -575,6 +676,14 @@ export default class FormDesigner extends Vue {
         return this.currentSelectedControl[0].propertyEditors as Record<string, Enum.FormControlPropertyEditor>;
     }
 
+    /** 用于保存的表单Id */
+    get formId() {
+        return this.$route?.query?.formId || this.formConfig?.id || '';
+    }
+
+    /** 演示Vue对象 */
+    previewVue: Vue = new Vue();
+
     /** 当前焦点属性 */
     currentProp: any = {};
 
@@ -599,6 +708,7 @@ export default class FormDesigner extends Vue {
 
     /** 表单基本配置 */
     formConfig: FormDesign.FormConfig = {
+        id: '',
         formComponentLib: 'ant-design',
         canvasTitle: '主页',
         formTitle: '测试流程',
@@ -629,13 +739,15 @@ export default class FormDesigner extends Vue {
     /** Vue对象代码 */
     @Getter('getFormScriptCode') formScriptCode!: string;
 
+    /** 用户账号 */
+    @Getter('getUserId') getUserId!: string;
+
+    /** 企业编号 */
+    @Getter('getEnterpriseId') getEnterpriseId!: string;
+
     /** 更新Vue代码 */
-    @Mutation('setFormScript') setFormScript!: (script: FormDesign.FormScript) => void;
-
-    /** 更新Vue代码注释 */
-    @Mutation('setFormScriptComment') setFormScriptComment!: (comment: Record<string, string>) => void;
+    @Mutation('setFormScript') setFormScript!: (script: string) => void;
     
-
     /** 画布组件列表 */
     @Provide() controlList: Array<FormDesign.FormControl> = [];
 
@@ -656,6 +768,13 @@ export default class FormDesigner extends Vue {
     currentSelectedControlEventList: Array<FormDesign.FormFunction> = [];
     /** 当前选择控件所带来的控件属性哈希表 */
     currentSelectedControlPropertyMap: Array<FormDesign.FormControlProperty> = [];
+
+    /** 右键菜单配置 */
+    contextMenuConfig = {
+        visible: false,
+        x: '0px',
+        y: '0px'
+    }
 
     /** 设计器事件总线 */
     @Provide() bus: Vue = new Vue();
@@ -713,6 +832,17 @@ export default class FormDesigner extends Vue {
         this.autoExpandParent = false;
     }
 
+    /** 打开右键菜单 */
+    contextMenuOpen(e) {
+        this.contextMenuConfig.visible = true;
+        this.contextMenuConfig.x = e.offsetWidth + 'px';
+        this.contextMenuConfig.y = e.offsetHeight + 'px';
+    }
+
+    handleClick(e) {
+        console.log(e);
+    }
+
     /** 切换当前选择的控件 */
     changeSelectedFormControl(formControlList) {
         this.bus.$emit('prop_change');
@@ -726,8 +856,8 @@ export default class FormDesigner extends Vue {
             this.currentSelectedControlPropertyGroups = Object.entries(Enum.FormControlPropertyGroup).map(([key, value]) => {
 
                 let _props: Array<FormDesign.FormControlProperty> = [];
-                let _isFormChild = this.isFormChild(this.currentSelectedFirstControlId);
-                let _isFlexChild = this.isFlexChild(this.currentSelectedFirstControlId);
+                let _isFormChild = isFormChild(this.currentSelectedFirstControlId, this.panel.children);
+                let _isFlexChild = isFlexChild(this.currentSelectedFirstControlId, this.panel.children);
 
                 if (key == 'flex' && _isFlexChild) {
                     _props = flexItemProps;
@@ -758,23 +888,29 @@ export default class FormDesigner extends Vue {
     /** 重绘工具栏（调整位置） */
     refreshControlTools() {
         if (this.currentSelectedControl.length) {
-            let _el = document.querySelector(`[control-id="${this.currentSelectedControl[0].id}"]`) as HTMLElement;
-            let rect = _el.getBoundingClientRect();
-            let bottom = document.body.offsetHeight - rect.bottom;
-            let _isMobile = this.currentComponentLibrary.type == 'mobile';
-            if (_isMobile) {
-                if (bottom > 200) {
-                    this.toolsEl.style.transform = `translateY(${rect.top + this.canvasEl.scrollTop - 180}px)`;
-                } else if (rect.top > 200) {
-                    this.toolsEl.style.transform = `translateY(${rect.bottom + this.canvasEl.scrollTop - 380}px)`;
-                }
+
+            if (this.currentSelectedControl[0].type == 'hidden') {
+
             } else {
-                let _width = _el.offsetWidth;
-                let _height = _el.offsetHeight;
-                if (bottom > 200) {
-                    this.toolsEl.style.transform = `translate(${ -40 }px, ${rect.top + this.canvasEl.scrollTop + _height - 40}px)`;
-                } else if (rect.top > 200) {
-                    this.toolsEl.style.transform = `translateY(-100px, ${rect.bottom + this.canvasEl.scrollTop - 380}px)`;
+
+                let _el = document.querySelector(`[control-id="${this.currentSelectedControl[0].id}"]`) as HTMLElement;
+                let rect = _el.getBoundingClientRect();
+                let bottom = document.body.offsetHeight - rect.bottom;
+                let _isMobile = this.currentComponentLibrary.type == 'mobile';
+                if (_isMobile) {
+                    if (bottom > 200) {
+                        this.toolsEl.style.transform = `translateY(${rect.top + this.canvasEl.scrollTop - 180}px)`;
+                    } else if (rect.top > 200) {
+                        this.toolsEl.style.transform = `translateY(${rect.bottom + this.canvasEl.scrollTop - 380}px)`;
+                    }
+                } else {
+                    let _width = _el.offsetWidth;
+                    let _height = _el.offsetHeight;
+                    if (bottom > 200) {
+                        this.toolsEl.style.transform = `translate(${ -40 }px, ${rect.top + this.canvasEl.scrollTop + _height - 40}px)`;
+                    } else if (rect.top > 200) {
+                        this.toolsEl.style.transform = `translateY(-100px, ${rect.bottom + this.canvasEl.scrollTop - 380}px)`;
+                    }
                 }
             }
         }
@@ -786,26 +922,6 @@ export default class FormDesigner extends Vue {
         } else {
             this.changeSelectedFormControl([  ]);
         }
-    }
-
-    /** 判断节点是否为高级子表单的子节点 */
-    isFormChild(controlId) {
-        return this.panel.children
-            .filter(i => i.name == 'complex-childform')
-            .map(i => i.children)
-            .flat(2)
-            .map(i => i.id)
-            .includes(controlId);
-    }
-
-    /** 判断节点是否为Flex的子节点 */
-    isFlexChild(controlId) {
-        return this.panel.children
-            .filter(i => i.name == 'flex')
-            .map(i => i.children)
-            .flat(2)
-            .map(i => i.id)
-            .includes(controlId);
     }
     
     /** 触发属性选择器事件 */
@@ -896,33 +1012,52 @@ export default class FormDesigner extends Vue {
             let _pageY = e.pageY;
             
             if (_y > 0 && _x > 0 && _x < this.controlCanvas.formConfig.width) {
-                this.dragConfig.isDragArea = true;
-                let _height = 0;
-                /** 计算应该把组件插入到什么地方 */
-                let _currentHeight = 0;
-                let index = 0;
-                for (; index < this.panel.children.length; index++) {
-                    let _id = this.panel.children[index].id;
-                    let _control = this.getControlById(_id);
-                    _height = (this.canvasPanelEl.querySelector(`[control-id=${_id}]`) as HTMLElement).offsetHeight || 0;
-                    
-                    if (this.dragConfig.control.type != 'layout' && _control.type === 'layout' && _id != this.dragConfig.targetFormControlId) {
-                        
-                        if (_y >= _currentHeight - _height && _y <= _currentHeight + _height) {
-                            // 插入到子组件
-                            let _panels: Array<HTMLElement> = Array.from(this.canvasPanelEl.querySelectorAll(`[control-id='${_control.id}'] ${_control.childrenSlot}`));
-                            for (let i = 0; i < _panels.length; i++) {
-                                let _rect = _panels[i].getBoundingClientRect();
-                                if (_rect.top < _pageY && _rect.top + _rect.height > _pageY &&
-                                    _rect.left < _pageX && _rect.left + _rect.width > _pageX) {
-                                    this.dragConfig.insertControlId = _control.id;
-                                    this.dragConfig.insertControlSlotIndex = i;
-                                    this.controlCanvas.changeControlCursor(true, _panels[i], true);
-                                    return;
-                                }
-                            }
 
-                            // 计算父组件下单未插入到子组件中的情况
+                if (this.dragConfig.control.type == 'hidden') {
+
+                    this.dragConfig.isDragArea = true;
+                    this.dragConfig.insertControlId = '';
+
+                } else {
+                    
+                    this.dragConfig.isDragArea = true;
+                    let _height = 0;
+                    /** 计算应该把组件插入到什么地方 */
+                    let _currentHeight = 0;
+                    let index = 0;
+                    for (; index < this.panel.children.length; index++) {
+                        let _id = this.panel.children[index].id;
+                        let _control = this.getControlById(_id);
+                        _height = (this.canvasPanelEl.querySelector(`[control-id=${_id}]`) as HTMLElement).offsetHeight || 0;
+                        
+                        if (this.dragConfig.control.type != 'layout' && _control.type === 'layout' && _id != this.dragConfig.targetFormControlId) {
+                            
+                            if (_y >= _currentHeight - _height && _y <= _currentHeight + _height) {
+                                // 插入到子组件
+                                let _panels: Array<HTMLElement> = Array.from(this.canvasPanelEl.querySelectorAll(`[control-id='${_control.id}'] ${_control.childrenSlot}`));
+                                for (let i = 0; i < _panels.length; i++) {
+                                    let _rect = _panels[i].getBoundingClientRect();
+                                    if (_rect.top < _pageY && _rect.top + _rect.height > _pageY &&
+                                        _rect.left < _pageX && _rect.left + _rect.width > _pageX) {
+                                        this.dragConfig.insertControlId = _control.id;
+                                        this.dragConfig.insertControlSlotIndex = i;
+                                        this.controlCanvas.changeControlCursor(true, _panels[i], true);
+                                        return;
+                                    }
+                                }
+
+                                // 计算父组件下单未插入到子组件中的情况
+                                if (_y >= _currentHeight - _height / 2 && _y <= _currentHeight + _height / 2) {
+                                    this.dragConfig.insertControlId = _id;
+                                    _currentHeight += _height;
+                                    break;
+                                } else if (_y > _currentHeight + _height / 2 && index < this.panel.children.length - 1) {
+                                    this.dragConfig.insertControlId = this.panel.children[index + 1].id;
+                                }
+
+                            }
+                            
+                        } else {
                             if (_y >= _currentHeight - _height / 2 && _y <= _currentHeight + _height / 2) {
                                 this.dragConfig.insertControlId = _id;
                                 _currentHeight += _height;
@@ -930,37 +1065,27 @@ export default class FormDesigner extends Vue {
                             } else if (_y > _currentHeight + _height / 2 && index < this.panel.children.length - 1) {
                                 this.dragConfig.insertControlId = this.panel.children[index + 1].id;
                             }
-
                         }
+                        _currentHeight += _height;
                         
+                    }
+                    if (_y >= _currentHeight - _height / 2 && index == this.panel.children.length) {
+                        this.dragConfig.insertControlId = '';
+                        this.controlCanvas.changeControlCursor(true);
                     } else {
-                        if (_y >= _currentHeight - _height / 2 && _y <= _currentHeight + _height / 2) {
-                            this.dragConfig.insertControlId = _id;
-                            _currentHeight += _height;
-                            break;
-                        } else if (_y > _currentHeight + _height / 2 && index < this.panel.children.length - 1) {
-                            this.dragConfig.insertControlId = this.panel.children[index + 1].id;
+                        if (this.dragConfig.insertControlId) {
+                            this.controlCanvas.changeControlCursor(true, this.controlCanvas.getFormControlElementById(this.dragConfig.insertControlId));
+                        } else {
+                            console.error('insertControlId出错');
                         }
                     }
-                    _currentHeight += _height;
-                    
-                }
-                if (_y >= _currentHeight - _height / 2 && index == this.panel.children.length) {
-                    this.dragConfig.insertControlId = '';
-                    this.controlCanvas.changeControlCursor(true);
-                } else {
-                    if (this.dragConfig.insertControlId) {
-                        this.controlCanvas.changeControlCursor(true, this.controlCanvas.getFormControlElementById(this.dragConfig.insertControlId));
-                    } else {
-                        console.error('insertControlId出错');
-                    }
+
                 }
                 
             } else {
                 this.dragConfig.isDragArea = false;
                 this.controlCanvas.changeControlCursor(false);
             }
-            console.groupEnd();
         }
     }
 
@@ -983,6 +1108,7 @@ export default class FormDesigner extends Vue {
                 } else {
                     _newControl.id = this.dragConfig.targetFormControlId;
                 }
+                _newControl.control.attrs.id = _newControl.id;
                 _newControl.control.attrs.remark = (_newControl.autoPrefix || '') + this.formConfig.controlIndex++;
                 // 获取插入索引
                 let _insertIndex = this.dragConfig.insertControlId ? this.panel.children.findIndex(i => i.id == this.dragConfig.insertControlId) : this.panel.children.length;
@@ -1006,6 +1132,12 @@ export default class FormDesigner extends Vue {
                     }
                     this.controlList.push(_newControl);
                 }
+
+                this.$nextTick(() => {
+                    if (_newControl.type == 'hidden') {
+                        this.changeSelectedFormControl([ _newControl ]);
+                    }
+                });
             }
 
             this.dragConfig = {
@@ -1021,6 +1153,7 @@ export default class FormDesigner extends Vue {
             };
             this.dragFormControlId = '';
             this.controlCanvas.changeControlCursor(false);
+
             this.$nextTick(() => {
                 this.controlCanvas.refresh();
                 this.refreshControlTools();
@@ -1083,7 +1216,7 @@ export default class FormDesigner extends Vue {
                         return;
                     }
                     render.onload = (e: any) => {
-                        let _file = base64.decode(e.target.result.replace(/data:.*?;base64,/g, ''));
+                        let _file = Base64.decode(e.target.result.replace(/data:.*?;base64,/g, ''));
                         console.log(_file);
                         let config: any = { footer: {} };
                         if (_file) {
@@ -1106,17 +1239,23 @@ export default class FormDesigner extends Vue {
     }
 
     created() {
+        
         document.body.addEventListener('mousemove', this.dragMove);
         document.body.addEventListener('mouseup', this.dragUp);
 
         this.editorScript = this.formScriptCode;
+        this.$root.login();
+
 
         if (!localStorage.getItem('HistoryDesignForm')) localStorage.setItem('HistoryDesignForm', '[]');
         else {
             let _formNames = JSON.parse(localStorage.getItem('HistoryDesignForm') as string);
             let _forms: Array<any> = [];
             _formNames.forEach(i => {
-                _forms.push(JSON.parse(localStorage.getItem(`HistoryDesignForm_${i}`) as string));
+                let _str = localStorage.getItem(`HistoryDesignForm_${i}`) as string;
+                if (_str && _str.length > 10) {
+                    _forms.push(JSON.parse(_str));
+                }
             })
             this.historyForm = _forms;
         }
@@ -1133,6 +1272,32 @@ export default class FormDesigner extends Vue {
         this.bus.$on('control_handle', (eventName, params) => {
             this[eventName].apply(this, params);
         });
+
+        if (this.$route.query.formId) {
+            this.$common.get('Form/GetForm', {
+                id: this.$route.query.formId
+            }, {}, this.$api).then(form => {
+                this.initFormByForm(form);
+            })
+        } else {
+            const hide: any = this.$message.loading('历史表单加载中...', 0);
+            Promise.all([
+                this.$common.get('Category/GetCategoryList', {}, {}, this.$api),
+                this.$common.get('Form/GetFormList', {}, {}, this.$api)
+            ]).then(([categoryList, formList]) => {
+                this.categoryList = categoryList;
+                this.formList = formList;
+                setTimeout(hide, 0);
+                setTimeout(d => {
+                    this.$message.success('历史表单加载完毕。');
+                }, 200);
+
+                if (formList.length) {
+                    this.formSelectModalVisible = true;
+                }
+            });
+        }
+        
     }
 
     destroy() {
@@ -1222,6 +1387,7 @@ export default class FormDesigner extends Vue {
                 ...panel.children[slotIndex],
                 id: this.$common.createModelId(10)
             });
+            _newControl.control.attrs.id = _newControl.id;
             _newControl.control.attrs.remark = (_newControl.autoPrefix || '') + this.formConfig.controlIndex++;
             panel.children.splice(slotIndex + 1, 0, _newControl);
             this.controlList.splice(_index + 1, 0, _newControl);
@@ -1299,6 +1465,8 @@ export default class FormDesigner extends Vue {
     saveFormScript() {
         this.setFormScript(this.editorScript);
 
+        this.previewVue = new Vue(Function(this.editorScript)());
+
         this.$message.success('Vue配置已保存');
         this.scriptEditorVisible = false;
         this.editorScriptHistory = this.editorScript;
@@ -1336,6 +1504,28 @@ export default class FormDesigner extends Vue {
         }
     }
 
+    selectForm(form) {
+        this.initFormByForm(form);
+    }
+
+    removeForm(form) {
+        this.$confirm({
+            title: '警告',
+            content: `是否确认删除${form.name}？`,
+            okType: 'danger',
+            icon: 'warning',
+            onOk: () => {
+                let _index = this.formList.findIndex(i => i.id == form.id);
+                this.$common.post('Form/DeleteForm', { id: form.id }, {
+                }, this.$api).then(d => {
+                    this.formList.splice(_index, 1);
+                });
+            },
+            onCancel: () => {
+            },
+        });
+    }
+
     /** 选择模板 */
     selectTemplate(template: FormDesign.FormTemplate) {
         this.$confirm({
@@ -1344,7 +1534,7 @@ export default class FormDesigner extends Vue {
             okType: 'danger',
             icon: 'warning',
             onOk: () => {
-                this.initForm(template);
+                this.initFormByTemplate(template);
             },
             onCancel: () => {
             },
@@ -1352,9 +1542,70 @@ export default class FormDesigner extends Vue {
     }
 
     /** 初始化表单 */
-    initForm(template: FormDesign.FormTemplate) {
+    initFormByForm(form: any) {
+        let _form = JSON.parse(form.form);
+        console.log(_form);
+        this.changeSelectedFormControl([  ]);
+        let _deviceId = _form.deviceType == 'pc' ? 'xsmallpc' : 'iphone678';
+        this.formConfig = {
+            id: '',
+            canvasTitle: '主页',
+            formTitle: '测试流程',
+            formName: 'TestTask',
+            width: this.devices[_deviceId].width,
+            height: this.devices[_deviceId].height,
+            headerHeight: 48,
+            deviceId: _deviceId,
+            footer: {
+                isShow: true,
+                submitButtonText: '提交',
+                cancelButton: false,
+                cancelButtonText: '取消'
+            },
+            formComponentLib: _form.library,
+            controlIndex: 1,
+            formTheme: 'default'
+        };
+
+        this.$set(this.panel, 'name', 'main');
+        this.$set(this.panel, 'direction', 'row');
+
+        this.formConfig = _form.formConfig;
+
+        let _controlTree = fillPropertys(_form.controls.children, _form.formConfig.formComponentLib);
+
+        this.$set(this.panel, 'children', _controlTree);
+
+        this.controlList = flatControls(_controlTree);
+
+        this.currentSelectedControl = [];
+        this.currentSelectedFirstControlId = '';
+        this.currentSelectedControlPropertyGroups = [];
+        this.currentSelectedControlPropertyMap = [];
+
+        this.editorScript = _form.formScript || '';
+        this.editorStyle = _form.formStyle || '';
+
+        this.saveFormScript();
+        this.saveFormStyle();
+
+        this.$nextTick(() => {
+            this.toolsEl = document.querySelector('.form-control-tools');
+            this.canvasPanelEl = document.querySelector('.form-design-canvas-mainpanel');
+            this.canvasEl = document.querySelector('.form-design-body-canvas');
+            this.controlCanvas.refresh();
+            this.refresh();
+            this.formSelectModalVisible = false;
+        });
+    }
+
+    /** 初始化表单 */
+    initFormByTemplate(template: FormDesign.FormTemplate) {
+        console.log(template);
+        this.changeSelectedFormControl([  ]);
         let _deviceId = template.deviceType == 'pc' ? 'xsmallpc' : 'iphone678';
         this.formConfig = {
+            id: '',
             canvasTitle: '主页',
             formTitle: '测试流程',
             formName: 'TestTask',
@@ -1405,31 +1656,49 @@ export default class FormDesigner extends Vue {
 
     /** 手动保存表单 */
     onSaveForm() {
-        let _historyDesignForm: Array<string> = JSON.parse(localStorage.getItem('HistoryDesignForm') || '[]');
-        if (!_historyDesignForm.includes(this.formConfig.formName)) {
-            _historyDesignForm.push(this.formConfig.formName);
-            localStorage.setItem('HistoryDesignForm', JSON.stringify(_historyDesignForm));
-            this.save(`HistoryDesignForm_${this.formConfig.formName}`);
-        } else {
-            this.$confirm({
-                title: '警告',
-                content: '已存在同名表单存档，是否覆盖？',
-                okType: 'danger',
-                icon: 'warning',
-                onOk: () => {
-                    this.save(`HistoryDesignForm_${this.formConfig.formName}`);
-                },
-                onCancel: () => {
-                },
-            });
-        }
+        // let _historyDesignForm: Array<string> = JSON.parse(localStorage.getItem('HistoryDesignForm') || '[]');
+        // if (!_historyDesignForm.includes(this.formConfig.formName)) {
+        //     _historyDesignForm.push(this.formConfig.formName);
+        //     localStorage.setItem('HistoryDesignForm', JSON.stringify(_historyDesignForm));
+        //     this.save(`HistoryDesignForm_${this.formConfig.formName}`);
+        // } else {
+        //     this.$confirm({
+        //         title: '警告',
+        //         content: '已存在同名表单存档，是否覆盖？',
+        //         okType: 'danger',
+        //         icon: 'warning',
+        //         onOk: () => {
+        //             this.save(`HistoryDesignForm_${this.formConfig.formName}`);
+        //         },
+        //         onCancel: () => {
+        //         },
+        //     });
+        // }
+
+        this.save(`HistoryDesignForm_${this.formConfig.formName}`);
     }
 
     save(name) {
-        localStorage.setItem(name, JSON.stringify({
-            formConfig: this.formConfig,
-            controls: this.panel
-        }));
+        this.$common.post(this.formId ? 'Form/EditForm' : 'Form/AddForm', {
+            id: this.formId,
+            categoryId: '731c7871-1a34-48fe-9180-7c7da8b28fd8', //'44756df3-7380-4813-bb6e-0fb0b19713dc',
+            name: this.formConfig.formName,
+            title: this.formConfig.formTitle,
+            Form: JSON.stringify({
+                formConfig: this.formConfig,
+                controls: this.panel,
+                formScript: this.formScriptCode,
+                form: exportTemplate(this)
+            }),
+            createUserId: ''
+        }, {}, this.$api).then(id => {
+            console.log('生成表单id', id);
+            this.formConfig.id = id;
+        });
+    }
+
+    uploadForm() {
+
     }
 
     /** 切换属性的Attach */
@@ -1578,11 +1847,7 @@ export default class Task_01 extends Vue {
     };
 
     showDateDropDown = false;
-    ${ this.formConfig.footer.cancelButton ? `
-    /** 取消流程 */
-    cancelForm() {
-
-    }` : '' }
+    ${ this.formConfig.footer.cancelButton ? '/** 取消流程 */ cancelForm() {}' : '' }
 
     /** 提交流程 */
     submitForm() {
@@ -1595,8 +1860,7 @@ export default class Task_01 extends Vue {
     .page-${this.formConfig.formName} {
         
     }
-</style>
-        `;
+</style>`;
 
         this.$common.downLoadFile(`${this.formConfig.formName}_${new Date().format('yyyy-MM-dd')}.vue`, _vueTxt);
     }

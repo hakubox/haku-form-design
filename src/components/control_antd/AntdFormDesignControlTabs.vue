@@ -1,11 +1,6 @@
 <template lang="html">
-    <a-tabs 
-        v-bind="control.control.attrs"
-    >
-        <a-tab-pane
-            v-for="(item, index) in control.control.attrs.options" 
-            :key="index"
-        >
+    <a-tabs v-bind="$attrs">
+        <a-tab-pane v-for="(item, index) in $attrs.options" :key="index">
             <span slot="tab">
                 <van-icon :name="item.icon" />&nbsp; {{item.title}}
             </span>

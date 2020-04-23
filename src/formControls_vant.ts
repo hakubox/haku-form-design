@@ -73,7 +73,7 @@ let formControls: Array<FormDesign.FormControl> = [
                         { name: 'span', title: '栅格大小', editor: Enum.FormControlPropertyEditor.int, attrs: { max: 24, min: 0 } },
                         { name: 'offset', title: '位移', editor: Enum.FormControlPropertyEditor.int, attrs: { max: 24, min: 0 } },
                     ],
-                    onRemove: (value, index, control) => control.children[index].length == 0,
+                    onRemove: (value, index, control) => !control?.children?.[index]?.length,
                     onChange(control, index, removeCount, insertCount) { 
                         [].splice.apply(control.children, [index, removeCount].concat(new Array(insertCount).fill([])) as [number, number, ...never[]])
                     }
@@ -168,7 +168,7 @@ let formControls: Array<FormDesign.FormControl> = [
                         { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
                         { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                     ],
-                    onRemove: (value, index, control) => control.children[index].length == 0,
+                    onRemove: (value, index, control) => !control?.children?.[index]?.length,
                     onChange(control, index, removeCount, insertCount) { 
                         [].splice.apply(control.children, [index, removeCount].concat(new Array(insertCount).fill([])) as [number, number, ...never[]])
                     }
@@ -233,7 +233,7 @@ let formControls: Array<FormDesign.FormControl> = [
                         { name: 'rightIcon', width: '25%', title: '右侧图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
                         { name: 'title', width: '50%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                     ],
-                    onRemove: (value, index, control) => control.children[index].length == 0,
+                    onRemove: (value, index, control) => !control?.children?.[index]?.length,
                     onChange(control, index, removeCount, insertCount) { 
                         [].splice.apply(control.children, [index, removeCount].concat(new Array(insertCount).fill([])) as [number, number, ...never[]])
                     }

@@ -6,17 +6,17 @@
         </a-input-group>
         <!-- 最大文本长度 -->
         <a-input-group v-if="allRules.len.show" compact class="rule-item" :class="{ enable: allRules.len.enable }">
-            <a-checkbox class="rule-item-label" @change="changeEnable(allRules.len)" v-model="allRules.len.enable">最大长度</a-checkbox>
+            <a-checkbox class="rule-item-label" @change="changeEnable(allRules.len)" v-model="allRules.len.enable">固定长度</a-checkbox>
             <a-input-number class="rule-item-value" @change="change" size="small" v-show="allRules.len.enable" v-model.lazy="allRules.len.value" />
         </a-input-group>
         <!-- 最小值 -->
         <a-input-group v-if="allRules.min.show" compact class="rule-item" :class="{ enable: allRules.min.enable }">
-            <a-checkbox class="rule-item-label" @change="changeEnable(allRules.min)" v-model="allRules.min.enable">最小值</a-checkbox>
+            <a-checkbox class="rule-item-label" @change="changeEnable(allRules.min)" v-model="allRules.min.enable">最小{{ type=='text' ? '长度' : '值' }}</a-checkbox>
             <a-input-number class="rule-item-value" @change="change" size="small" v-show="allRules.min.enable" v-model.lazy="allRules.min.value" />
         </a-input-group>
         <!-- 最大值 -->
         <a-input-group v-if="allRules.max.show" compact class="rule-item" :class="{ enable: allRules.max.enable }">
-            <a-checkbox class="rule-item-label" @change="changeEnable(allRules.max)" v-model="allRules.max.enable">最大值</a-checkbox>
+            <a-checkbox class="rule-item-label" @change="changeEnable(allRules.max)" v-model="allRules.max.enable">最大{{ type=='text' ? '长度' : '值' }}</a-checkbox>
             <a-input-number class="rule-item-value" @change="change" size="small" v-show="allRules.max.enable" v-model.lazy="allRules.max.value" />
         </a-input-group>
         <!-- 正则表达式 -->
@@ -48,12 +48,15 @@ import FormDesign from '@/@types/form-design';
 import { Getter } from 'vuex-class';
 
 interface Rules {
+    vue?: RulesEditor;
     /** 是否启用校验 */
     enable: boolean;
     /** 值 */
     value: any;
     /** 是否显示 */
     show?: boolean;
+    /** 提示信息 */
+    message(): string;
 }
 
 @Component({
@@ -81,7 +84,7 @@ export default class RulesEditor extends Vue {
         let _rules: string[] = [];
         switch(this.type) {
             case 'text': 
-                _rules = ['required', 'enum', 'len', 'pattern', 'type', 'validator', 'whitespace'];
+                _rules = ['required', 'enum', 'len', 'min', 'max', 'pattern', 'validator', 'whitespace']; //'type', 
                 break;
             case 'number':
                 _rules = ['required', 'min', 'max', 'validator', 'whitespace'];
@@ -106,17 +109,17 @@ export default class RulesEditor extends Vue {
 
     /** 所有条件状态 */
     allRules: Record<string, Rules> = {
-        required: { show: false, enable: true, value: undefined },
-        enum: { show: false, enable: false, value: undefined },
-        len: { show: false, enable: false, value: undefined },
-        min: { show: false, enable: false, value: undefined },
-        max: { show: false, enable: false, value: undefined },
-        pattern: { show: false, enable: false, value: undefined },
-        type: { show: false, enable: false, value: undefined },
-        validator: { show: false, enable: false, value: undefined },
-        whitespace: { show: false, enable: true, value: undefined }
+        required: { show: false, enable: true, value: undefined, message: () => '{{label}}不能为空。' },
+        enum: { show: false, enable: false, value: undefined, message: () => '{{label}}必须为指定值。' },
+        len: { show: false, enable: false, value: undefined, message: () => '{{label}}长度必须为{{value}}位。' },
+        min: { show: false, enable: false, value: undefined, message: () => `{{label}}最小不能低于{{value}}${this.type=='text'?'位':''}。` },
+        max: { show: false, enable: false, value: undefined, message: () => `{{label}}最大不能超过{{value}}${this.type=='text'?'位':''}。` },
+        pattern: { show: false, enable: false, value: undefined, message: () => '{{label}}格式不正确。' },
+        type: { show: false, enable: false, value: undefined, message: () => '{{label}}必须为{{value}}格式。' },
+        validator: { show: false, enable: false, value: undefined, message: () => '{{label}}格式不正确。' },
+        whitespace: { show: false, enable: true, value: undefined, message: () => '' }
     };
-
+                                                                                                                 
     /** 内建校验类型选项 */
     types = [
         { value: 'any', label: '任意值' },
@@ -144,7 +147,7 @@ export default class RulesEditor extends Vue {
     init() {
         if (this.value) {
             this.value.forEach(i => {
-                this.$set(this.allRules, i.category, { enable: !!i[i.category], value: i[i.category] });
+                this.$set(this.allRules, i.category, { ...this.allRules[i.category], enable: !!i[i.category], value: i[i.category] });
             });
         }
 
@@ -157,7 +160,7 @@ export default class RulesEditor extends Vue {
     /** 改变值 */
     change() {
         let re = Object.entries(this.allRules).filter(([key, value]) => value.enable && !!value.value).map(([key, value]) => {
-            return { [key]: value.value, category: key };
+            return { [key]: value.value, category: key, message: value.message() };
         });
         this.$emit('input', re);
     }

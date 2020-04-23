@@ -84,7 +84,7 @@ export default class VariablePicker extends Vue {
                 children: []
             };
             chain.push(_item);
-            if (value instanceof Object) {
+            if (Object.prototype.toString.call(value).slice(8, -1) === 'Object') {
                 let children = Object.entries(value);
                 if (children.length) {
                     for (let i = 0; i < children.length; i++) {
@@ -105,7 +105,7 @@ export default class VariablePicker extends Vue {
                 return;
             }
 
-            if (value instanceof Object) {
+            if (Object.prototype.toString.call(value).slice(8, -1) === 'Object') {
                 let children = Object.entries(value);
                 if (children.length) {
                     for (let i = 0; i < children.length; i++) {
@@ -125,8 +125,8 @@ export default class VariablePicker extends Vue {
     }
 
     get variableList(): Array<Record<string, any>> {
-        return this.recursiveObject(this.formScript.data, {
-            map: (i, keyChain) => ({ label: (i.label ? (i.label + ': ') : '') + i.value, key: i.value, value: keyChain.map(i => i.value), children: i?.children, disabled: !!i?.children?.length })
+        return this.recursiveObject(this.formScript.data instanceof Function ? this.formScript.data() : this.formScript.data, {
+            map: (i, keyChain) => ({ label: (i.label ? (i.label + ': ') : '') + i.value, key: i.value, value: keyChain.map(i => i.value), children: i?.children, disabled: i?.children?.length > 0 })
         });
     }
 

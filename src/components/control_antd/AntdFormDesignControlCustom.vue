@@ -14,15 +14,29 @@ export default class AntdFormDesignControlCustom extends Vue {
     /** Vue对象 */
     @Getter('getFormScript') formScript!: FormDesign.FormScript;
 
+    /** 是否为预览模式 */
+    @Inject() preview!: boolean;
+
+    /** 预览模式数据 */
+    @Inject() readonly previewFormData!: (key?: string, value?: any) => any;
+
+    created() {
+        // this.$bus.$on('scriptUpdate', () => {
+        //     this.$forceUpdate();
+        // });
+    }
+
     render(createElement) {
         if (this.$attrs.renderFn) {
             // 需要判断返回的是否为数值、当不为节点时需要另外处理。
 
             let result: any = null;
 
+            let _data = this.preview === true ? this.previewFormData() : this.formScript.data instanceof Function ? this.formScript.data() : this.formScript.data;
+
             try {
-                result = Function('h', '__data__', ('let { ' + Object.keys(this.formScript.data).join(', ') + ' } = __data__; const { ' + Object.keys(this.formScript.methods).join(', ') + ' } = __data__; ') + 'return ' + this.$attrs.renderFn)(createElement, {
-                    ...this.formScript.data,
+                result = Function('h', '__data__', 'let me = __data__; return ' + this.$attrs.renderFn)(createElement, {
+                    ..._data,
                     ...this.formScript.methods
                 });
             } catch (err) {

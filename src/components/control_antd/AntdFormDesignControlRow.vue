@@ -17,15 +17,19 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { get, post } from '@/tools/common';
+import FormDesign from '@/@types/form-design';
 
 @Component({
   components: {
   }
 })
 export default class AntdFormDesignControlRow extends Vue {
-    @Prop({ type: Object }) control!: any;
+    @Prop({ type: Object }) control!: FormDesign.FormControl;
     @Prop({ type: String }) value!: string;
     @Prop({ type: String }) controlId!: string;
+
+    mounted() {
+    }
 }
 </script>
 

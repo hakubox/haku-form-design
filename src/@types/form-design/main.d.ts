@@ -16,6 +16,7 @@ import { FormVariable } from "./form-variable";
 import { FormTheme } from "./form-theme";
 import { FormTemplate } from "./form-template";
 import { FormScript } from './form-script';
+import { Api } from './api';
 
 
 export {
@@ -53,6 +54,8 @@ export {
     FormTheme,
     /** 表单模板 */
     FormTemplate,
-    /** Vue Script */
-    FormScript
+    /** Vue代码 */
+    FormScript,
+    /** 接口 */
+    Api
 };

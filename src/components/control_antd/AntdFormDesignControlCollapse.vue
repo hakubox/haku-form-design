@@ -1,9 +1,6 @@
 <template lang="html">
-    <a-collapse v-bind="control.control.attrs" v-model="control.control.attrs.value">
-        <a-collapse-panel
-            v-for="(item, index) in control.control.attrs.options" 
-            :key="'a' + index"
-        >
+    <a-collapse v-bind="$attrs" v-model="$attrs.value">
+        <a-collapse-panel v-for="(item, index) in $attrs.options" :key="'a' + index">
             <span slot="header">
                 <van-icon :name="item.icon" />&nbsp; {{item.title}}
             </span>

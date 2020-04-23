@@ -6,7 +6,37 @@ export let basicProps: Array<FormDesign.FormControlProperty> = [
         name: 'visible', title: '是否显示', default: true,
         group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean,
         attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
-        remark: '是否在界面上显示。'
+        remark: '控件是否在界面上显示。'
+    }, {
+        name: 'loading', title: '是否加载中', default: false,
+        group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean,
+        attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
+        remark: '控件当前是否为加载中状态。'
+    }, {
+        name: 'margin', title: '外边距', 
+        group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.box,
+        attrs: { styleName: 'margin' },
+        remark: '控件外边距。'
+    }, {
+        name: 'padding', title: '内边距', 
+        group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.box,
+        attrs: { styleName: 'padding' },
+        remark: '控件内边距。'
+    }, {
+        name: 'tip', title: '悬浮提示',
+        group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine,
+        attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
+        remark: '控件的悬浮提示。'
+    }, {
+        name: 'id', title: '控件编号', default: '',
+        group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine,
+        remark: '在页面中调用控件属性或函数使用的控件编号。',
+        attrs: {
+            'read-only': true
+        }
+    }, {
+        name: 'remark', title: '备注名', default: '',
+        group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
     }
 ];
 
@@ -113,15 +143,90 @@ export let formItemProps: Array<FormDesign.FormControlProperty> = [
         group: Enum.FormControlPropertyGroup.form, editor: Enum.FormControlPropertyEditor.boolean,
         attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
         remark: '组件内容是否展示为纯文本。'
-    }, {
-        name: 'rules', title: '校验规则', default: [],
-        group: Enum.FormControlPropertyGroup.form, editor: Enum.FormControlPropertyEditor.rules,
-        attach: [ Enum.FormControlPropertyEditor.expression ],
-        remark: '控件值校验规则。'
     }
 ];
 
 export const formControls: Array<FormDesign.FormControl> = [
+
+    /**
+     * 弹出框
+     */
+    {
+        id: '',
+        control: {
+            control: 'a-modal',
+            isMain: false,
+            attrs: {},
+            events: {},
+            propAttrs: {},
+            slot: {},
+            defaultAttrs: {
+            }
+        },
+        name: 'dialog',
+        title: '弹出框',
+        type: Enum.FormControlType.hidden,
+        propertys: [
+            {
+                name: 'visible', title: '是否显示', default: false,
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
+            }, {
+                name: 'width', title: '宽度', default: 'auto', remark: '可用像素宽度或百分比宽度。',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
+            }
+        ],
+        events: [
+            
+        ]
+    }, 
+
+    /**
+     * 抽屉
+     */
+    {
+        id: '',
+        control: {
+            control: 'a-drawer',
+            isMain: false,
+            attrs: {},
+            events: {},
+            propAttrs: {},
+            slot: {},
+            defaultAttrs: {
+            }
+        },
+        name: 'drawer',
+        title: '抽屉',
+        type: Enum.FormControlType.hidden,
+        propertys: [
+            {
+                name: 'visible', title: '是否显示', default: false,
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
+            }, {
+                name: 'width', title: '宽度', default: 'auto', remark: '可用像素宽度或百分比宽度。',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
+            }, {
+                name: 'height', title: '高度', default: 'auto', remark: '',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
+            }, {
+                name: 'placement', title: '抽屉方向', default: 'right', remark: '',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
+                attrs: {
+                    options: [ 
+                        { title: '上方 Top', value: 'top' }, 
+                        { title: '右侧 Right', value: 'right' }, 
+                        { title: '下方 Bottom', value: 'bottom' },
+                        { title: '左侧 Left', value: 'left' }
+                    ]
+                }
+            }
+        ],
+        events: [
+            
+        ]
+    }, 
 
     /**
      * 高级子表单
@@ -144,6 +249,7 @@ export const formControls: Array<FormDesign.FormControl> = [
         type: Enum.FormControlType.layout,
         children: [ [] ],
         childrenSlot: '.complex-child-form',
+        isOriginal: true,
         propertys: [
             {
                 name: 'bordered', title: '边框', default: false, remark: '是否展示表格的外边框和列边框',
@@ -158,25 +264,37 @@ export const formControls: Array<FormDesign.FormControl> = [
                 name: 'rowKey', title: '主键', default: 'id',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
-                name: 'dataSource', title: '数据数组', default: [
-                    { id: '1', name: '张三', age: 20 },
-                    { id: '2', name: '李四', age: 21 },
-                    { id: '3', name: '王五', age: 22 },
+                name: 'dataSource', title: '数据源', default: '', isSync: true,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable,
+                attach: [
+                    Enum.FormControlPropertyEditor.expression, 
+                    Enum.FormControlPropertyEditor.basicData, 
+                    Enum.FormControlPropertyEditor.viewData, 
+                    Enum.FormControlPropertyEditor.api
                 ],
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json,
-                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression, Enum.FormControlPropertyEditor.viewData ],
                 attrs: { style: { height: '200px' } }
                 // change(prop, propMap, control, value, refs) {
                 //     // propMap['view-data'].visible = value == JSON.parse(value);
                 // }
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
             { name: '', title: '', remark: '' },
-        ]
+        ],
+        render(control) {
+
+            const _getCol = (child, index) => {
+                return `<a-table-column title="${child.control.attrs.title}" dataIndex="${child.control.attrs.dataIndex}" key="${child.control.attrs.dataIndex}">
+                    <template slot-scope="text, record, index">
+                        {{children_${index}}}
+                    </template>
+                </a-table-column>`;
+            };
+            
+            return `<task-detail-table {{attrs}}>
+                ${this.children?.flat(2).map((i, index) => _getCol(i, index)).join('\n')}
+            </task-detail-table>`;
+        }
     }, 
 
     /**
@@ -201,6 +319,7 @@ export const formControls: Array<FormDesign.FormControl> = [
         type: Enum.FormControlType.layout,
         children: [ [] ],
         childrenSlot: '.form-flex',
+        isOriginal: true,
         propertys: [
             {
                 name: 'flexDirection', title: '主轴方向', default: 'row',
@@ -250,9 +369,6 @@ export const formControls: Array<FormDesign.FormControl> = [
                     { title: '分布对齐 SpaceAround', value: 'space-around' },
                     { title: '占满高度 Stretch', value: 'stretch' }, 
                 ], allowClear: false }
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -282,6 +398,7 @@ export const formControls: Array<FormDesign.FormControl> = [
         type: Enum.FormControlType.layout,
         children: [ [], [] ],
         childrenSlot: '.ant-col',
+        isOriginal: true,
         propertys: [
             {
                 name: 'gutter', title: '列间距', default: 0,
@@ -319,19 +436,23 @@ export const formControls: Array<FormDesign.FormControl> = [
                         { name: 'span', title: '栅格大小', editor: Enum.FormControlPropertyEditor.int, attrs: { max: 24, min: 0 } },
                         { name: 'offset', title: '左位移', editor: Enum.FormControlPropertyEditor.int, attrs: { max: 24, min: 0 } },
                     ],
-                    onRemove: (value, index, control) => control.children[index].length == 0,
+                    onRemove: (value, index, control) => !control?.children?.[index]?.length,
                     onChange(control, index, removeCount, insertCount) { 
                         [].splice.apply(control.children, [index, removeCount].concat(new Array(insertCount).fill([])) as [number, number, ...never[]])
                     }
                 }
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
             
-        ]
+        ],
+        render() {
+            let _options = this.control.attrs.options.map((item, index) => `
+            <a-col :span="${item.span}" :offset="${item.offset}">
+                {{children_${index}}}
+            </a-col>`).join('\n');
+            return `<a-row {{attrs}}>\n${_options}\n</a-row>`;
+        }
     }, 
 
     /**
@@ -353,6 +474,7 @@ export const formControls: Array<FormDesign.FormControl> = [
         type: Enum.FormControlType.layout,
         children: [ [], [], [] ],
         childrenSlot: '.ant-tabs-tabpane',
+        isOriginal: true,
         propertys: [
             {
                 name: 'type', title: '样式类型', default: 'line', 
@@ -405,14 +527,12 @@ export const formControls: Array<FormDesign.FormControl> = [
                         { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
                         { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                     ],
-                    onRemove: (value, index, control) => control.children[index].length == 0,
+                    onRemove: (value, index, control) => !control?.children?.[index]?.length,
                     onChange(control, index, removeCount, insertCount) { 
                         [].splice.apply(control.children, [index, removeCount].concat(new Array(insertCount).fill([])) as [number, number, ...never[]])
                     }
-                }
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                },
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }
         ],
         events: [
@@ -445,6 +565,7 @@ export const formControls: Array<FormDesign.FormControl> = [
         type: Enum.FormControlType.layout,
         children: [ [], [], [] ],
         childrenSlot: '.ant-collapse-content-box',
+        isOriginal: true,
         propertys: [
             {
                 name: 'bordered', title: '边框', default: false,
@@ -476,14 +597,12 @@ export const formControls: Array<FormDesign.FormControl> = [
                         { name: 'icon', width: '30%', title: '图标', editor: Enum.FormControlPropertyEditor.icon, attrs: { } },
                         { name: 'title', width: '70%', title: '标题', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
                     ],
-                    onRemove: (value, index, control) => control.children[index].length == 0,
+                    onRemove: (value, index, control) => !control?.children?.[index]?.length,
                     onChange(control, index, removeCount, insertCount) { 
                         [].splice.apply(control.children, [index, removeCount].concat(new Array(insertCount).fill([])) as [number, number, ...never[]])
                     }
-                }
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                },
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }
         ],
         events: [
@@ -520,6 +639,7 @@ export const formControls: Array<FormDesign.FormControl> = [
         type: Enum.FormControlType.layout,
         children: [ [] ],
         childrenSlot: '.ant-card-body',
+        isOriginal: true,
         propertys: [
             {
                 name: 'title', title: '区域标题', default: '卡片', 
@@ -537,9 +657,6 @@ export const formControls: Array<FormDesign.FormControl> = [
                     { title: '普通 Default', value: 'default' },
                     { title: '小型 Small', value: 'small' }
                 ] } 
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -568,12 +685,6 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
-                name: 'rules', title: '校验规则', default: [],
-                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
-                attach: [ Enum.FormControlPropertyEditor.expression ],
-                remark: '控件值校验规则。',
-                attrs: { type: Enum.FormControlRuleType.text }
-            }, {
                 name: 'type', title: '文本框类型', default: 'text',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
                 attrs: { options: [ 
@@ -603,10 +714,12 @@ export const formControls: Array<FormDesign.FormControl> = [
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.int
             }, {
                 name: 'disabled', title: '是否禁用', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }, {
-                name: 'readOnly', title: '是否只读', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                name: 'read-only', title: '是否只读', default: false,
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }, {
                 name: 'allowClear', title: '启用清除', default: true,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
@@ -616,17 +729,30 @@ export const formControls: Array<FormDesign.FormControl> = [
                 attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
                 remark: '文本框控件默认值。'
             }, {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.text }
+            }, {
                 name: 'model', title: '绑定变量', type: 'string',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
             { name: 'change', title: '内容变换', remark: '输入框内容变化时的回调事件。' },
             { name: 'pressEnter', title: '按下回车', remark: '在输入框焦点时按下回车时的回调事件。' },
-        ]
+        ],
+//         render() {
+//             if (this.control.attrs.label) {
+//                 let _attrs = this.control.attrs;
+//                 return `<form-control label="${_attrs.label}" :colon="false" :label-col="{ span: ${_attrs.labelSpan}, offset: ${_attrs.labelOffset} }" :wrapper-col="{ span: ${_attrs.wrapperSpan}, offset: ${_attrs.wrapperOffset} }">
+//     <span class="control-custom ant-form-text">{{${_attrs?.renderFn?.replace(/\bme\.\b/g, '')}}}</span>
+// </form-control>`;
+//             } else {
+//                 return `<span class="control-custom ant-form-text">{{${this.control.attrs.renderFn.replace(/\bme\.\b/g, '')}}}</span>`;
+//             }
+//         }
     }, 
     
     /**
@@ -651,12 +777,6 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
-                name: 'rules', title: '校验规则', default: [],
-                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
-                attach: [ Enum.FormControlPropertyEditor.expression ],
-                remark: '控件值校验规则。',
-                attrs: { type: Enum.FormControlRuleType.text }
-            }, {
                 name: 'placeholder', title: '占位提示文字', default: '请输入',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
@@ -690,19 +810,24 @@ export const formControls: Array<FormDesign.FormControl> = [
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.int
             }, {
                 name: 'disabled', title: '是否禁用', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }, {
-                name: 'readOnly', title: '是否只读', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                name: 'read-only', title: '是否只读', default: false,
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }, {
                 name: 'allowClear', title: '启用清除', default: true,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.text }
+            }, {
                 name: 'model', title: '绑定变量', type: 'string',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -733,12 +858,6 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
-                name: 'rules', title: '校验规则', default: [],
-                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
-                attach: [ Enum.FormControlPropertyEditor.expression ],
-                remark: '控件值校验规则。',
-                attrs: { type: Enum.FormControlRuleType.number }
-            }, {
                 name: 'placeholder', title: '占位提示文字', default: '请选择',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
@@ -765,16 +884,21 @@ export const formControls: Array<FormDesign.FormControl> = [
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.float
             }, {
                 name: 'disabled', title: '是否禁用', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }, {
-                name: 'readOnly', title: '是否只读', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                name: 'read-only', title: '是否只读', default: false,
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
+            }, {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.number }
             }, {
                 name: 'model', title: '绑定变量', type: 'number',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -788,7 +912,7 @@ export const formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'a-date-picker',
+            control: 'antd-form-design-control-date-picker',
             attrs: {},
             events: {},
             propAttrs: {},
@@ -804,12 +928,6 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
-                name: 'rules', title: '校验规则', default: [],
-                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
-                attach: [ Enum.FormControlPropertyEditor.expression ],
-                remark: '控件值校验规则。',
-                attrs: { type: Enum.FormControlRuleType.date }
-            }, {
                 name: 'placeholder', title: '占位提示文字',
                 group: Enum.FormControlPropertyGroup.style, default: '请选择日期', editor: Enum.FormControlPropertyEditor.singerLine
             }, {
@@ -821,19 +939,24 @@ export const formControls: Array<FormDesign.FormControl> = [
                 ] } 
             }, {
                 name: 'disabled', title: '是否禁用', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }, {
-                name: 'readOnly', title: '允许编辑日期', default: true,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                name: 'read-only', title: '允许编辑日期', default: true,
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }, {
                 name: 'allowClear', title: '是否启用清除', default: true,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.date }
+            }, {
                 name: 'model', title: '绑定变量', type: 'string',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -841,6 +964,77 @@ export const formControls: Array<FormDesign.FormControl> = [
         ]
     }, 
 
+    /**
+     * 下拉框
+     */
+    {
+        id: '',
+        control: {
+            control: 'antd-form-design-control-select',
+            attrs: {
+                style: {
+                    width: '100%'
+                }
+            },
+            events: {},
+            propAttrs: {},
+            slot: {
+            },
+            defaultAttrs: {
+                enterButton: true
+            }
+        },
+        name: 'a-select',
+        title: '下拉框',
+        autoPrefix: 'data',
+        type: Enum.FormControlType.select,
+        isFormItem: true,
+        propertys: [
+            {
+                name: 'placeholder', title: '占位提示文字', default: '请选择',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
+            }, {
+                name: 'disabled', title: '是否禁用', default: false,
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
+            }, {
+                name: 'read-only', title: '是否只读', default: false,
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
+            }, {
+                name: 'clearable', title: '是否启用清除', default: true,
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+            }, {
+                name: 'labelField', title: '文本属性', default: 'label',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }, {
+                name: 'valueField', title: '值属性', type: 'value',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }, {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.select }
+            }, {
+                name: 'model', title: '绑定变量', type: 'string | Array<string>',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
+            }, {
+                name: 'options', title: '数据源', require: true, default: [], remark: '展示字段为label，值字段为value',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json,
+                attach: [
+                    Enum.FormControlPropertyEditor.variable, 
+                    Enum.FormControlPropertyEditor.expression, 
+                    Enum.FormControlPropertyEditor.basicData, 
+                    Enum.FormControlPropertyEditor.viewData, 
+                    Enum.FormControlPropertyEditor.api
+                ]
+            }
+        ],
+        events: [
+            
+        ]
+    },
     
     /**
      * 值选择器
@@ -848,7 +1042,7 @@ export const formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'a-input-search',
+            control: 'antd-form-design-control-data-search',
             attrs: {},
             events: {},
             propAttrs: {},
@@ -858,18 +1052,15 @@ export const formControls: Array<FormDesign.FormControl> = [
                 enterButton: true
             }
         },
-        name: 'data-select',
+        name: 'data-search',
         title: '值选择器',
         autoPrefix: 'data',
         type: Enum.FormControlType.select,
         isFormItem: true,
         propertys: [
             {
-                name: 'rules', title: '校验规则', default: [],
-                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
-                attach: [ Enum.FormControlPropertyEditor.expression ],
-                remark: '控件值校验规则。',
-                attrs: { type: Enum.FormControlRuleType.select }
+                name: 'dialogTitle', title: '弹出框标题', default: '查询数据',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
                 name: 'placeholder', title: '占位提示文字', default: '请选择',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
@@ -880,35 +1071,85 @@ export const formControls: Array<FormDesign.FormControl> = [
                 name: 'suffix', title: '后缀', 
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
-                name: 'btn-icon', title: '按钮图标', default: 'search',
-                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.icon,
-                change(prop, propMap, control, value, refs) {
-                    control[0].control.slot['button'][0].attrs.icon = value;
-                }
-            }, {
                 name: 'disabled', title: '是否禁用', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }, {
-                name: 'readOnly', title: '是否只读', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                name: 'read-only', title: '是否只读', default: false,
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }, {
                 name: 'clearable', title: '是否启用清除', default: true,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
-                name: 'model', title: '绑定变量', type: 'string | Array<string>',
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.select }
+            }, {
+                name: 'model', title: '绑定变量', type: 'string[]', default: '',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }, {
-                name: 'dataSource', title: '数据源', require: true,
+                name: 'rowKey', title: '标识列字段', default: 'id', remark: '',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }, {
+                name: 'rowTextKey', title: '文本列字段', default: 'text', remark: '',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }, {
+                name: 'dataSource', title: '数据源', require: true, default: [],
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.json,
                 attach: [ 
                     Enum.FormControlPropertyEditor.variable, 
                     Enum.FormControlPropertyEditor.expression, 
                     Enum.FormControlPropertyEditor.basicData, 
-                    Enum.FormControlPropertyEditor.viewData
+                    Enum.FormControlPropertyEditor.viewData, 
+                    Enum.FormControlPropertyEditor.api
                 ]
             }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'columns', title: '表格列', default: [
+                    { dataIndex: 'id', title: '编号' },
+                    { dataIndex: 'name', title: '姓名' },
+                    { dataIndex: 'age', title: '年龄' },
+                ],
+                layout: Enum.PropertyLayout.block,
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ],
+                attrs: {
+                    columns: [
+                        { 
+                            name: 'dataIndex',
+                            title: '字段名',
+                            width: '120px',
+                            editor: Enum.FormControlPropertyEditor.singerLine
+                        }, {
+                            name: 'title',
+                            title: '标题',
+                            editor: Enum.FormControlPropertyEditor.singerLine
+                        }, {
+                            name: 'width',
+                            title: '宽度',
+                            width: '60px',
+                            editor: Enum.FormControlPropertyEditor.int
+                        }, { 
+                            name: 'align', 
+                            title: '对齐', 
+                            editor: Enum.FormControlPropertyEditor.list, 
+                            width: '60px',
+                            attrs: {
+                                options: [
+                                    { title: '左', value: 'left' }, 
+                                    { title: '中', value: 'center' }, 
+                                    { title: '右', value: 'right' }
+                                ]
+                            }
+                        }
+                    ],
+                    onRemove: (value, index, control) => !control?.children?.[index]?.length,
+                    onChange(control, index, removeCount, insertCount) { 
+                        [].splice.apply(control.children, [index, removeCount].concat(new Array(insertCount).fill([])) as [number, number, ...never[]])
+                    }
+                }
             }
         ],
         events: [
@@ -922,7 +1163,7 @@ export const formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'a-radio-group', //van-radio-group
+            control: 'antd-form-design-control-radio-group', //van-radio-group
             attrs: {},
             events: {},
             propAttrs: {},
@@ -937,26 +1178,27 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
-                name: 'rules', title: '校验规则', default: [],
-                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
-                attach: [ Enum.FormControlPropertyEditor.expression ],
-                remark: '控件值校验规则。',
-                attrs: { type: Enum.FormControlRuleType.select }
-            }, {
                 name: 'disabled', title: '是否禁用', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
+            }, {
+                name: 'labelField', title: '文本属性', default: 'label',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }, {
+                name: 'valueField', title: '值属性', default: 'value',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
                 name: 'options', title: '列表项', default: [ 
-                    { value: '1', label: '单选框 1' }, 
-                    { value: '2', label: '单选框 2' } 
+                    { value: '1', label: '单选框 1' } 
                 ],
                 layout: Enum.PropertyLayout.block,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
-                attach: [ 
+                attach: [
                     Enum.FormControlPropertyEditor.variable, 
                     Enum.FormControlPropertyEditor.expression, 
                     Enum.FormControlPropertyEditor.basicData, 
-                    Enum.FormControlPropertyEditor.viewData
+                    Enum.FormControlPropertyEditor.viewData, 
+                    Enum.FormControlPropertyEditor.api
                 ],
                 attrs: { rowKey: 'title', columns: [
                     { name: 'value', width: '30%', title: '值', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
@@ -964,11 +1206,14 @@ export const formControls: Array<FormDesign.FormControl> = [
                     { name: 'disabled', width: '30%', title: '禁用', editor: Enum.FormControlPropertyEditor.boolean, default: false, attrs: { } },
                 ] }
             }, {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.select }
+            }, {
                 name: 'model', title: '绑定变量', type: 'string',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -982,7 +1227,7 @@ export const formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'a-checkbox-group',
+            control: 'antd-form-design-control-checkbox-group',
             attrs: {},
             events: {},
             propAttrs: {},
@@ -997,26 +1242,27 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
-                name: 'rules', title: '校验规则', default: [],
-                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
-                attach: [ Enum.FormControlPropertyEditor.expression ],
-                remark: '控件值校验规则。',
-                attrs: { type: Enum.FormControlRuleType.select }
-            }, {
                 name: 'disabled', title: '是否禁用', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
+            }, {
+                name: 'labelField', title: '文本属性', default: 'label',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+            }, {
+                name: 'valueField', title: '值属性', default: 'value',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
                 name: 'options', title: '列表项', default: [ 
-                    { value: '1', label: '单选框 1' }, 
-                    { value: '2', label: '单选框 2' } 
+                    { value: '1', label: '单选框 1' } 
                 ],
                 layout: Enum.PropertyLayout.block,
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.modelList,
-                attach: [ 
+                attach: [
                     Enum.FormControlPropertyEditor.variable, 
                     Enum.FormControlPropertyEditor.expression, 
                     Enum.FormControlPropertyEditor.basicData, 
-                    Enum.FormControlPropertyEditor.viewData
+                    Enum.FormControlPropertyEditor.viewData, 
+                    Enum.FormControlPropertyEditor.api
                 ],
                 attrs: { rowKey: 'title', columns: [
                     { name: 'value', width: '30%', title: '值', editor: Enum.FormControlPropertyEditor.singerLine, attrs: { } },
@@ -1024,11 +1270,14 @@ export const formControls: Array<FormDesign.FormControl> = [
                     { name: 'disabled', width: '30%', title: '禁用', editor: Enum.FormControlPropertyEditor.boolean, default: false, attrs: { } },
                 ] }
             }, {
-                name: 'model', title: '绑定变量', type: 'Array<string>',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.select }
             }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+                name: 'model', title: '绑定变量', type: 'string',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
             }
         ],
         events: [
@@ -1072,13 +1321,11 @@ export const formControls: Array<FormDesign.FormControl> = [
                 ] } 
             }, {
                 name: 'disabled', title: '是否禁用', default: false,
-                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean,
+                attach: [ Enum.FormControlPropertyEditor.variable, Enum.FormControlPropertyEditor.expression ]
             }, {
                 name: 'model', title: '绑定变量', type: 'boolean',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -1092,7 +1339,7 @@ export const formControls: Array<FormDesign.FormControl> = [
     {
         id: '',
         control: {
-            control: 'a-uploader',
+            control: 'antd-form-design-control-upload',
             attrs: {},
             events: {},
             propAttrs: {},
@@ -1103,17 +1350,23 @@ export const formControls: Array<FormDesign.FormControl> = [
         name: 'uploader',
         title: '上传',
         autoPrefix: 'uploader',
+        isFormItem: true,
         type: Enum.FormControlType.upload,
         propertys: [
             {
-                name: 'rules', title: '校验规则', default: [],
-                group: Enum.FormControlPropertyGroup.childform, editor: Enum.FormControlPropertyEditor.rules,
-                attach: [ Enum.FormControlPropertyEditor.expression ],
-                remark: '控件值校验规则。',
-                attrs: { type: Enum.FormControlRuleType.upload }
+               name: 'btn-text', title: '按钮文本', default: '点击上传',
+               group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
-                name: 'upload-text', title: '文字提示', 
+                name: 'upload-tip', title: '文字提示', 
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.singerLine
+            }, {
+                name: 'listType', title: '文件列表样式', default: 'text',
+                group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
+                attrs: { options: [ 
+                    { title: '普通文件 Text', value: 'text' },
+                    { title: '图片模式 Picture', value: 'picture' },
+                    { title: '图片卡片 Picture-Card', value: 'picture-card' },
+                ] }
             }, {
                 name: 'image-fit', title: '图片裁剪模式', default: 'cover',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
@@ -1128,7 +1381,7 @@ export const formControls: Array<FormDesign.FormControl> = [
                 name: 'preview-size', title: '预览图尺寸', default: '80px',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.pixel
             }, {
-                name: 'name', title: '标识符',
+                name: 'name', title: '文件参数名', default: 'file',
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.singerLine
             }, {
                 name: 'accept', title: '接受文件类型', default: 'image/*',
@@ -1156,9 +1409,25 @@ export const formControls: Array<FormDesign.FormControl> = [
                 name: 'disabled', title: '是否禁用', default: false,
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.boolean
             }, {
+                name: 'url', title: '上传地址', 
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.api,
+                attrs: { hasFormatter: false, hasParams: false }
+            }, {
                 name: 'result-type', title: '结果类型', default: 'file',
                 group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.list,
                 attrs: { options: [ { title: '文件 File', value: 'file' }, { title: '文本 Text', value: 'text' } ] }
+            }, {
+                name: 'data', title: '附加参数', default: '(file) => {}',
+                group: Enum.FormControlPropertyGroup.action, editor: Enum.FormControlPropertyEditor.expression,
+            }, {
+                name: 'headers', title: '请求头部', default: '{}',
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.expression
+            }, {
+                name: 'rules', title: '校验规则', default: [],
+                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.rules,
+                attach: [ Enum.FormControlPropertyEditor.expression ],
+                remark: '控件值校验规则。',
+                attrs: { type: Enum.FormControlRuleType.upload }
             }, {
                 name: 'model', title: '绑定变量', type: 'Array<string>',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
@@ -1171,9 +1440,6 @@ export const formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'before-delete', title: '删除前回调函数', 
                 group: Enum.FormControlPropertyGroup.function, editor: Enum.FormControlPropertyEditor.function
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -1202,13 +1468,23 @@ export const formControls: Array<FormDesign.FormControl> = [
         isFormItem: true,
         propertys: [
             {
-                name: 'renderFn', title: 'JS表达式', default: '', remark: '使用JS构造字符串或节点，节点构造函数是h()',
+                name: 'renderFn', title: 'JS表达式', default: '', remark: '使用JS构造字符串或节点，节点构造函数是h()，对应页面vue对象的变量是me。',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.javascript,
             }
         ],
         events: [
             
-        ]
+        ],
+        render() {
+            if (this.control.attrs.label) {
+                let _attrs = this.control.attrs;
+                return `<a-form-item label="${_attrs.label}" :colon="false" :label-col="{ span: ${_attrs.labelSpan}, offset: ${_attrs.labelOffset} }" :wrapper-col="{ span: ${_attrs.wrapperSpan}, offset: ${_attrs.wrapperOffset} }">
+    <span class="control-custom ant-form-text">{{${this.control.attrs.renderFn.replace(/\bme\.\b/g, '')}}}</span>
+</a-form-item>`;
+            } else {
+                return `<span class="control-custom ant-form-text">{{${this.control.attrs.renderFn.replace(/\bme\.\b/g, '')}}}</span>`;
+            }
+        }
     }, 
 
     /**
@@ -1223,6 +1499,8 @@ export const formControls: Array<FormDesign.FormControl> = [
             propAttrs: {},
             slot: {},
             defaultAttrs: {
+                current: 0,
+                total: 999
             }
         },
         name: 'pagination',
@@ -1251,9 +1529,6 @@ export const formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'model', title: '绑定变量', type: 'number',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -1312,9 +1587,6 @@ export const formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'model', title: '绑定变量', type: 'number',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -1357,9 +1629,6 @@ export const formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'model', title: '绑定变量', type: 'number',
                 group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.variable
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -1385,6 +1654,7 @@ export const formControls: Array<FormDesign.FormControl> = [
         name: 'divider',
         title: '分割线',
         type: Enum.FormControlType.else,
+        isOriginal: true,
         propertys: [
             {
                 name: 'text', title: '标题', default: '',
@@ -1395,7 +1665,7 @@ export const formControls: Array<FormDesign.FormControl> = [
             }, {
                 name: 'orientation', title: '标题位置', default: 'left',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
-                attrs: { options: [ { title: '左侧 Left', value: 'left' }, { title: '居中 Center', value: 'center' }, { title: '右侧 Right', value: 'right' } ] }
+                attrs: { options: [ { title: '左侧 Left', value: 'left' }, { title: '居中 Center', value: '' }, { title: '右侧 Right', value: 'right' } ] }
             }, {
                 name: 'type', title: '分割线类型', default: 'horizontal',
                 group: Enum.FormControlPropertyGroup.style, editor: Enum.FormControlPropertyEditor.list,
@@ -1426,6 +1696,7 @@ export const formControls: Array<FormDesign.FormControl> = [
         title: '子表单',
         autoPrefix: 'childform',
         type: Enum.FormControlType.else,
+        isOriginal: true,
         propertys: [
             {
                 name: 'bordered', title: '边框', default: false, remark: '是否展示表格的外边框和列边框',
@@ -1485,7 +1756,7 @@ export const formControls: Array<FormDesign.FormControl> = [
                             attrs: { max: 99, min: 0 }
                         }
                     ],
-                    onRemove: (value, index, control) => control.children[index].length == 0,
+                    onRemove: (value, index, control) => !control?.children?.[index]?.length,
                     onChange(control, index, removeCount, insertCount) { 
                         [].splice.apply(control.children, [index, removeCount].concat(new Array(insertCount).fill([])) as [number, number, ...never[]])
                     }
@@ -1502,9 +1773,6 @@ export const formControls: Array<FormDesign.FormControl> = [
                 // change(prop, propMap, control, value, refs) {
                 //     // propMap['view-data'].visible = value == JSON.parse(value);
                 // }
-            }, {
-                name: 'remark', title: '备注名', default: '',
-                group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
             }
         ],
         events: [
@@ -1517,41 +1785,62 @@ export function initAntDesignControls(controlList?: Array<FormDesign.FormControl
     if (!controlList) {
         controlList = formControls;
     }
+
+    let _blankPropertys: FormDesign.FormControlProperty[] = [];
+
+    let _propertys: FormDesign.FormControlProperty[] = [
+        {
+            name: 'id', title: '控件编号', default: '',
+            group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine,
+            remark: '在页面中调用控件属性或函数使用的控件编号。',
+            attrs: { readonly: true }
+        }, {
+            name: 'remark', title: '备注名', default: '',
+            group: Enum.FormControlPropertyGroup.data, editor: Enum.FormControlPropertyEditor.singerLine
+        }
+    ];
+
+    const _getBasicProps = (control) => {
+        return control.type == 'hidden' ? _propertys : basicProps;
+    }
+
     return controlList.map(i => ({
         ...i,
-        // @ts-ignore
-        propertyEditors: Object.assign.apply({}, basicProps
+        propertyEditors: Object.assign.apply({}, [{}].concat(_blankPropertys
+            .concat(_getBasicProps(i))
             .concat(i.propertys)
             .concat(i.isFormItem ? [...flexItemProps, ...columnItemProps, ...formItemProps] : [])
             .filter(o => o.attach?.length)
             .map(o => {
                 return {[o.name]: o.editor};
-            })
+            })) as [object, ...FormDesign.FormControlProperty[]]
         ),
         control: {
             ...i.control,
-            propertys: basicProps.concat(i.propertys).map(prop => ({
+            propertys: _getBasicProps(i).concat(i.propertys).map(prop => ({
                 ...prop,
                 
             })).concat([
                 
             ]),
-            // @ts-ignore
-            attrs: Object.assign.apply({}, Object.entries(i.control.defaultAttrs)
+            attrs: Object.assign.apply({}, [{}].concat(Object.entries(i.control.defaultAttrs as Record<string, any>)
                 .map(([key, value]) => ({[key]:value}))
                 .concat(
-                    basicProps.concat(i.propertys).concat(i.isFormItem ? [...flexItemProps, ...columnItemProps, ...formItemProps] : [])
-                        .filter(o => o.default !== undefined)
-                        .map(o => ({[o.name]: o.default}))
+                    _blankPropertys
+                    .concat(_getBasicProps(i))
+                    .concat(i.propertys)
+                    .concat(i.isFormItem ? [...flexItemProps, ...columnItemProps, ...formItemProps] : [])
+                    .filter(o => o.default !== undefined)
+                    .map(o => ({[o.name]: o.default}))
                 )
                 .concat(
                     Object.entries(i.control.attrs)
                         .map(([key, value]) => ({[key]:value}))
-                )
+                )) as [object, ...FormDesign.FormControlProperty[]]
             )
         },
         propertys: [
-            ...basicProps,
+            ..._getBasicProps(i),
             ...i.propertys
         ]
     }))

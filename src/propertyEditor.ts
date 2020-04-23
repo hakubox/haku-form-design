@@ -1,7 +1,8 @@
 import FormDesign from './@types/form-design';
 import { Enum } from '@/config/enum';
 import { icons } from '@/iconEditor';
-import { post } from './tools/common';
+import { icons_antd } from '@/iconEditor_antd';
+import common, { post } from './tools/common';
 import serviceConfig from '@/config/service.ts';
 
 const _service = serviceConfig;
@@ -92,7 +93,7 @@ const propertyEditors: Array<FormDesign.PropertyEditor> = [
                 slot: {},
                 attrs: {
                     style: { width: '100%' },
-                    allowClear: true,
+                    allowClear: false,
                     size: 'small'
                 },
                 events: {},
@@ -202,12 +203,20 @@ const propertyEditors: Array<FormDesign.PropertyEditor> = [
                     enterButton: '查询',
                     style: { width: '100%' },
                     placeholder: '选择视图数据',
+                    // defaultActiveFirstOption: false,
+                    // showArrow: false,
+                    // filterOption: false,
+                    maxTagCount: 50,
                     showSearch: true,
                     allowClear: true,
                     size: 'small',
                     get options() { return _service.viewData }
                 },
-                events: {}, 
+                events: {
+                    // search(value) {
+                    //     common.get(value, data => (this.data = data));
+                    // }
+                }, 
                 propAttrs: {}
             }
         ],
@@ -225,6 +234,7 @@ const propertyEditors: Array<FormDesign.PropertyEditor> = [
                     placeholder: '选择基础数据',
                     allowClear: true,
                     showSearch: true,
+                    maxTagCount: 50,
                     size: 'small',
                     filterTreeNode: true,
                     treeDefaultExpandAll: true,
@@ -265,6 +275,45 @@ const propertyEditors: Array<FormDesign.PropertyEditor> = [
                         html: i.label,
                         slot: {
                             default: icons
+                        },
+                        attrs: {
+                            value: i.value
+                        }
+                    }))
+                }
+            }
+        ],
+        editor: Enum.FormControlPropertyEditor.icon
+    }, {
+        name: 'icon_antd',
+        description: '图标',
+        control: [
+            {
+                control: 'a-select',
+                event: {},
+                attrs: {
+                    showSearch: true,
+                    style: { 
+                        width: '100%',
+                        fontFamily: 'vant-icon',
+                        color: 'rgba(0, 0, 0, 0.65)',
+                        fontSize: '20px',
+                        lineHeight: '12px',
+                        // fontWeight: '700',
+                        verticalAlign: 'middle'
+                    },
+                    dropdownClassName: 'icon-editor-select',
+                    placeholder: '',
+                    allowClear: true,
+                    size: 'small'
+                },
+                slot: {
+                    //@ts-ignore
+                    default: icons_antd.map(i => ({
+                        control: 'a-select-option',
+                        html: i.label,
+                        slot: {
+                            default: icons_antd
                         },
                         attrs: {
                             value: i.value
@@ -350,7 +399,7 @@ const propertyEditors: Array<FormDesign.PropertyEditor> = [
                 propAttrs: {}
             }
         ],
-        editor: Enum.FormControlPropertyEditor.singerLine
+        editor: Enum.FormControlPropertyEditor.expression
     }, {
         name: 'variable',
         description: '变量',
@@ -399,6 +448,34 @@ const propertyEditors: Array<FormDesign.PropertyEditor> = [
             }
         ],
         editor: Enum.FormControlPropertyEditor.rules
+    }, {
+        name: 'box',
+        description: '盒模型编辑器',
+        control: [
+            {
+                control: 'box-editor',
+                slot: {},
+                attrs: {
+                },
+                events: {}, 
+                propAttrs: {}
+            }
+        ],
+        editor: Enum.FormControlPropertyEditor.box
+    }, {
+        name: 'api',
+        description: '接口',
+        control: [
+            {
+                control: 'api-editor',
+                slot: {},
+                attrs: {
+                },
+                events: {}, 
+                propAttrs: {}
+            }
+        ],
+        editor: Enum.FormControlPropertyEditor.api
     }, 
 ]
 

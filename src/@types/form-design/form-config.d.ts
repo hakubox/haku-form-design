@@ -2,6 +2,8 @@ import { FormFooterConfig } from "./form-footer-config";
 
 /** 表单基本配置 */
 export declare class FormConfig {
+    /** 表单唯一编号 */
+    id: string;
     /** 表单组件库 */
     formComponentLib: string;
     /** 面板标题 */
